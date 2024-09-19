@@ -1,0 +1,11 @@
+# Test binary, built with `go test -c`
+*.test
+# Go workspace file
+go.work
+go.work.sum
+# OS General
+Thumbs.db
+.DS_Store
+
+.vscode/
+.idea/
