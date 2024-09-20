@@ -1,17 +1,6 @@
 package core
 
-type Config struct {
-	timeout    int
+type Core struct {
 	PrivateKey string
 	PublicKey  string
-}
-
-type Service struct {
-}
-
-func NewService() *Service {
-	return &Service{}
-}
-
-func (s *Service) Post() {
 }

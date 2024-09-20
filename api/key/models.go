@@ -6,7 +6,7 @@ type Request struct {
 	Method     string `json:"method"`
 	Timestamp  string `json:"timestamp"`
 	Sign       string `json:"sign"`
-	BizContent string `json:"biz_content"`
+	Ciphertext string `json:"cipher_text"`
 }
 
 type Response struct {
@@ -19,13 +19,28 @@ type Response struct {
 	ValidEndTime   string `json:"valid_end_time"`
 }
 
-type AcquireBizContent struct {
+type AcquirePlaintext struct {
 	OutBizNo   string `json:"out_biz_no"`
 	ActivityNo string `json:"activity_no"`
 	Number     string `json:"number"`
 }
 
 type AcquireReply struct {
+	Code     string    `json:"code"`
+	Msg      string    `json:"msg"`
+	SubCode  string    `json:"subCode"`
+	SubMsg   string    `json:"subMsg"`
+	Response *Response `json:"response"`
+	Sign     string    `json:"sign"`
+}
+
+type DiscardPlaintext struct {
+	OutBizNo string `json:"out_biz_no"`
+	TradeNo  string `json:"trade_no"`
+	Key      string `json:"key"`
+}
+
+type DiscardReply struct {
 	Code     string    `json:"code"`
 	Msg      string    `json:"msg"`
 	SubCode  string    `json:"subCode"`

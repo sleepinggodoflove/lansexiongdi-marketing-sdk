@@ -9,6 +9,7 @@ import (
 	"github.com/tjfoc/gmsm/x509"
 )
 
+// GenerateKey 生成公钥和私钥
 func GenerateKey() (pri, puk string, err error) {
 	privateKey, err := sm2.GenerateKey(rand.Reader)
 	if err != nil {
@@ -24,6 +25,7 @@ func GenerateKey() (pri, puk string, err error) {
 	return
 }
 
+// GetPukByPrK 根据私钥得到公钥
 func GetPukByPrK(prk string) (string, error) {
 	privateKeyBytes, err := base64.StdEncoding.DecodeString(prk)
 	if err != nil {
@@ -35,7 +37,6 @@ func GetPukByPrK(prk string) (string, error) {
 		return "", fmt.Errorf("私钥hex解码失败:%v", err)
 	}
 
-	// 根据私钥得到公钥
 	publicKeyBytes, err := hex.DecodeString(x509.WritePublicKeyToHex(&privateKey.PublicKey))
 	if err != nil {
 		return "", fmt.Errorf("公钥hex解码失败:%v", err)
