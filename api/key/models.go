@@ -1,29 +1,35 @@
 package key
 
-type AcquireRequest struct {
-	AppId      string `json:"appIdd"`
-	SignType   string `json:"signType"`
+type Request struct {
+	AppId      string `json:"app_id"`
+	SignType   string `json:"sign_type"`
 	Method     string `json:"method"`
-	Version    string `json:"version"`
 	Timestamp  string `json:"timestamp"`
 	Sign       string `json:"sign"`
-	BizContent string `json:"bizContent"`
+	BizContent string `json:"biz_content"`
 }
 
-type AcquireResponse struct {
-	OutBizNo       string `json:"outBizNo"`
-	OrderId        string `json:"orderId"`
+type Response struct {
+	OutBizNo       string `json:"out_biz_no"`
+	TradeNo        string `json:"trade_no"`
 	Key            string `json:"key"`
-	ShortUrl       string `json:"ShortUrl"`
-	ValidBeginDtTm string `json:"validBeginDtTm"`
-	ValidEndDtTm   string `json:"validEndDtTm"`
+	Status         string `json:"status"`
+	Url            string `json:"url"`
+	ValidBeginTime string `json:"valid_begin_time"`
+	ValidEndTime   string `json:"valid_end_time"`
+}
+
+type AcquireBizContent struct {
+	OutBizNo   string `json:"out_biz_no"`
+	ActivityNo string `json:"activity_no"`
+	Number     string `json:"number"`
 }
 
 type AcquireReply struct {
-	Code     string           `json:"code"`
-	Msg      string           `json:"msg"`
-	SubCode  string           `json:"subCode"`
-	SubMsg   string           `json:"subMsg"`
-	Response *AcquireResponse `json:"response"`
-	Sign     string           `json:"sign"`
+	Code     string    `json:"code"`
+	Msg      string    `json:"msg"`
+	SubCode  string    `json:"subCode"`
+	SubMsg   string    `json:"subMsg"`
+	Response *Response `json:"response"`
+	Sign     string    `json:"sign"`
 }
