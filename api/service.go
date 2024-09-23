@@ -1,7 +1,9 @@
 package api
 
-import "github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/common"
+import (
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+)
 
 type Service struct {
-	Params *common.Params
+	core.SDK
 }

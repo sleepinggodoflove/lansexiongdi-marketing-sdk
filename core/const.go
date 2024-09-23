@@ -1,8 +1,8 @@
-package common
+package core
 
 // SDK 相关信息
 const (
-	Version   = "0.2.18" // SDK 版本
+	Version   = "0.1.01" // SDK 版本
 	MethodRSA = "RSA"
 	MethodSM  = "SM"
 )

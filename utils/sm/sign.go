@@ -8,7 +8,7 @@ import (
 	"github.com/tjfoc/gmsm/x509"
 )
 
-func sign(data, privateKeyStr string) (string, error) {
+func Sign(data, privateKeyStr string) (string, error) {
 	privateKeyBytes, err := base64.StdEncoding.DecodeString(privateKeyStr)
 	if err != nil {
 		return "", fmt.Errorf("privateKey base64 decode failed: %v", err)
@@ -24,7 +24,7 @@ func sign(data, privateKeyStr string) (string, error) {
 	return base64.StdEncoding.EncodeToString(signatureBytes), nil
 }
 
-func verify(data string, signature, publicKeyStr string) (bool, error) {
+func Verify(data string, signature, publicKeyStr string) (bool, error) {
 	signatureBytes, err := base64.StdEncoding.DecodeString(signature)
 	if err != nil {
 		return false, fmt.Errorf("signature base64 decode failed: %v", err)

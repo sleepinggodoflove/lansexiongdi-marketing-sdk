@@ -2,10 +2,7 @@ package key
 
 import (
 	"encoding/json"
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/common"
 )
-
-var _ common.Request = (*Acquire)(nil)
 
 type AcquireRequest struct {
 	OutBizNo   string `json:"out_biz_no"`
