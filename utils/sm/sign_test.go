@@ -8,8 +8,11 @@ import (
 func Test_Sign(t *testing.T) {
 	data := "123456{}测试"
 	prkStr := "zJRUcwPpKFf4nWiN9wqSO9gpGFx5BP4WviqnPsrhkpc="
-
-	signature, err := Sign(data, prkStr)
+	prk, err := PrivateKeySM(prkStr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	signature, err := Sign(data, prk)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -20,14 +23,21 @@ func Test_Verify(t *testing.T) {
 	data := "123456{}测试"
 	prkStr := "zJRUcwPpKFf4nWiN9wqSO9gpGFx5BP4WviqnPsrhkpc="
 	pukStr := "BKbxGVVlJGWK/ScU0ebKSe4Jr4LvcBGgvt/HHBk+ODVCYnJYvvmX8cDNpf3TVYuRdz/RUH6UDgcoVpz02jXNfrM="
-
-	signature, err := Sign(data, prkStr)
+	prk, err := PrivateKeySM(prkStr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	puk, err := PublicKeySM(pukStr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	signature, err := Sign(data, prk)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("signature=%s\n", signature)
 
-	b, err := Verify(data, signature, pukStr)
+	b, err := Verify(data, signature, puk)
 	if err != nil {
 		t.Fatal(err)
 	}

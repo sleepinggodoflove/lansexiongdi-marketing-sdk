@@ -2,16 +2,17 @@ package core
 
 import (
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/utils/sm"
+	"github.com/tjfoc/gmsm/sm2"
 )
 
 // SmSigner for SM signing (国密)
 type SmSigner struct {
-	privateKey string
+	privateKey *sm2.PrivateKey
 }
 
 // SmVerifier for SM verification (国密)
 type SmVerifier struct {
-	publicKey string
+	publicKey *sm2.PublicKey
 }
 
 func (s *SmSigner) Sign(data string) (string, error) {

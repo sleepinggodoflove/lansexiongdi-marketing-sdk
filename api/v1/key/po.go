@@ -7,7 +7,7 @@ import (
 type AcquireRequest struct {
 	OutBizNo   string `json:"out_biz_no"`
 	ActivityNo string `json:"activity_no"`
-	Number     string `json:"number"`
+	Number     int32  `json:"number"`
 }
 
 func (a *Acquire) String() (string, error) {
