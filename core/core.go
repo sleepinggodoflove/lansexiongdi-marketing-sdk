@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+type Response struct {
+	Code       string `json:"code"`
+	Msg        string `json:"msg"`
+	SubCode    string `json:"subCode"`
+	SubMsg     string `json:"subMsg"`
+	Ciphertext string `json:"ciphertext"`
+}
+
 type Config struct {
 	AppID             string
 	PrivateKey        string
