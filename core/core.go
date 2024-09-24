@@ -15,8 +15,8 @@ type Config struct {
 	BaseURL           string
 }
 
-// SDK structure
-type SDK struct {
+// Core structure
+type Core struct {
 	Config     *Config
 	httpClient *http.Client
 	SignType   string
@@ -24,60 +24,62 @@ type SDK struct {
 	Verifier   Verifier
 }
 
-type Option func(*SDK)
+type Option func(*Core)
 
 func WithSignType(signType string) Option {
-	return func(s *SDK) {
+	return func(s *Core) {
 		s.SignType = signType
 	}
 }
 
 func WithHttpClient(client *http.Client) Option {
-	return func(s *SDK) {
+	return func(s *Core) {
 		s.httpClient = client
 	}
 }
 
-// NewSDK creates a new SDK instance
-func NewSDK(s *Config, o ...Option) (*SDK, error) {
+// NewCore creates a new Core instance
+func NewCore(s *Config, o ...Option) (*Core, error) {
 	if s == nil {
 		return nil, errors.New("config is nil")
 	}
-	sdk := &SDK{
-		SignType: SignRSA,
-		Config:   s,
+	core := &Core{
+		SignType:   SignRSA,
+		Config:     s,
+		httpClient: &http.Client{},
 	}
 	for _, f := range o {
-		f(sdk)
+		f(core)
 	}
 	factory := &SignerFactory{}
-	signer, verifier, err := factory.SignerVerifier(sdk.SignType, s)
+	signer, verifier, err := factory.SignerVerifier(core.SignType, s)
 	if err != nil {
 		return nil, err
 	}
-	sdk.Signer = signer
-	sdk.Verifier = verifier
-	return sdk, nil
+	core.Signer = signer
+	core.Verifier = verifier
+	return core, nil
 }
 
 // Request sends the request and verifies the response signature
-func (s *SDK) Request(method, ciphertext string) (*http.Response, error) {
+func (c *Core) Request(method, ciphertext string) (*http.Response, error) {
 	timestamps := time.Now().Format(time.RFC3339)
-	dataToSign := s.Config.AppID + timestamps + ciphertext
-	signature, err := s.Signer.Sign(dataToSign)
+	dataToSign := c.Config.AppID + timestamps + ciphertext
+
+	signature, err := c.Signer.Sign(dataToSign)
 	if err != nil {
 		return nil, err
 	}
 	reqData := map[string]string{
-		"app_id":     s.Config.AppID,
-		"sign_type":  s.SignType,
+		"app_id":     c.Config.AppID,
+		"sign_type":  c.SignType,
 		"timestamp":  timestamps,
 		"ciphertext": ciphertext,
 		"sign":       signature,
 	}
 	reqBody, _ := json.Marshal(reqData)
 
-	resp, err := http.Post(s.Config.BaseURL+method, ApplicationJSON, strings.NewReader(string(reqBody)))
+	resp, err := c.httpClient.Post(c.Config.BaseURL+method, ApplicationJSON, strings.NewReader(string(reqBody)))
 	if err != nil {
 		return nil, err
 	}

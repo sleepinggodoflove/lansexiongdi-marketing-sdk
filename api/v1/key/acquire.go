@@ -6,10 +6,10 @@ import (
 
 type Acquire api.Service
 
-const Method = "/openapi/v1/key/acquire"
+const method = "/openapi/v1/key/acquire"
 
 func (a *Acquire) Handle(request *AcquireRequest) (*AcquireReply, error) {
-	a.Request(Method, "")
+	a.Request(method, "")
 	a.Verifier.Verify("", "")
 	return nil, nil
 }

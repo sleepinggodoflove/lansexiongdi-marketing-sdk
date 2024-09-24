@@ -5,5 +5,5 @@ import (
 )
 
 type Service struct {
-	core.SDK
+	core.Core
 }
