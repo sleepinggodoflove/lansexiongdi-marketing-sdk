@@ -21,7 +21,7 @@ func Plain(privateKey *sm2.PrivateKey, ciphertext string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	decryptedText, err := privateKey.Decrypt(rand.Reader, ciphertextBytes, sm2.C1C2C3)
+	decryptedText, err := sm2.Decrypt(privateKey, ciphertextBytes, sm2.C1C2C3)
 	if err != nil {
 		return "", err
 	}
