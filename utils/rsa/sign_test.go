@@ -36,7 +36,7 @@ func Test_Verify(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	got, err := Verify(signStr, pukRsa, signature)
+	got, err := Verify(signStr, signature, pukRsa)
 	if err != nil {
 		t.Fatal(err)
 	}

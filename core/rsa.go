@@ -20,5 +20,5 @@ func (s *RsaSigner) Sign(data string) (string, error) {
 }
 
 func (v *RsaVerifier) Verify(data, signature string) (bool, error) {
-	return sdkrsa.Verify(data, v.publicKey, signature)
+	return sdkrsa.Verify(data, signature, v.publicKey)
 }

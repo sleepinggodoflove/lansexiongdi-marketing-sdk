@@ -17,7 +17,7 @@ func Sign(data string, privateKey *rsa.PrivateKey) (string, error) {
 	return base64.StdEncoding.EncodeToString(signature), nil
 }
 
-func Verify(data string, publicKey *rsa.PublicKey, signature string) (bool, error) {
+func Verify(data string, signature string, publicKey *rsa.PublicKey) (bool, error) {
 	signatureBytes, err := base64.StdEncoding.DecodeString(signature)
 	if err != nil {
 		return false, err

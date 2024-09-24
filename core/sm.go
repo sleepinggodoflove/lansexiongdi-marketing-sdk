@@ -19,5 +19,5 @@ func (s *SmSigner) Sign(data string) (string, error) {
 }
 
 func (v *SmVerifier) Verify(data, signature string) (bool, error) {
-	return sm.Verify(data, v.publicKey, signature)
+	return sm.Verify(data, signature, v.publicKey)
 }

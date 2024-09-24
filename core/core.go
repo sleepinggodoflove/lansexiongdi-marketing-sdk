@@ -17,9 +17,9 @@ type Config struct {
 
 // Core structure
 type Core struct {
-	Config     *Config
+	config     *Config
 	httpClient *http.Client
-	SignType   string
+	signType   string
 	Signer     Signer
 	Verifier   Verifier
 }
@@ -28,7 +28,7 @@ type Option func(*Core)
 
 func WithSignType(signType string) Option {
 	return func(s *Core) {
-		s.SignType = signType
+		s.signType = signType
 	}
 }
 
@@ -44,15 +44,14 @@ func NewCore(s *Config, o ...Option) (*Core, error) {
 		return nil, errors.New("config is nil")
 	}
 	core := &Core{
-		SignType:   SignRSA,
-		Config:     s,
-		httpClient: &http.Client{},
+		signType: SignRSA,
+		config:   s,
 	}
 	for _, f := range o {
 		f(core)
 	}
 	factory := &SignerFactory{}
-	signer, verifier, err := factory.SignerVerifier(core.SignType, s)
+	signer, verifier, err := factory.SignerVerifier(core.signType, s)
 	if err != nil {
 		return nil, err
 	}
@@ -64,22 +63,25 @@ func NewCore(s *Config, o ...Option) (*Core, error) {
 // Request sends the request and verifies the response signature
 func (c *Core) Request(method, ciphertext string) (*http.Response, error) {
 	timestamps := time.Now().Format(time.RFC3339)
-	dataToSign := c.Config.AppID + timestamps + ciphertext
+	dataToSign := c.config.AppID + timestamps + ciphertext
 
 	signature, err := c.Signer.Sign(dataToSign)
 	if err != nil {
 		return nil, err
 	}
 	reqData := map[string]string{
-		"app_id":     c.Config.AppID,
-		"sign_type":  c.SignType,
+		"app_id":     c.config.AppID,
+		"sign_type":  c.signType,
 		"timestamp":  timestamps,
 		"ciphertext": ciphertext,
 		"sign":       signature,
 	}
 	reqBody, _ := json.Marshal(reqData)
 
-	resp, err := c.httpClient.Post(c.Config.BaseURL+method, ApplicationJSON, strings.NewReader(string(reqBody)))
+	if c.httpClient == nil {
+		c.httpClient = &http.Client{}
+	}
+	resp, err := c.httpClient.Post(c.config.BaseURL+method, ApplicationJSON, strings.NewReader(string(reqBody)))
 	if err != nil {
 		return nil, err
 	}
