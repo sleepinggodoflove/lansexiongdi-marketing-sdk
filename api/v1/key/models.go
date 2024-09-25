@@ -7,7 +7,7 @@ import (
 
 var _ core.Request = (*AcquireRequest)(nil)
 var _ core.Request = (*DiscardRequest)(nil)
-var _ core.Request = (*DQueryRequest)(nil)
+var _ core.Request = (*QueryRequest)(nil)
 
 type Reply struct {
 	OutBizNo       string `json:"out_biz_no"`
@@ -33,13 +33,13 @@ func (a *AcquireRequest) String() (string, error) {
 	return string(b), nil
 }
 
-type DQueryRequest struct {
+type QueryRequest struct {
 	OutBizNo string `json:"out_biz_no"`
 	TradeNo  string `json:"trade_no"`
 	Key      string `json:"key"`
 }
 
-func (a *DQueryRequest) String() (string, error) {
+func (a *QueryRequest) String() (string, error) {
 	b, err := json.Marshal(a)
 	if err != nil {
 		return "", err
