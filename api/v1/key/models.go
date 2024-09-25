@@ -2,12 +2,18 @@ package key
 
 import (
 	"encoding/json"
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+	"fmt"
+	"github.com/go-playground/validator/v10"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interface"
 )
 
-var _ core.Request = (*AcquireRequest)(nil)
-var _ core.Request = (*DiscardRequest)(nil)
-var _ core.Request = (*QueryRequest)(nil)
+var _ _interface.Request = (*OrderRequest)(nil)
+var _ _interface.Request = (*DiscardRequest)(nil)
+var _ _interface.Request = (*QueryRequest)(nil)
+
+var _ _interface.Validate = (*OrderRequest)(nil)
+var _ _interface.Validate = (*QueryRequest)(nil)
+var _ _interface.Validate = (*DiscardRequest)(nil)
 
 type Reply struct {
 	OutBizNo       string `json:"out_biz_no"`
@@ -19,13 +25,13 @@ type Reply struct {
 	ValidEndTime   string `json:"valid_end_time,omitempty"`
 }
 
-type AcquireRequest struct {
-	OutBizNo   string `json:"out_biz_no"`
-	ActivityNo string `json:"activity_no"`
-	Number     int32  `json:"number"`
+type OrderRequest struct {
+	OutBizNo   string `validate:"required" json:"out_biz_no"`
+	ActivityNo string `validate:"required" json:"activity_no"`
+	Number     int32  `validate:"required" json:"number"`
 }
 
-func (a *AcquireRequest) String() (string, error) {
+func (a *OrderRequest) String() (string, error) {
 	b, err := json.Marshal(a)
 	if err != nil {
 		return "", err
@@ -33,10 +39,20 @@ func (a *AcquireRequest) String() (string, error) {
 	return string(b), nil
 }
 
+func (c *OrderRequest) Validate() error {
+	err := validator.New().Struct(c)
+	if err != nil {
+		for _, err = range err.(validator.ValidationErrors) {
+			return fmt.Errorf(err.Error())
+		}
+	}
+	return nil
+}
+
 type QueryRequest struct {
-	OutBizNo string `json:"out_biz_no"`
-	TradeNo  string `json:"trade_no"`
-	Key      string `json:"key"`
+	OutBizNo string `validate:"required" json:"out_biz_no"`
+	TradeNo  string `validate:"required" json:"trade_no"`
+	Key      string `validate:"required" json:"key"`
 }
 
 func (a *QueryRequest) String() (string, error) {
@@ -47,10 +63,20 @@ func (a *QueryRequest) String() (string, error) {
 	return string(b), nil
 }
 
+func (c *QueryRequest) Validate() error {
+	err := validator.New().Struct(c)
+	if err != nil {
+		for _, err = range err.(validator.ValidationErrors) {
+			return fmt.Errorf(err.Error())
+		}
+	}
+	return nil
+}
+
 type DiscardRequest struct {
-	OutBizNo string `json:"out_biz_no"`
-	TradeNo  string `json:"trade_no"`
-	Key      string `json:"key"`
+	OutBizNo string `validate:"required" json:"out_biz_no"`
+	TradeNo  string `validate:"required" json:"trade_no"`
+	Key      string `validate:"required" json:"key"`
 }
 
 func (a *DiscardRequest) String() (string, error) {
@@ -59,4 +85,14 @@ func (a *DiscardRequest) String() (string, error) {
 		return "", err
 	}
 	return string(b), nil
+}
+
+func (c *DiscardRequest) Validate() error {
+	err := validator.New().Struct(c)
+	if err != nil {
+		for _, err = range err.(validator.ValidationErrors) {
+			return fmt.Errorf(err.Error())
+		}
+	}
+	return nil
 }

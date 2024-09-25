@@ -24,8 +24,12 @@ func (r *RsaSigner) Sign(data string) (string, error) {
 	return sdkrsa.Sign(data, r.privateKey)
 }
 
-func (r *RsaVerifier) Verify(data, signature string) (bool, error) {
-	return sdkrsa.Verify(data, signature, r.publicKey)
+func (r *RsaVerifier) Verify(data, signature string) bool {
+	b, err := sdkrsa.Verify(data, signature, r.publicKey)
+	if err != nil {
+		return false
+	}
+	return b
 }
 
 func (r *RsaEncodeDecode) Encode(data string) (string, error) {

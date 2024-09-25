@@ -24,8 +24,12 @@ func (s *SmSigner) Sign(data string) (string, error) {
 	return sm.Sign(data, s.privateKey)
 }
 
-func (s *SmVerifier) Verify(data, signature string) (bool, error) {
-	return sm.Verify(data, signature, s.publicKey)
+func (s *SmVerifier) Verify(data, signature string) bool {
+	b, err := sm.Verify(data, signature, s.publicKey)
+	if err != nil {
+		return false
+	}
+	return b
 }
 
 func (s *SmEncodeDecode) Encode(data string) (string, error) {

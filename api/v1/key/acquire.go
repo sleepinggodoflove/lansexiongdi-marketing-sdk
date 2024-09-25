@@ -6,9 +6,9 @@ import (
 
 type Acquire api.Service
 
-const method = "/openapi/v1/key/acquire"
+const method = "/openapi/v1/key/order"
 
-func (a *Acquire) Handle(request *AcquireRequest) (*Reply, error) {
+func (a *Acquire) Order(request *OrderRequest) (*Reply, error) {
 	a.Request(method, nil)
 	return nil, nil
 }

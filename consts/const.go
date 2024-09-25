@@ -1,4 +1,4 @@
-package core
+package consts
 
 // Core 相关信息
 const (

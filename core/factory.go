@@ -1,7 +1,9 @@
 package core
 
 import (
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/err"
+	"errors"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/consts"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interface"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/utils/rsa"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/utils/sm"
 )
@@ -10,9 +12,9 @@ import (
 type SignerFactory struct{}
 
 // SignerVerifier create signers and verifiers
-func (f *SignerFactory) SignerVerifier(signType string, s *Config) (Signer, Verifier, EncodeDecode, error) {
+func (f *SignerFactory) SignerVerifier(signType string, s *Config) (_interface.Signer, _interface.Verifier, _interface.EncodeDecode, error) {
 	switch signType {
-	case SignRSA:
+	case consts.SignRSA:
 		prk, err := rsa.PrivateKeyRsa(s.PrivateKey)
 		if err != nil {
 			return nil, nil, nil, err
@@ -22,7 +24,7 @@ func (f *SignerFactory) SignerVerifier(signType string, s *Config) (Signer, Veri
 			return nil, nil, nil, err
 		}
 		return &RsaSigner{privateKey: prk}, &RsaVerifier{publicKey: puk}, &RsaEncodeDecode{key: s.Key}, nil
-	case SignSM:
+	case consts.SignSM:
 		prk, err := sm.PrivateKeySM(s.PrivateKey)
 		if err != nil {
 			return nil, nil, nil, err
@@ -33,6 +35,6 @@ func (f *SignerFactory) SignerVerifier(signType string, s *Config) (Signer, Veri
 		}
 		return &SmSigner{privateKey: prk}, &SmVerifier{publicKey: puk}, &SmEncodeDecode{key: s.Key}, nil
 	default:
-		return nil, nil, nil, err.ErrUnsupportedSignType
+		return nil, nil, nil, errors.New("signType,不支持的类型")
 	}
 }

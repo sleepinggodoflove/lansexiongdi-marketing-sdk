@@ -2,7 +2,9 @@ package core
 
 import (
 	"encoding/json"
-	"errors"
+	"github.com/go-playground/validator/v10"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/consts"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interface"
 	"net/http"
 	"strings"
 	"time"
@@ -25,11 +27,21 @@ type Response struct {
 }
 
 type Config struct {
-	AppID             string
-	PrivateKey        string
-	MerchantPublicKey string
-	Key               string
-	BaseURL           string
+	AppID             string `validate:"required"`
+	PrivateKey        string `validate:"required"`
+	MerchantPublicKey string `validate:"required"`
+	Key               string `validate:"required"`
+	BaseURL           string `validate:"required"`
+}
+
+func (c *Config) Validate() error {
+	err := validator.New().Struct(c)
+	if err != nil {
+		for _, err = range err.(validator.ValidationErrors) {
+			return err
+		}
+	}
+	return nil
 }
 
 // Core structure
@@ -37,9 +49,9 @@ type Core struct {
 	config       *Config
 	httpClient   *http.Client
 	signType     string
-	Signer       Signer
-	Verifier     Verifier
-	EncodeDecode EncodeDecode
+	Signer       _interface.Signer
+	Verifier     _interface.Verifier
+	EncodeDecode _interface.EncodeDecode
 }
 
 type Option func(*Core)
@@ -58,11 +70,11 @@ func WithHttpClient(client *http.Client) Option {
 
 // NewCore creates a new Core instance
 func NewCore(s *Config, o ...Option) (*Core, error) {
-	if s == nil {
-		return nil, errors.New("config is nil")
+	if err := s.Validate(); err != nil {
+		return nil, err
 	}
 	core := &Core{
-		signType: SignRSA,
+		signType: consts.SignRSA,
 		config:   s,
 	}
 	for _, f := range o {
@@ -79,7 +91,7 @@ func NewCore(s *Config, o ...Option) (*Core, error) {
 	return core, nil
 }
 
-func (c *Core) GetCiphertext(request Request) (string, error) {
+func (c *Core) GetCiphertext(request _interface.Request) (string, error) {
 	plaintext, err := request.String()
 	if err != nil {
 		return "", err
@@ -91,7 +103,7 @@ func (c *Core) GetCiphertext(request Request) (string, error) {
 	return ciphertext, nil
 }
 
-func (c *Core) GetParams(request Request) (string, error) {
+func (c *Core) GetParams(request _interface.Request) (string, error) {
 	ciphertext, err := c.GetCiphertext(request)
 	if err != nil {
 		return "", err
@@ -118,7 +130,7 @@ func (c *Core) GetParams(request Request) (string, error) {
 }
 
 // Request sends the request and Analysis the response
-func (c *Core) Request(method string, request Request) (*Response, error) {
+func (c *Core) Request(method string, request _interface.Request) (*Response, error) {
 	reqBody, err := c.GetParams(request)
 	if err != nil {
 		return nil, err
@@ -126,7 +138,7 @@ func (c *Core) Request(method string, request Request) (*Response, error) {
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{}
 	}
-	resp, err := c.httpClient.Post(c.config.BaseURL+method, ApplicationJSON, strings.NewReader(reqBody))
+	resp, err := c.httpClient.Post(c.config.BaseURL+method, consts.ApplicationJSON, strings.NewReader(reqBody))
 	if err != nil {
 		return nil, err
 	}

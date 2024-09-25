@@ -1,6 +1,9 @@
 package core
 
-import "testing"
+import (
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/consts"
+	"testing"
+)
 
 func TestNewCore(t *testing.T) {
 	c := Config{
@@ -9,20 +12,15 @@ func TestNewCore(t *testing.T) {
 		MerchantPublicKey: "BKbxGVVlJGWK/ScU0ebKSe4Jr4LvcBGgvt/HHBk+ODVCYnJYvvmX8cDNpf3TVYuRdz/RUH6UDgcoVpz02jXNfrM=",
 		BaseURL:           "http://127.0.0.1:8007",
 	}
-	core, err := NewCore(&c, WithSignType(SignSM))
+	core, err := NewCore(&c, WithSignType(consts.SignSM))
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	data := "123456{}测试"
 	signature := "MEUCIHfYOk7yrhdqWgahCW4cKYLjyfxmiKyKR1IWRYxnayx7AiEAmuSgsY1BKytMSbcV/wlaEPEeBuBdyqlEVT6sHOesj6Q="
-	b, err := core.Verifier.Verify(data, signature)
-	if err != nil {
-		t.Error(err)
-		return
-	}
+	b := core.Verifier.Verify(data, signature)
 	if !b {
-		t.Fatal("verify failed")
+		t.Error("验签失败")
 	}
-	t.Log(b)
 }
