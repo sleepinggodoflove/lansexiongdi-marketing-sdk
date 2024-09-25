@@ -8,12 +8,20 @@ import (
 	"time"
 )
 
+type Params struct {
+	AppId      string `json:"app_id"`
+	SignType   string `json:"sign_type"`
+	Timestamp  string `json:"timestamp"`
+	Sign       string `json:"sign"`
+	Ciphertext string `json:"ciphertext"`
+}
+
 type Response struct {
 	Code       string `json:"code"`
 	Msg        string `json:"msg"`
-	SubCode    string `json:"subCode"`
-	SubMsg     string `json:"subMsg"`
-	Ciphertext string `json:"ciphertext"`
+	SubCode    string `json:"subCode,omitempty"`
+	SubMsg     string `json:"subMsg,omitempty"`
+	Ciphertext string `json:"ciphertext,omitempty"`
 }
 
 type Config struct {
@@ -83,35 +91,52 @@ func (c *Core) GetCiphertext(request Request) (string, error) {
 	return ciphertext, nil
 }
 
-// Request sends the request and verifies the response signature
-func (c *Core) Request(method string, request Request) (*http.Response, error) {
+func (c *Core) GetParams(request Request) (string, error) {
 	ciphertext, err := c.GetCiphertext(request)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	timestamps := time.Now().Format(time.RFC3339)
 	dataToSign := c.config.AppID + timestamps + ciphertext
 
 	signature, err := c.Signer.Sign(dataToSign)
 	if err != nil {
+		return "", err
+	}
+	p := Params{
+		AppId:      c.config.AppID,
+		SignType:   c.signType,
+		Timestamp:  timestamps,
+		Sign:       signature,
+		Ciphertext: ciphertext,
+	}
+	reqBody, err := json.Marshal(p)
+	if err != nil {
+		return "", err
+	}
+	return string(reqBody), nil
+}
+
+// Request sends the request and Analysis the response
+func (c *Core) Request(method string, request Request) (*Response, error) {
+	reqBody, err := c.GetParams(request)
+	if err != nil {
 		return nil, err
 	}
-	reqData := map[string]string{
-		"app_id":     c.config.AppID,
-		"sign_type":  c.signType,
-		"timestamp":  timestamps,
-		"ciphertext": ciphertext,
-		"sign":       signature,
-	}
-	reqBody, _ := json.Marshal(reqData)
-
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{}
 	}
-	resp, err := c.httpClient.Post(c.config.BaseURL+method, ApplicationJSON, strings.NewReader(string(reqBody)))
+	resp, err := c.httpClient.Post(c.config.BaseURL+method, ApplicationJSON, strings.NewReader(reqBody))
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	return resp, nil
+
+	var r Response
+	err = json.NewDecoder(resp.Body).Decode(&r)
+	if err != nil {
+		return nil, err
+	}
+
+	return &r, nil
 }
