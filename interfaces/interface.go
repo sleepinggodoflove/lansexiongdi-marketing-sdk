@@ -12,8 +12,8 @@ type Verifier interface {
 
 // EncodeDecode interfaces for Encode or Decode request
 type EncodeDecode interface {
-	Encode(data string) (string, error)
-	Decode(data string) (string, error)
+	Encode(plaintext string) (string, error)
+	Decode(ciphertext string) (string, error)
 }
 
 // Request interfaces for request

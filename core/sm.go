@@ -32,10 +32,10 @@ func (s *SmVerifier) Verify(data, signature string) bool {
 	return b
 }
 
-func (s *SmEncodeDecode) Encode(data string) (string, error) {
-	return sm.Encode([]byte(s.key), data)
+func (s *SmEncodeDecode) Encode(plaintext string) (string, error) {
+	return sm.Encode(s.key, []byte(plaintext))
 }
 
-func (s *SmEncodeDecode) Decode(data string) (string, error) {
-	return sm.Decode(s.key, data)
+func (s *SmEncodeDecode) Decode(ciphertext string) (string, error) {
+	return sm.Decode(s.key, ciphertext)
 }

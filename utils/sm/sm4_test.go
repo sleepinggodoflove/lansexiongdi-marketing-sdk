@@ -14,14 +14,15 @@ func TestSM4GenerateKey(t *testing.T) {
 }
 
 func TestSM4(t *testing.T) {
-	encryptKey := "t+VxHnp+K9huhtNT84Pk7A=="
-	enc, err := Encode([]byte("BZjU223ZBM7A8586Tm7P"), encryptKey)
+	key := "t+VxHnp+K9huhtNT84Pk7A=="
+	plaintextBytes := []byte("BZjU223ZBM7A8586Tm7P")
+	enc, err := Encode(key, plaintextBytes)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	t.Log(enc)
-	dec, err := Decode(enc, encryptKey)
+	dec, err := Decode(key, enc)
 	if err != nil {
 		t.Error(err)
 		return
@@ -30,8 +31,9 @@ func TestSM4(t *testing.T) {
 }
 
 func TestSM4KeyEncrypt(t *testing.T) {
-	sm4key := "z9DoIVLuDYEN/qsgweRA4A=="
-	enc, err := Encode([]byte("gQbHNecjZqnNZg3vKE2"), sm4key)
+	key := "t+VxHnp+K9huhtNT84Pk7A=="
+	plaintextBytes := []byte("BZjU223ZBM7A8586Tm7P")
+	enc, err := Encode(key, plaintextBytes)
 	if err != nil {
 		t.Error(err)
 		return
@@ -40,8 +42,9 @@ func TestSM4KeyEncrypt(t *testing.T) {
 }
 
 func TestSM4KeyPassDecrypt(t *testing.T) {
-	sm4key := "z9DoIVLuDYEN/qsgweRA4A=="
-	dec, err := Decode("NwANcXkjX79873jenLJRGhbEr39eYOwC5WQxZFXmLpw=", sm4key)
+	key := "t+VxHnp+K9huhtNT84Pk7A=="
+	ciphertext := "NwANcXkjX79873jenLJRGhbEr39eYOwC5WQxZFXmLpw="
+	dec, err := Decode(key, ciphertext)
 	if err != nil {
 		t.Error(err)
 		return

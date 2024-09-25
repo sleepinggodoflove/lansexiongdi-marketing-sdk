@@ -32,8 +32,8 @@ func (r *RsaVerifier) Verify(data, signature string) bool {
 	return b
 }
 
-func (r *RsaEncodeDecode) Encode(data string) (string, error) {
-	return sdkrsa.Encode(r.key, data), nil
+func (r *RsaEncodeDecode) Encode(plaintext string) (string, error) {
+	return sdkrsa.Encode(r.key, plaintext), nil
 }
 
 func (r *RsaEncodeDecode) Decode(data string) (string, error) {

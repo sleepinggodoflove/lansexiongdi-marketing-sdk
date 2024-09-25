@@ -16,8 +16,8 @@ func GenerateSM4Key() (string, error) {
 	return base64.StdEncoding.EncodeToString(key), nil
 }
 
-func Encode(contentBytes []byte, encryptKey string) (string, error) {
-	d, err := base64.StdEncoding.DecodeString(encryptKey)
+func Encode(key string, plaintextBytes []byte) (string, error) {
+	d, err := base64.StdEncoding.DecodeString(key)
 	if err != nil {
 		return "", err
 	}
@@ -33,18 +33,18 @@ func Encode(contentBytes []byte, encryptKey string) (string, error) {
 	}
 	blockMode := cipher.NewCBCEncrypter(cipherBlock, iv)
 
-	padding := blockSize - len(contentBytes)%blockSize
+	padding := blockSize - len(plaintextBytes)%blockSize
 	for i := 0; i < padding; i++ {
-		contentBytes = append(contentBytes, byte(padding))
+		plaintextBytes = append(plaintextBytes, byte(padding))
 	}
-	cipherText := make([]byte, len(contentBytes))
-	blockMode.CryptBlocks(cipherText, contentBytes)
+	cipherText := make([]byte, len(plaintextBytes))
+	blockMode.CryptBlocks(cipherText, plaintextBytes)
 
 	return base64.StdEncoding.EncodeToString(cipherText), nil
 }
 
-func Decode(encrypted, encryptKey string) (string, error) {
-	d, err := base64.StdEncoding.DecodeString(encryptKey)
+func Decode(key, ciphertext string) (string, error) {
+	d, err := base64.StdEncoding.DecodeString(key)
 	if err != nil {
 		return "", err
 	}
@@ -60,14 +60,14 @@ func Decode(encrypted, encryptKey string) (string, error) {
 		iv[i] = 0
 	}
 
-	cipherText, err := base64.StdEncoding.DecodeString(encrypted)
+	cipherTextBytes, err := base64.StdEncoding.DecodeString(ciphertext)
 	if err != nil {
 		return "", err
 	}
 
-	plainText := make([]byte, len(cipherText))
+	plainText := make([]byte, len(cipherTextBytes))
 	blockMode := cipher.NewCBCDecrypter(cipherBlock, iv)
-	blockMode.CryptBlocks(plainText, cipherText)
+	blockMode.CryptBlocks(plainText, cipherTextBytes)
 
 	plainTextLen := len(plainText)
 	padding := int(plainText[plainTextLen-1])

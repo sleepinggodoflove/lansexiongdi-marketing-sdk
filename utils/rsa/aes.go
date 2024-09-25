@@ -17,7 +17,7 @@ func GenerateAesKey() string {
 }
 
 // Encode 加密函数
-func Encode(key, code string) string {
+func Encode(key, plaintext string) string {
 	// 创建AES加密器
 	block, err := aes.NewCipher([]byte(key))
 	if err != nil {
@@ -26,18 +26,18 @@ func Encode(key, code string) string {
 
 	// PKCS7填充
 	blockSize := block.BlockSize()
-	padding := blockSize - len(code)%blockSize
+	padding := blockSize - len(plaintext)%blockSize
 	padText := string(byte(padding))
 	for i := 0; i < padding; i++ {
-		code += padText
+		plaintext += padText
 	}
 
 	// 创建ECB模式加密器
 	mode := NewECEncrypted(block)
 
 	// 计算加密后数据的长度
-	encrypted := make([]byte, len(code))
-	mode.CryptBlocks(encrypted, []byte(code))
+	encrypted := make([]byte, len(plaintext))
+	mode.CryptBlocks(encrypted, []byte(plaintext))
 
 	// Base64编码
 	return base64.StdEncoding.EncodeToString(encrypted)
