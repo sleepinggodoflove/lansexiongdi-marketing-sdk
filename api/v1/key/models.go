@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-playground/validator/v10"
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interface"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interfaces"
 )
 
-var _ _interface.Request = (*OrderRequest)(nil)
-var _ _interface.Request = (*DiscardRequest)(nil)
-var _ _interface.Request = (*QueryRequest)(nil)
+var _ interfaces.Request = (*OrderRequest)(nil)
+var _ interfaces.Request = (*DiscardRequest)(nil)
+var _ interfaces.Request = (*QueryRequest)(nil)
 
-var _ _interface.Validate = (*OrderRequest)(nil)
-var _ _interface.Validate = (*QueryRequest)(nil)
-var _ _interface.Validate = (*DiscardRequest)(nil)
+var _ interfaces.Validate = (*OrderRequest)(nil)
+var _ interfaces.Validate = (*QueryRequest)(nil)
+var _ interfaces.Validate = (*DiscardRequest)(nil)
 
 type Reply struct {
 	OutBizNo       string `json:"out_biz_no"`
