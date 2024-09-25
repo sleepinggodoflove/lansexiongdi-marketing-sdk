@@ -19,7 +19,7 @@ type Reply struct {
 	OutBizNo       string `json:"out_biz_no"`
 	TradeNo        string `json:"trade_no"`
 	Key            string `json:"key,omitempty"`
-	Status         string `json:"status"`
+	Status         uint8  `json:"status"`
 	Url            string `json:"url,omitempty"`
 	ValidBeginTime string `json:"valid_begin_time,omitempty"`
 	ValidEndTime   string `json:"valid_end_time,omitempty"`
