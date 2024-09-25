@@ -20,16 +20,18 @@ type Config struct {
 	AppID             string
 	PrivateKey        string
 	MerchantPublicKey string
+	Key               string
 	BaseURL           string
 }
 
 // Core structure
 type Core struct {
-	config     *Config
-	httpClient *http.Client
-	signType   string
-	Signer     Signer
-	Verifier   Verifier
+	config       *Config
+	httpClient   *http.Client
+	signType     string
+	Signer       Signer
+	Verifier     Verifier
+	EncodeDecode EncodeDecode
 }
 
 type Option func(*Core)
@@ -59,17 +61,34 @@ func NewCore(s *Config, o ...Option) (*Core, error) {
 		f(core)
 	}
 	factory := &SignerFactory{}
-	signer, verifier, err := factory.SignerVerifier(core.signType, s)
+	signer, verifier, encodeDecode, err := factory.SignerVerifier(core.signType, s)
 	if err != nil {
 		return nil, err
 	}
 	core.Signer = signer
 	core.Verifier = verifier
+	core.EncodeDecode = encodeDecode
 	return core, nil
 }
 
+func (c *Core) GetCiphertext(request Request) (string, error) {
+	plaintext, err := request.String()
+	if err != nil {
+		return "", err
+	}
+	ciphertext, err := c.EncodeDecode.Encode(plaintext)
+	if err != nil {
+		return "", err
+	}
+	return ciphertext, nil
+}
+
 // Request sends the request and verifies the response signature
-func (c *Core) Request(method, ciphertext string) (*http.Response, error) {
+func (c *Core) Request(method string, request Request) (*http.Response, error) {
+	ciphertext, err := c.GetCiphertext(request)
+	if err != nil {
+		return nil, err
+	}
 	timestamps := time.Now().Format(time.RFC3339)
 	dataToSign := c.config.AppID + timestamps + ciphertext
 
@@ -94,6 +113,5 @@ func (c *Core) Request(method, ciphertext string) (*http.Response, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
 	return resp, nil
 }

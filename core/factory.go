@@ -10,29 +10,29 @@ import (
 type SignerFactory struct{}
 
 // SignerVerifier create signers and verifiers
-func (f *SignerFactory) SignerVerifier(signType string, s *Config) (Signer, Verifier, error) {
+func (f *SignerFactory) SignerVerifier(signType string, s *Config) (Signer, Verifier, EncodeDecode, error) {
 	switch signType {
 	case SignRSA:
 		prk, err := rsa.PrivateKeyRsa(s.PrivateKey)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
 		puk, err := rsa.PublicKeyRsa(s.MerchantPublicKey)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
-		return &RsaSigner{privateKey: prk}, &RsaVerifier{publicKey: puk}, nil
+		return &RsaSigner{privateKey: prk}, &RsaVerifier{publicKey: puk}, &RsaEncodeDecode{key: s.Key}, nil
 	case SignSM:
 		prk, err := sm.PrivateKeySM(s.PrivateKey)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
 		puk, err := sm.PublicKeySM(s.MerchantPublicKey)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, nil, err
 		}
-		return &SmSigner{privateKey: prk}, &SmVerifier{publicKey: puk}, nil
+		return &SmSigner{privateKey: prk}, &SmVerifier{publicKey: puk}, &SmEncodeDecode{key: s.Key}, nil
 	default:
-		return nil, nil, err.ErrUnsupportedSignType
+		return nil, nil, nil, err.ErrUnsupportedSignType
 	}
 }

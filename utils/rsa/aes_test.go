@@ -2,7 +2,22 @@ package rsa
 
 import "testing"
 
-func TestDecode(t *testing.T) {
-	s := Decode("SZvDfHBmoGvcxjCiHoeAKkrGkxlNYSIS+TJcQXqSLWM=", "bcee0c6753b2a31c792a91fe9f9f1666")
+func TestGenerateAesKey(t *testing.T) {
+	s := GenerateAesKey()
 	t.Log(s)
+}
+
+func TestEncode(t *testing.T) {
+	str := "123yie一二三"
+	e := Encode("870abfc720f86ce2c5e4d3345741d48d", str)
+	t.Log(e)
+}
+
+func TestDecode(t *testing.T) {
+	key := "870abfc720f86ce2c5e4d3345741d48d"
+	str := "123yie一二三"
+	e := Encode(key, str)
+	t.Log(e)
+	d := Decode(key, e)
+	t.Log(d)
 }

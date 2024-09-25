@@ -7,7 +7,7 @@ import (
 	"github.com/tjfoc/gmsm/sm4"
 )
 
-func SM4GenerateKey() (string, error) {
+func GenerateSM4Key() (string, error) {
 	key := make([]byte, sm4.BlockSize)
 	_, err := rand.Read(key)
 	if err != nil {
@@ -16,7 +16,7 @@ func SM4GenerateKey() (string, error) {
 	return base64.StdEncoding.EncodeToString(key), nil
 }
 
-func SM4Encrypt(contentBytes []byte, encryptKey string) (string, error) {
+func Encode(contentBytes []byte, encryptKey string) (string, error) {
 	d, err := base64.StdEncoding.DecodeString(encryptKey)
 	if err != nil {
 		return "", err
@@ -43,7 +43,7 @@ func SM4Encrypt(contentBytes []byte, encryptKey string) (string, error) {
 	return base64.StdEncoding.EncodeToString(cipherText), nil
 }
 
-func SM4Decrypt(encrypted, encryptKey string) (string, error) {
+func Decode(encrypted, encryptKey string) (string, error) {
 	d, err := base64.StdEncoding.DecodeString(encryptKey)
 	if err != nil {
 		return "", err

@@ -15,10 +15,23 @@ type SmVerifier struct {
 	publicKey *sm2.PublicKey
 }
 
+// SmEncodeDecode .
+type SmEncodeDecode struct {
+	key string
+}
+
 func (s *SmSigner) Sign(data string) (string, error) {
 	return sm.Sign(data, s.privateKey)
 }
 
-func (v *SmVerifier) Verify(data, signature string) (bool, error) {
-	return sm.Verify(data, signature, v.publicKey)
+func (s *SmVerifier) Verify(data, signature string) (bool, error) {
+	return sm.Verify(data, signature, s.publicKey)
+}
+
+func (s *SmEncodeDecode) Encode(data string) (string, error) {
+	return sm.Encode([]byte(s.key), data)
+}
+
+func (s *SmEncodeDecode) Decode(data string) (string, error) {
+	return sm.Decode(s.key, data)
 }

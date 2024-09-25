@@ -9,6 +9,6 @@ type Acquire api.Service
 const method = "/openapi/v1/key/acquire"
 
 func (a *Acquire) Handle(request *AcquireRequest) (*AcquireReply, error) {
-	a.Request(method, "")
+	a.Request(method, nil)
 	return nil, nil
 }
