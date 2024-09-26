@@ -122,6 +122,15 @@ func (c *Core) GetParams(request interfaces.Request) (string, error) {
 	return string(reqBody), nil
 }
 
+func (c *Core) Verify(params *Params) bool {
+	dataToSign := c.config.AppID + params.Timestamp + params.Ciphertext
+	b := c.Verifier.Verify(dataToSign, params.Sign)
+	if b {
+		return true
+	}
+	return false
+}
+
 // Request sends the request and Analysis the response
 func (c *Core) Request(method string, request interfaces.Request) ([]byte, error) {
 	reqBody, err := c.GetParams(request)

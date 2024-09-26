@@ -22,6 +22,18 @@ type Response struct {
 	Data    *Reply `json:"ciphertext,omitempty"`
 }
 
+func (a *Response) String() string {
+	b, err := json.Marshal(a)
+	if err != nil {
+		return ""
+	}
+	return string(b)
+}
+
+func (a *Response) IsSuccess() bool {
+	return a.Code == 200
+}
+
 type Reply struct {
 	OutBizNo       string `json:"out_biz_no"`
 	TradeNo        string `json:"trade_no"`

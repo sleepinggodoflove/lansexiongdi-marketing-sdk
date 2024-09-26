@@ -36,28 +36,27 @@ func TestGetParams(t *testing.T) {
 }
 
 func TestOrder(t *testing.T) {
-	c := core2.Config{
+	core, err := core2.NewCore(&core2.Config{
 		AppID:      "123",
 		PrivateKey: rsaPrivateKey, // 客户私钥
 		PublicKey:  publicKeyStr,  // 公钥
 		Key:        "870abfc720f86ce2c5e4d3345741d48d",
 		BaseURL:    "http://127.0.0.1:9000",
-	}
-	core, err := core2.NewCore(&c, core2.WithSignType(consts.SignRSA))
+	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	a := &Acquire{core}
-	orderReq := &OrderRequest{
+	r, err := a.Order(&OrderRequest{
 		OutBizNo:   "out_biz_no",
 		ActivityNo: "activity_no",
 		Number:     1,
-	}
-	r, err := a.Order(orderReq)
+	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	t.Log(r)
+	t.Log(r.IsSuccess())
 }
