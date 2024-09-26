@@ -47,19 +47,10 @@ func (a *Key) Discard(request *DiscardRequest) (*Response, error) {
 	return &response, nil
 }
 
-func (a *Key) Notify(ciphertext, sign string) (*Response, error) {
-	b := a.Verifier.Verify(ciphertext, sign)
+func (a *Key) Notify(notify *Notify) (*Reply, error) {
+	b := a.Verifier.Verify(notify.SignStr(), notify.Sign)
 	if !b {
 		return nil, fmt.Errorf("verify sign fail")
 	}
-	plaintext, err := a.EncodeDecode.Decode(ciphertext)
-	if err != nil {
-		return nil, err
-	}
-	var response Response
-	err = json.Unmarshal([]byte(plaintext), &response)
-	if err != nil {
-		return nil, err
-	}
-	return &response, nil
+	return notify.Data, nil
 }

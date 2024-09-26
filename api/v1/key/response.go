@@ -68,3 +68,27 @@ func (a *Response) String() string {
 func (a *Response) IsSuccess() bool {
 	return a.Code == 200
 }
+
+type Notify struct {
+	AppId     string `json:"app_id"`
+	SignType  string `json:"sign_type"`
+	Timestamp string `json:"timestamp"`
+	Sign      string `json:"sign"`
+	Data      *Reply `json:"data"`
+}
+
+func (a *Notify) String() string {
+	b, err := json.Marshal(a)
+	if err != nil {
+		return ""
+	}
+	return string(b)
+}
+
+func (a *Notify) SignStr() string {
+	b, err := json.Marshal(a.Data)
+	if err != nil {
+		return ""
+	}
+	return a.AppId + a.Timestamp + string(b)
+}

@@ -131,11 +131,11 @@ func TestNotify(t *testing.T) {
 		return
 	}
 	a := &Key{core}
-	r, err := a.Notify("", "")
+	r, err := a.Notify(&Notify{})
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	t.Log(r)
-	t.Log(r.IsSuccess())
+	t.Log(r.Status.IsNormal())
 }
