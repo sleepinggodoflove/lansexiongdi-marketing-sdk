@@ -10,7 +10,8 @@ func TestNewCore(t *testing.T) {
 		AppID:             "123456",
 		PrivateKey:        "zJRUcwPpKFf4nWiN9wqSO9gpGFx5BP4WviqnPsrhkpc=",
 		MerchantPublicKey: "BKbxGVVlJGWK/ScU0ebKSe4Jr4LvcBGgvt/HHBk+ODVCYnJYvvmX8cDNpf3TVYuRdz/RUH6UDgcoVpz02jXNfrM=",
-		BaseURL:           "http://127.0.0.1:8007",
+		Key:               "t+VxHnp+K9huhtNT84Pk7A==",
+		BaseURL:           "http://127.0.0.1:9000",
 	}
 	core, err := NewCore(&c, WithSignType(consts.SignSM))
 	if err != nil {
