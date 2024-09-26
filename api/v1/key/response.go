@@ -1,0 +1,70 @@
+package key
+
+import "encoding/json"
+
+type OrderStatus uint8
+
+const (
+	OrderNormal OrderStatus = iota + 1
+	OrderUsed
+	OrderDiscard
+)
+
+var OrderStatusMap = map[OrderStatus]string{
+	OrderNormal:  "正常",
+	OrderUsed:    "已核销",
+	OrderDiscard: "已作废",
+}
+
+func (s OrderStatus) Value() uint8 {
+	return uint8(s)
+}
+
+func (s OrderStatus) GetText() string {
+	tex, ok := OrderStatusMap[s]
+	if !ok {
+		return ""
+	}
+	return tex
+}
+
+func (s OrderStatus) IsNormal() bool {
+	return s == OrderNormal
+}
+
+func (s OrderStatus) IsUsed() bool {
+	return s == OrderUsed
+}
+
+func (s OrderStatus) IsDiscard() bool {
+	return s == OrderDiscard
+}
+
+type Response struct {
+	Code    int32  `json:"code"`
+	Message string `json:"message"`
+	Reason  string `json:"reason"`
+	Data    *Reply `json:"data,omitempty"`
+}
+
+type Reply struct {
+	OutBizNo       string      `json:"out_biz_no"`
+	TradeNo        string      `json:"trade_no"`
+	Key            string      `json:"key"`
+	Status         OrderStatus `json:"status"`
+	Url            string      `json:"url"`
+	ValidBeginTime string      `json:"valid_begin_time"`
+	ValidEndTime   string      `json:"valid_end_time"`
+}
+
+func (a *Response) String() string {
+	b, err := json.Marshal(a)
+	if err != nil {
+		return ""
+	}
+	return string(b)
+}
+
+func (a *Response) IsSuccess() bool {
+	return a.Code == 200
+}

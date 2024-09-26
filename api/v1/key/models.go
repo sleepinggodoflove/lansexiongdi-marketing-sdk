@@ -15,35 +15,6 @@ var _ interfaces.Validate = (*OrderRequest)(nil)
 var _ interfaces.Validate = (*QueryRequest)(nil)
 var _ interfaces.Validate = (*DiscardRequest)(nil)
 
-type Response struct {
-	Code    int32  `json:"code"`
-	Message string `json:"message"`
-	Reason  string `json:"reason"`
-	Data    *Reply `json:"ciphertext,omitempty"`
-}
-
-func (a *Response) String() string {
-	b, err := json.Marshal(a)
-	if err != nil {
-		return ""
-	}
-	return string(b)
-}
-
-func (a *Response) IsSuccess() bool {
-	return a.Code == 200
-}
-
-type Reply struct {
-	OutBizNo       string `json:"out_biz_no"`
-	TradeNo        string `json:"trade_no"`
-	Key            string `json:"key,omitempty"`
-	Status         uint8  `json:"status"`
-	Url            string `json:"url,omitempty"`
-	ValidBeginTime string `json:"valid_begin_time,omitempty"`
-	ValidEndTime   string `json:"valid_end_time,omitempty"`
-}
-
 type OrderRequest struct {
 	OutBizNo   string `validate:"required" json:"out_biz_no"`
 	ActivityNo string `validate:"required" json:"activity_no"`
