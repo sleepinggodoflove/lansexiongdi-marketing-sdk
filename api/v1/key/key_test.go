@@ -63,3 +63,79 @@ func TestOrder(t *testing.T) {
 	t.Log(r)
 	t.Log(r.IsSuccess())
 }
+
+func TestQuery(t *testing.T) {
+	core, err := core2.NewCore(&core2.Config{
+		AppID:      "123",
+		PrivateKey: rsaPrivateKey, // 客户私钥
+		PublicKey:  publicKeyStr,  // 公钥
+		Key:        aesKey,
+		BaseURL:    baseURL,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	a := &Key{core}
+	r, err := a.Query(&QueryRequest{
+		OutBizNo: "out_biz_no",
+		TradeNo:  "",
+		Key:      "",
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(r)
+	t.Log(r.IsSuccess())
+}
+
+func TestDiscard(t *testing.T) {
+	core, err := core2.NewCore(&core2.Config{
+		AppID:      "123",
+		PrivateKey: rsaPrivateKey, // 客户私钥
+		PublicKey:  publicKeyStr,  // 公钥
+		Key:        aesKey,
+		BaseURL:    baseURL,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	a := &Key{core}
+	r, err := a.Discard(&DiscardRequest{
+		OutBizNo: "out_biz_no",
+		TradeNo:  "",
+		Key:      "",
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(r)
+	if r.IsSuccess() {
+		t.Log(r.Data.Status.IsDiscard())
+	}
+}
+
+func TestNotify(t *testing.T) {
+	core, err := core2.NewCore(&core2.Config{
+		AppID:      "123",
+		PrivateKey: rsaPrivateKey, // 客户私钥
+		PublicKey:  publicKeyStr,  // 公钥
+		Key:        aesKey,
+		BaseURL:    baseURL,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	a := &Key{core}
+	r, err := a.Notify("", "")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(r)
+	t.Log(r.IsSuccess())
+}

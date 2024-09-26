@@ -2,6 +2,7 @@ package key
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api"
 )
 
@@ -20,7 +21,7 @@ func (a *Key) Order(request *OrderRequest) (*Response, error) {
 	return &response, nil
 }
 
-func (a *Key) Query(request *OrderRequest) (*Response, error) {
+func (a *Key) Query(request *QueryRequest) (*Response, error) {
 	b, err := a.Request(queryMethod, request)
 	if err != nil {
 		return nil, err
@@ -40,6 +41,23 @@ func (a *Key) Discard(request *DiscardRequest) (*Response, error) {
 	}
 	var response Response
 	err = json.Unmarshal(b, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (a *Key) Notify(ciphertext, sign string) (*Response, error) {
+	b := a.Verifier.Verify(ciphertext, sign)
+	if !b {
+		return nil, fmt.Errorf("verify sign fail")
+	}
+	plaintext, err := a.EncodeDecode.Decode(ciphertext)
+	if err != nil {
+		return nil, err
+	}
+	var response Response
+	err = json.Unmarshal([]byte(plaintext), &response)
 	if err != nil {
 		return nil, err
 	}
