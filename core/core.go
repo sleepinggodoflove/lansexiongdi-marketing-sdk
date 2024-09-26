@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// Params request params
 type Params struct {
 	AppId      string `json:"app_id"`
 	SignType   string `json:"sign_type"`
@@ -19,6 +20,7 @@ type Params struct {
 	Ciphertext string `json:"ciphertext"`
 }
 
+// Config merchant app config
 type Config struct {
 	AppID      string `validate:"required"`
 	PrivateKey string `validate:"required"`
@@ -27,6 +29,7 @@ type Config struct {
 	BaseURL    string `validate:"required"`
 }
 
+// Validate config
 func (c *Config) Validate() error {
 	err := validator.New().Struct(c)
 	if err != nil {
@@ -49,12 +52,14 @@ type Core struct {
 
 type Option func(*Core)
 
+// WithSignType sets the sign type
 func WithSignType(signType string) Option {
 	return func(s *Core) {
 		s.signType = signType
 	}
 }
 
+// WithHttpClient sets the http client
 func WithHttpClient(client *http.Client) Option {
 	return func(s *Core) {
 		s.httpClient = client
@@ -84,6 +89,7 @@ func NewCore(s *Config, o ...Option) (*Core, error) {
 	return core, nil
 }
 
+// GetCiphertext gets the ciphertext
 func (c *Core) GetCiphertext(request interfaces.Request) (string, error) {
 	plaintext, err := request.String()
 	if err != nil {
@@ -96,32 +102,29 @@ func (c *Core) GetCiphertext(request interfaces.Request) (string, error) {
 	return ciphertext, nil
 }
 
-func (c *Core) GetParams(request interfaces.Request) (string, error) {
+// GetParams gets the params
+func (c *Core) GetParams(request interfaces.Request) (*Params, error) {
 	ciphertext, err := c.GetCiphertext(request)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	timestamps := time.Now().Format("2006-01-02 15:04:05")
 	dataToSign := c.config.AppID + timestamps + ciphertext
 
 	signature, err := c.Signer.Sign(dataToSign)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	p := Params{
+	return &Params{
 		AppId:      c.config.AppID,
 		SignType:   c.signType,
 		Timestamp:  timestamps,
 		Sign:       signature,
 		Ciphertext: ciphertext,
-	}
-	reqBody, err := json.Marshal(p)
-	if err != nil {
-		return "", err
-	}
-	return string(reqBody), nil
+	}, nil
 }
 
+// Verify verifies the params
 func (c *Core) Verify(params *Params) bool {
 	dataToSign := c.config.AppID + params.Timestamp + params.Ciphertext
 	b := c.Verifier.Verify(dataToSign, params.Sign)
@@ -137,10 +140,14 @@ func (c *Core) Request(method string, request interfaces.Request) ([]byte, error
 	if err != nil {
 		return nil, err
 	}
+	reqBodyBytes, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, err
+	}
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{}
 	}
-	resp, err := c.httpClient.Post(c.config.BaseURL+method, consts.ApplicationJSON, strings.NewReader(reqBody))
+	resp, err := c.httpClient.Post(c.config.BaseURL+method, consts.ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
 	if err != nil {
 		return nil, err
 	}
