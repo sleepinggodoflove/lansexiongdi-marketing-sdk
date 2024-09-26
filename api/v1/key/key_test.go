@@ -139,3 +139,47 @@ func TestNotify(t *testing.T) {
 	t.Log(r)
 	t.Log(r.Status.IsNormal())
 }
+
+func TestCallback(t *testing.T) {
+	reply := &Reply{
+		OutBizNo:       "123456",
+		TradeNo:        "1234567",
+		Key:            "xdwqdsd",
+		Status:         1,
+		Url:            "http://lsxd/xdwqdsd",
+		ValidBeginTime: "2006-01-02 15:04:05",
+		ValidEndTime:   "2006-01-02 15:04:07",
+	}
+	n := &Notify{
+		AppId:     "123",
+		SignType:  "RSA",
+		Timestamp: "2006-01-02 15:04:05",
+		Sign:      "",
+		Data:      reply,
+	}
+	core, err := core2.NewCore(&core2.Config{
+		AppID:      n.AppId,
+		PrivateKey: rsaPrivateKey, // 客户私钥
+		PublicKey:  publicKeyStr,  // 公钥
+		Key:        aesKey,
+		BaseURL:    baseURL,
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	signStr, err := core.Signer.Sign(n.SignStr())
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	n.Sign = signStr
+	a := &Key{core}
+	r, err := a.Notify(n)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(r)
+	t.Log(r.Status.IsNormal())
+}
