@@ -3,7 +3,6 @@ package core
 import (
 	"encoding/json"
 	"github.com/go-playground/validator/v10"
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/consts"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interfaces"
 	"io/ioutil"
 	"net/http"
@@ -72,7 +71,7 @@ func NewCore(s *Config, o ...Option) (*Core, error) {
 		return nil, err
 	}
 	core := &Core{
-		signType: consts.SignRSA,
+		signType: SignRSA,
 		config:   s,
 	}
 	for _, f := range o {
@@ -147,7 +146,7 @@ func (c *Core) Request(method string, request interfaces.Request) ([]byte, error
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{}
 	}
-	resp, err := c.httpClient.Post(c.config.BaseURL+method, consts.ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
+	resp, err := c.httpClient.Post(c.config.BaseURL+method, ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
 	if err != nil {
 		return nil, err
 	}

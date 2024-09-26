@@ -1,7 +1,6 @@
 package core
 
 import (
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/consts"
 	"testing"
 )
 
@@ -13,7 +12,7 @@ func TestNewCore(t *testing.T) {
 		Key:        "t+VxHnp+K9huhtNT84Pk7A==",
 		BaseURL:    "http://127.0.0.1:9000",
 	}
-	core, err := NewCore(&c, WithSignType(consts.SignSM))
+	core, err := NewCore(&c, WithSignType(SignSM))
 	if err != nil {
 		t.Error(err)
 		return

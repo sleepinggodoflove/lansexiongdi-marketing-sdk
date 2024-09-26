@@ -1,7 +1,6 @@
 package key
 
 import (
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/consts"
 	core2 "github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
 	"testing"
 )
@@ -21,7 +20,7 @@ func TestGetParams(t *testing.T) {
 		Key:        aesKey,
 		BaseURL:    baseURL,
 	}
-	core, err := core2.NewCore(&c, core2.WithSignType(consts.SignRSA))
+	core, err := core2.NewCore(&c, core2.WithSignType(core2.SignRSA))
 	if err != nil {
 		t.Error(err)
 		return
@@ -51,7 +50,7 @@ func TestOrder(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	a := &Acquire{core}
+	a := &Key{core}
 	r, err := a.Order(&OrderRequest{
 		OutBizNo:   "out_biz_no",
 		ActivityNo: "activity_no",
