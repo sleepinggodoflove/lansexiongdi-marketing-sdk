@@ -15,6 +15,13 @@ var _ interfaces.Validate = (*OrderRequest)(nil)
 var _ interfaces.Validate = (*QueryRequest)(nil)
 var _ interfaces.Validate = (*DiscardRequest)(nil)
 
+type Response struct {
+	Code    int32  `json:"code"`
+	Message string `json:"message"`
+	Reason  string `json:"reason"`
+	Data    *Reply `json:"ciphertext,omitempty"`
+}
+
 type Reply struct {
 	OutBizNo       string `json:"out_biz_no"`
 	TradeNo        string `json:"trade_no"`

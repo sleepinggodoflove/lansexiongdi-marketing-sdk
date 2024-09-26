@@ -19,7 +19,7 @@ func (f *SignerFactory) SignerVerifier(signType string, s *Config) (interfaces.S
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		puk, err := rsa.PublicKeyRsa(s.MerchantPublicKey)
+		puk, err := rsa.PublicKeyRsa(s.PublicKey)
 		if err != nil {
 			return nil, nil, nil, err
 		}
@@ -29,7 +29,7 @@ func (f *SignerFactory) SignerVerifier(signType string, s *Config) (interfaces.S
 		if err != nil {
 			return nil, nil, nil, err
 		}
-		puk, err := sm.PublicKeySM(s.MerchantPublicKey)
+		puk, err := sm.PublicKeySM(s.PublicKey)
 		if err != nil {
 			return nil, nil, nil, err
 		}

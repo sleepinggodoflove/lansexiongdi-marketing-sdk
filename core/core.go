@@ -5,6 +5,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/consts"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interfaces"
+	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
@@ -18,20 +19,12 @@ type Params struct {
 	Ciphertext string `json:"ciphertext"`
 }
 
-type Response struct {
-	Code       string `json:"code"`
-	Msg        string `json:"msg"`
-	SubCode    string `json:"subCode,omitempty"`
-	SubMsg     string `json:"subMsg,omitempty"`
-	Ciphertext string `json:"ciphertext,omitempty"`
-}
-
 type Config struct {
-	AppID             string `validate:"required"`
-	PrivateKey        string `validate:"required"`
-	MerchantPublicKey string `validate:"required"`
-	Key               string `validate:"required"`
-	BaseURL           string `validate:"required"`
+	AppID      string `validate:"required"`
+	PrivateKey string `validate:"required"`
+	PublicKey  string `validate:"required"`
+	Key        string `validate:"required"`
+	BaseURL    string `validate:"required"`
 }
 
 func (c *Config) Validate() error {
@@ -108,7 +101,7 @@ func (c *Core) GetParams(request interfaces.Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	timestamps := time.Now().Format(time.RFC3339)
+	timestamps := time.Now().Format("2006-01-02 15:04:05")
 	dataToSign := c.config.AppID + timestamps + ciphertext
 
 	signature, err := c.Signer.Sign(dataToSign)
@@ -130,7 +123,7 @@ func (c *Core) GetParams(request interfaces.Request) (string, error) {
 }
 
 // Request sends the request and Analysis the response
-func (c *Core) Request(method string, request interfaces.Request) (*Response, error) {
+func (c *Core) Request(method string, request interfaces.Request) ([]byte, error) {
 	reqBody, err := c.GetParams(request)
 	if err != nil {
 		return nil, err
@@ -144,11 +137,9 @@ func (c *Core) Request(method string, request interfaces.Request) (*Response, er
 	}
 	defer resp.Body.Close()
 
-	var r Response
-	err = json.NewDecoder(resp.Body).Decode(&r)
+	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-
-	return &r, nil
+	return b, nil
 }

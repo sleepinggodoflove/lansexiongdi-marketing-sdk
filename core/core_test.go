@@ -7,11 +7,11 @@ import (
 
 func TestNewCore(t *testing.T) {
 	c := Config{
-		AppID:             "123456",
-		PrivateKey:        "zJRUcwPpKFf4nWiN9wqSO9gpGFx5BP4WviqnPsrhkpc=",
-		MerchantPublicKey: "BKbxGVVlJGWK/ScU0ebKSe4Jr4LvcBGgvt/HHBk+ODVCYnJYvvmX8cDNpf3TVYuRdz/RUH6UDgcoVpz02jXNfrM=",
-		Key:               "t+VxHnp+K9huhtNT84Pk7A==",
-		BaseURL:           "http://127.0.0.1:9000",
+		AppID:      "123456",
+		PrivateKey: "zJRUcwPpKFf4nWiN9wqSO9gpGFx5BP4WviqnPsrhkpc=",
+		PublicKey:  "BKbxGVVlJGWK/ScU0ebKSe4Jr4LvcBGgvt/HHBk+ODVCYnJYvvmX8cDNpf3TVYuRdz/RUH6UDgcoVpz02jXNfrM=",
+		Key:        "t+VxHnp+K9huhtNT84Pk7A==",
+		BaseURL:    "http://127.0.0.1:9000",
 	}
 	core, err := NewCore(&c, WithSignType(consts.SignSM))
 	if err != nil {
