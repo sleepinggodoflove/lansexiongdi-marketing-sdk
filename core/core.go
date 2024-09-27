@@ -3,7 +3,6 @@ package core
 import (
 	"encoding/json"
 	"github.com/go-playground/validator/v10"
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interfaces"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -44,9 +43,9 @@ type Core struct {
 	config       *Config
 	httpClient   *http.Client
 	signType     string
-	Signer       interfaces.Signer
-	Verifier     interfaces.Verifier
-	EncodeDecode interfaces.EncodeDecode
+	Signer       Signer
+	Verifier     Verifier
+	EncodeDecode EncodeDecode
 }
 
 type Option func(*Core)
@@ -89,7 +88,7 @@ func NewCore(s *Config, o ...Option) (*Core, error) {
 }
 
 // GetCiphertext gets the ciphertext
-func (c *Core) GetCiphertext(request interfaces.Request) (string, error) {
+func (c *Core) GetCiphertext(request Request) (string, error) {
 	plaintext, err := request.String()
 	if err != nil {
 		return "", err
@@ -102,7 +101,7 @@ func (c *Core) GetCiphertext(request interfaces.Request) (string, error) {
 }
 
 // GetParams gets the params
-func (c *Core) GetParams(request interfaces.Request) (*Params, error) {
+func (c *Core) GetParams(request Request) (*Params, error) {
 	ciphertext, err := c.GetCiphertext(request)
 	if err != nil {
 		return nil, err
@@ -134,7 +133,7 @@ func (c *Core) Verify(params *Params) bool {
 }
 
 // Request sends the request and Analysis the response
-func (c *Core) Request(method string, request interfaces.Request) ([]byte, error) {
+func (c *Core) Request(method string, request Request) ([]byte, error) {
 	reqBody, err := c.GetParams(request)
 	if err != nil {
 		return nil, err

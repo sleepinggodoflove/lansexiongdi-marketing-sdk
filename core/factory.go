@@ -2,7 +2,6 @@ package core
 
 import (
 	"errors"
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interfaces"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/utils/rsa"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/utils/sm"
 )
@@ -11,7 +10,7 @@ import (
 type SignerFactory struct{}
 
 // SignerVerifier create signers and verifiers
-func (f *SignerFactory) SignerVerifier(signType string, s *Config) (interfaces.Signer, interfaces.Verifier, interfaces.EncodeDecode, error) {
+func (f *SignerFactory) SignerVerifier(signType string, s *Config) (Signer, Verifier, EncodeDecode, error) {
 	switch signType {
 	case SignRSA:
 		prk, err := rsa.PrivateKeyRsa(s.PrivateKey)

@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-playground/validator/v10"
-	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/interfaces"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
 )
 
-var _ interfaces.Request = (*OrderRequest)(nil)
-var _ interfaces.Request = (*DiscardRequest)(nil)
-var _ interfaces.Request = (*QueryRequest)(nil)
+var _ core.Request = (*OrderRequest)(nil)
+var _ core.Request = (*DiscardRequest)(nil)
+var _ core.Request = (*QueryRequest)(nil)
 
-var _ interfaces.Validate = (*OrderRequest)(nil)
-var _ interfaces.Validate = (*QueryRequest)(nil)
-var _ interfaces.Validate = (*DiscardRequest)(nil)
+var _ core.Validate = (*OrderRequest)(nil)
+var _ core.Validate = (*QueryRequest)(nil)
+var _ core.Validate = (*DiscardRequest)(nil)
 
 type OrderRequest struct {
 	OutBizNo   string `validate:"required" json:"out_biz_no"`

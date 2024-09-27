@@ -1,4 +1,4 @@
-package interfaces
+package core
 
 // Signer interfaces for signing data
 type Signer interface {
