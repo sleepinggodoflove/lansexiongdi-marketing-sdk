@@ -116,7 +116,6 @@ func TestQuery(t *testing.T) {
 	r, err := a.Query(context.Background(), &QueryRequest{
 		OutBizNo: "out_biz_no",
 		TradeNo:  "",
-		Key:      "",
 	})
 	if err != nil {
 		t.Error(err)
@@ -142,7 +141,6 @@ func TestDiscard(t *testing.T) {
 	r, err := a.Discard(context.Background(), &DiscardRequest{
 		OutBizNo: "out_biz_no",
 		TradeNo:  "",
-		Key:      "",
 	})
 	if err != nil {
 		t.Error(err)
