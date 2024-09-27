@@ -19,7 +19,6 @@ type OrderRequest struct {
 	OutBizNo   string `validate:"required" json:"out_biz_no"`
 	ActivityNo string `validate:"required" json:"activity_no"`
 	Number     int32  `validate:"required" json:"number"`
-	NotifyUrl  string `json:"notify_url,omitempty"` // 可为空, 若不为空，则优先使用该地址通知核销、作废等处理结果
 }
 
 func (a *OrderRequest) String() (string, error) {
