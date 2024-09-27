@@ -148,7 +148,7 @@ func TestDiscard(t *testing.T) {
 	}
 	t.Log(r)
 	if r.IsSuccess() {
-		t.Log(r.Data.Status.IsDiscard())
+		t.Log("作废收单成功")
 	}
 }
 
