@@ -43,7 +43,7 @@ func (s OrderStatus) IsDiscard() bool {
 type Response struct {
 	Code    int32  `json:"code"`
 	Message string `json:"message"`
-	Reason  string `json:"reason"`
+	Reason  string `json:"reason,omitempty"`
 	Data    *Reply `json:"data,omitempty"`
 }
 
