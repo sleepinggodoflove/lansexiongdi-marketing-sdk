@@ -13,6 +13,38 @@ var (
 	baseURL       = "http://127.0.0.1:9000"
 )
 
+func TestSignVerify(t *testing.T) {
+	c := core2.Config{
+		AppID:      "123",
+		PrivateKey: rsaPrivateKey, // 客户私钥
+		PublicKey:  publicKeyStr,  // 公钥
+		Key:        aesKey,
+		BaseURL:    baseURL,
+	}
+	core, err := core2.NewCore(&c, core2.WithSignType(core2.SignRSA))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	orderReq := &OrderRequest{
+		OutBizNo:   "out_biz_no",
+		ActivityNo: "activity_no",
+		Number:     1,
+	}
+	dataToStr, err := orderReq.String()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	signature, err := core.Signer.Sign(dataToStr)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	t.Log(signature)
+	t.Log(core.Verifier.Verify(dataToStr, signature))
+}
+
 func TestGetParams(t *testing.T) {
 	c := core2.Config{
 		AppID:      "123",
