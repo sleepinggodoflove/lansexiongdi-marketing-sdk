@@ -15,8 +15,7 @@ func (a *Key) Order(ctx context.Context, request *OrderRequest) (*Response, erro
 		return nil, err
 	}
 	var response Response
-	err = json.Unmarshal(b, &response)
-	if err != nil {
+	if err = json.Unmarshal(b, &response); err != nil {
 		return nil, err
 	}
 	return &response, nil
@@ -28,8 +27,7 @@ func (a *Key) Query(ctx context.Context, request *QueryRequest) (*Response, erro
 		return nil, err
 	}
 	var response Response
-	err = json.Unmarshal(b, &response)
-	if err != nil {
+	if err = json.Unmarshal(b, &response); err != nil {
 		return nil, err
 	}
 	return &response, nil
@@ -41,16 +39,14 @@ func (a *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, 
 		return nil, err
 	}
 	var response Response
-	err = json.Unmarshal(b, &response)
-	if err != nil {
+	if err = json.Unmarshal(b, &response); err != nil {
 		return nil, err
 	}
 	return &response, nil
 }
 
 func (a *Key) Notify(_ context.Context, notify *Notify) (*Reply, error) {
-	b := a.Verifier.Verify(notify.SignStr(), notify.Sign)
-	if !b {
+	if !a.Verifier.Verify(notify.SignStr(), notify.Sign) {
 		return nil, fmt.Errorf("verify sign fail")
 	}
 	return notify.Data, nil
