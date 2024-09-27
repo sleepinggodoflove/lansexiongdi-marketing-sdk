@@ -76,9 +76,9 @@ func (a *Response) IsSuccess() bool {
 	return a.Code == 200
 }
 
-func reply(b []byte) (*Response, error) {
-	var response *Response
-	return response.Response(b)
+func response(b []byte) (*Response, error) {
+	var resp *Response
+	return resp.Response(b)
 }
 
 type Notify struct {
