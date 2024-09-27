@@ -13,8 +13,7 @@ func (a *Key) Order(ctx context.Context, request *OrderRequest) (*Response, erro
 	if err != nil {
 		return nil, err
 	}
-	var response *Response
-	return response.Response(b)
+	return reply(b)
 }
 
 func (a *Key) Query(ctx context.Context, request *QueryRequest) (*Response, error) {
@@ -22,8 +21,7 @@ func (a *Key) Query(ctx context.Context, request *QueryRequest) (*Response, erro
 	if err != nil {
 		return nil, err
 	}
-	var response *Response
-	return response.Response(b)
+	return reply(b)
 }
 
 func (a *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, error) {
@@ -31,8 +29,7 @@ func (a *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, 
 	if err != nil {
 		return nil, err
 	}
-	var response *Response
-	return response.Response(b)
+	return reply(b)
 }
 
 func (a *Key) Notify(_ context.Context, notify *Notify) (*Reply, error) {

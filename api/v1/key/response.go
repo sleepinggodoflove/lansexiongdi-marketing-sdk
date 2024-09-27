@@ -76,6 +76,11 @@ func (a *Response) IsSuccess() bool {
 	return a.Code == 200
 }
 
+func reply(b []byte) (*Response, error) {
+	var response *Response
+	return response.Response(b)
+}
+
 type Notify struct {
 	AppId     string `json:"app_id"`
 	SignType  string `json:"sign_type"`
