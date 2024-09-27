@@ -42,7 +42,10 @@ func TestSignVerify(t *testing.T) {
 		return
 	}
 	t.Log(signature)
-	t.Log(core.Verifier.Verify(dataToStr, signature))
+	b := core.Verifier.Verify(dataToStr, signature)
+	if !b {
+		t.Error("签名验证失败")
+	}
 }
 
 func TestGetParams(t *testing.T) {
