@@ -62,7 +62,7 @@ func TestGetParams(t *testing.T) {
 		return
 	}
 	orderReq := &OrderRequest{
-		OutBizNo:   "out_biz_no",
+		OutBizNo:   "ou",
 		ActivityNo: "activity_no",
 		Number:     1,
 	}
@@ -71,7 +71,7 @@ func TestGetParams(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(p)
+	t.Logf("%+v", p)
 }
 
 func TestOrder(t *testing.T) {
@@ -139,8 +139,9 @@ func TestDiscard(t *testing.T) {
 	}
 	a := &Key{core}
 	r, err := a.Discard(context.Background(), &DiscardRequest{
-		OutBizNo: "out_biz_no",
-		TradeNo:  "",
+		OutRequestNo: "out_request_no",
+		OutBizNo:     "out_biz_no",
+		TradeNo:      "trade_no",
 	})
 	if err != nil {
 		t.Error(err)

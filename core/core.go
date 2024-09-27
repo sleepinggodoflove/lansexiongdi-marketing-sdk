@@ -14,7 +14,7 @@ import (
 type Params struct {
 	AppId      string `json:"app_id"`
 	SignType   string `json:"sign_type"`
-	Timestamp  string `json:"timestamp"`
+	Timestamp  string `json:"timestamp"` // 发送请求的时间，格式"yyyy-MM-dd HH:mm:ss"
 	Sign       string `json:"sign"`
 	Ciphertext string `json:"ciphertext"`
 }
@@ -30,8 +30,7 @@ type Config struct {
 
 // Validate config
 func (c *Config) Validate() error {
-	err := validator.New().Struct(c)
-	if err != nil {
+	if err := validator.New().Struct(c); err != nil {
 		for _, err = range err.(validator.ValidationErrors) {
 			return err
 		}
@@ -103,6 +102,9 @@ func (c *Core) GetCiphertext(request Request) (string, error) {
 
 // GetParams gets the params
 func (c *Core) GetParams(request Request) (*Params, error) {
+	if err := request.Validate(); err != nil {
+		return nil, err
+	}
 	ciphertext, err := c.GetCiphertext(request)
 	if err != nil {
 		return nil, err

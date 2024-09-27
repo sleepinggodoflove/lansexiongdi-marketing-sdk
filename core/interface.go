@@ -19,8 +19,5 @@ type EncodeDecode interface {
 // Request interfaces for request
 type Request interface {
 	String() (string, error)
-}
-
-type Validate interface {
 	Validate() error
 }
