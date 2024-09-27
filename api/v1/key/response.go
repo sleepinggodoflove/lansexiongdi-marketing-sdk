@@ -57,6 +57,13 @@ type Reply struct {
 	ValidEndTime   string      `json:"valid_end_time"`
 }
 
+func (a *Response) Response(b []byte) (*Response, error) {
+	if err := json.Unmarshal(b, a); err != nil {
+		return nil, err
+	}
+	return a, nil
+}
+
 func (a *Response) String() string {
 	b, err := json.Marshal(a)
 	if err != nil {

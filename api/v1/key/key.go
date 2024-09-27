@@ -2,7 +2,6 @@ package key
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api"
 )
@@ -14,11 +13,8 @@ func (a *Key) Order(ctx context.Context, request *OrderRequest) (*Response, erro
 	if err != nil {
 		return nil, err
 	}
-	var response Response
-	if err = json.Unmarshal(b, &response); err != nil {
-		return nil, err
-	}
-	return &response, nil
+	var response *Response
+	return response.Response(b)
 }
 
 func (a *Key) Query(ctx context.Context, request *QueryRequest) (*Response, error) {
@@ -26,11 +22,8 @@ func (a *Key) Query(ctx context.Context, request *QueryRequest) (*Response, erro
 	if err != nil {
 		return nil, err
 	}
-	var response Response
-	if err = json.Unmarshal(b, &response); err != nil {
-		return nil, err
-	}
-	return &response, nil
+	var response *Response
+	return response.Response(b)
 }
 
 func (a *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, error) {
@@ -38,11 +31,8 @@ func (a *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, 
 	if err != nil {
 		return nil, err
 	}
-	var response Response
-	if err = json.Unmarshal(b, &response); err != nil {
-		return nil, err
-	}
-	return &response, nil
+	var response *Response
+	return response.Response(b)
 }
 
 func (a *Key) Notify(_ context.Context, notify *Notify) (*Reply, error) {
