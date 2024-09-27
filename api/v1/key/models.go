@@ -41,7 +41,7 @@ func (c *OrderRequest) Validate() error {
 
 type QueryRequest struct {
 	OutBizNo string `validate:"required" json:"out_biz_no"`
-	TradeNo  string `validate:"required" json:"trade_no"`
+	TradeNo  string `json:"trade_no"` // 可为空，若不为空，则优先使用该值查询
 	Key      string `validate:"required" json:"key"`
 }
 
