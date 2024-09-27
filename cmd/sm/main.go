@@ -10,11 +10,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(priK)
-	fmt.Println(pubK)
+	fmt.Println("privateKeyStr=", priK)
+	fmt.Println("publicKeyStr=", pubK)
 	sm4key, err := sm.GenerateSM4Key()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(sm4key)
+	fmt.Println("sm4key=", sm4key)
 }

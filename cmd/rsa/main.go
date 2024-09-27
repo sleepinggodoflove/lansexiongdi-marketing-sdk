@@ -14,4 +14,6 @@ func main() {
 	privateKeyStr, publicKeyStr := n.GetKey()
 	fmt.Println("privateKeyStr=", privateKeyStr)
 	fmt.Println("publicKeyStr=", publicKeyStr)
+
+	fmt.Println("aesKey=", rsa.GenerateAesKey())
 }
