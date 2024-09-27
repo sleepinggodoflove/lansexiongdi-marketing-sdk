@@ -1,6 +1,7 @@
 package core
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/go-playground/validator/v10"
 	"io/ioutil"
@@ -133,7 +134,7 @@ func (c *Core) Verify(params *Params) bool {
 }
 
 // Request sends the request and Analysis the response
-func (c *Core) Request(method string, request Request) ([]byte, error) {
+func (c *Core) Request(_ context.Context, method string, request Request) ([]byte, error) {
 	reqBody, err := c.GetParams(request)
 	if err != nil {
 		return nil, err

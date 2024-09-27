@@ -1,6 +1,7 @@
 package key
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api"
@@ -8,8 +9,8 @@ import (
 
 type Key api.Service
 
-func (a *Key) Order(request *OrderRequest) (*Response, error) {
-	b, err := a.Request(orderMethod, request)
+func (a *Key) Order(ctx context.Context, request *OrderRequest) (*Response, error) {
+	b, err := a.Request(ctx, orderMethod, request)
 	if err != nil {
 		return nil, err
 	}
@@ -21,8 +22,8 @@ func (a *Key) Order(request *OrderRequest) (*Response, error) {
 	return &response, nil
 }
 
-func (a *Key) Query(request *QueryRequest) (*Response, error) {
-	b, err := a.Request(queryMethod, request)
+func (a *Key) Query(ctx context.Context, request *QueryRequest) (*Response, error) {
+	b, err := a.Request(ctx, queryMethod, request)
 	if err != nil {
 		return nil, err
 	}
@@ -34,8 +35,8 @@ func (a *Key) Query(request *QueryRequest) (*Response, error) {
 	return &response, nil
 }
 
-func (a *Key) Discard(request *DiscardRequest) (*Response, error) {
-	b, err := a.Request(discardMethod, request)
+func (a *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, error) {
+	b, err := a.Request(ctx, discardMethod, request)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +48,7 @@ func (a *Key) Discard(request *DiscardRequest) (*Response, error) {
 	return &response, nil
 }
 
-func (a *Key) Notify(notify *Notify) (*Reply, error) {
+func (a *Key) Notify(_ context.Context, notify *Notify) (*Reply, error) {
 	b := a.Verifier.Verify(notify.SignStr(), notify.Sign)
 	if !b {
 		return nil, fmt.Errorf("verify sign fail")

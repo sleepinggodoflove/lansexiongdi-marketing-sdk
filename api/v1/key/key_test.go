@@ -1,6 +1,7 @@
 package key
 
 import (
+	"context"
 	core2 "github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
 	"testing"
 )
@@ -51,7 +52,7 @@ func TestOrder(t *testing.T) {
 		return
 	}
 	a := &Key{core}
-	r, err := a.Order(&OrderRequest{
+	r, err := a.Order(context.Background(), &OrderRequest{
 		OutBizNo:   "out_biz_no",
 		ActivityNo: "activity_no",
 		Number:     1,
@@ -77,7 +78,7 @@ func TestQuery(t *testing.T) {
 		return
 	}
 	a := &Key{core}
-	r, err := a.Query(&QueryRequest{
+	r, err := a.Query(context.Background(), &QueryRequest{
 		OutBizNo: "out_biz_no",
 		TradeNo:  "",
 		Key:      "",
@@ -103,7 +104,7 @@ func TestDiscard(t *testing.T) {
 		return
 	}
 	a := &Key{core}
-	r, err := a.Discard(&DiscardRequest{
+	r, err := a.Discard(context.Background(), &DiscardRequest{
 		OutBizNo: "out_biz_no",
 		TradeNo:  "",
 		Key:      "",
@@ -131,7 +132,7 @@ func TestNotify(t *testing.T) {
 		return
 	}
 	a := &Key{core}
-	r, err := a.Notify(&Notify{})
+	r, err := a.Notify(context.Background(), &Notify{})
 	if err != nil {
 		t.Error(err)
 		return
@@ -175,7 +176,7 @@ func TestCallback(t *testing.T) {
 	}
 	n.Sign = signStr
 	a := &Key{core}
-	r, err := a.Notify(n)
+	r, err := a.Notify(context.Background(), n)
 	if err != nil {
 		t.Error(err)
 		return
