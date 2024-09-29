@@ -32,7 +32,7 @@ func (a *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, 
 	return response(b)
 }
 
-func (a *Key) Notify(_ context.Context, notify *Notify) (*Reply, error) {
+func (a *Key) Notify(_ context.Context, notify *Notify) (*NotifyData, error) {
 	if !a.Verifier.Verify(notify.SignStr(), notify.Sign) {
 		return nil, fmt.Errorf("verify sign fail")
 	}

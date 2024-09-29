@@ -83,12 +83,22 @@ func response(b []byte) (*Response, error) {
 	return resp.Response(b)
 }
 
+type NotifyData struct {
+	NotifyId       string      `json:"notify_id"`
+	OutBizNo       string      `json:"out_biz_no"`
+	TradeNo        string      `json:"trade_no"`
+	Key            string      `json:"key"`
+	Status         OrderStatus `json:"status"`
+	Url            string      `json:"url"`
+	ValidBeginTime string      `json:"valid_begin_time"`
+	ValidEndTime   string      `json:"valid_end_time"`
+}
 type Notify struct {
 	AppId     string `json:"app_id"`
 	SignType  string `json:"sign_type"`
 	Timestamp string `json:"timestamp"`
 	Sign      string `json:"sign"`
-	Data      *Reply `json:"data"`
+	Data      *NotifyData
 }
 
 func (a *Notify) String() string {

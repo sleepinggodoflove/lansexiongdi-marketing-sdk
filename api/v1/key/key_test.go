@@ -176,7 +176,8 @@ func TestNotify(t *testing.T) {
 }
 
 func TestCallback(t *testing.T) {
-	reply := &Reply{
+	data := &NotifyData{
+		NotifyId:       "123456",
 		OutBizNo:       "123456",
 		TradeNo:        "1234567",
 		Key:            "xdwqdsd",
@@ -190,7 +191,7 @@ func TestCallback(t *testing.T) {
 		SignType:  "RSA",
 		Timestamp: "2006-01-02 15:04:05",
 		Sign:      "",
-		Data:      reply,
+		Data:      data,
 	}
 	core, err := core2.NewCore(&core2.Config{
 		AppID:      n.AppId,
