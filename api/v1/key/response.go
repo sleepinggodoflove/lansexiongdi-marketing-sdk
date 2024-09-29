@@ -2,43 +2,43 @@ package key
 
 import "encoding/json"
 
-type OrderStatus uint8
+type Status uint8
 
 const (
-	Normal OrderStatus = iota + 1
+	Normal Status = iota + 1
 	DiscardIng
 	Used
 	Discard
 )
 
-var OrderStatusMap = map[OrderStatus]string{
+var statusMap = map[Status]string{
 	Normal:     "正常",
 	DiscardIng: "作废中",
 	Used:       "已核销",
 	Discard:    "已作废",
 }
 
-func (s OrderStatus) Value() uint8 {
+func (s Status) Value() uint8 {
 	return uint8(s)
 }
 
-func (s OrderStatus) GetText() string {
-	tex, ok := OrderStatusMap[s]
+func (s Status) GetText() string {
+	tex, ok := statusMap[s]
 	if !ok {
 		return ""
 	}
 	return tex
 }
 
-func (s OrderStatus) IsNormal() bool {
+func (s Status) IsNormal() bool {
 	return s == Normal
 }
 
-func (s OrderStatus) IsUsed() bool {
+func (s Status) IsUsed() bool {
 	return s == Used
 }
 
-func (s OrderStatus) IsDiscard() bool {
+func (s Status) IsDiscard() bool {
 	return s == Discard
 }
 
@@ -50,13 +50,15 @@ type Response struct {
 }
 
 type Reply struct {
-	OutBizNo       string      `json:"out_biz_no"`
-	TradeNo        string      `json:"trade_no"`
-	Key            string      `json:"key"`
-	Status         OrderStatus `json:"status"`
-	Url            string      `json:"url"`
-	ValidBeginTime string      `json:"valid_begin_time"`
-	ValidEndTime   string      `json:"valid_end_time"`
+	OutBizNo       string `json:"out_biz_no"`
+	TradeNo        string `json:"trade_no"`
+	Key            string `json:"key"`
+	Status         Status `json:"status"`
+	Url            string `json:"url"`
+	ValidBeginTime string `json:"valid_begin_time,omitempty"`
+	ValidEndTime   string `json:"valid_end_time,omitempty"`
+	UsageTime      string `json:"usage_time,omitempty"`
+	DiscardTime    string `json:"discard_time,omitempty"`
 }
 
 func (a *Response) Response(b []byte) (*Response, error) {
@@ -84,14 +86,16 @@ func response(b []byte) (*Response, error) {
 }
 
 type NotifyData struct {
-	NotifyId       string      `json:"notify_id"`
-	OutBizNo       string      `json:"out_biz_no"`
-	TradeNo        string      `json:"trade_no"`
-	Key            string      `json:"key"`
-	Status         OrderStatus `json:"status"`
-	Url            string      `json:"url"`
-	ValidBeginTime string      `json:"valid_begin_time"`
-	ValidEndTime   string      `json:"valid_end_time"`
+	NotifyId       string `json:"notify_id"`
+	OutBizNo       string `json:"out_biz_no"`
+	TradeNo        string `json:"trade_no"`
+	Key            string `json:"key"`
+	Status         Status `json:"status"`
+	Url            string `json:"url"`
+	ValidBeginTime string `json:"valid_begin_time,omitempty"`
+	ValidEndTime   string `json:"valid_end_time,omitempty"`
+	UsageTime      string `json:"usage_time,omitempty"`
+	DiscardTime    string `json:"discard_time,omitempty"`
 }
 type Notify struct {
 	AppId     string `json:"app_id"`
