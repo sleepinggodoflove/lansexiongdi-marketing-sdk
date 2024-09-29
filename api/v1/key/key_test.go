@@ -139,9 +139,8 @@ func TestDiscard(t *testing.T) {
 	}
 	a := &Key{core}
 	r, err := a.Discard(context.Background(), &DiscardRequest{
-		OutRequestNo: "out_request_no",
-		OutBizNo:     "out_biz_no",
-		TradeNo:      "trade_no",
+		OutBizNo: "out_biz_no",
+		TradeNo:  "trade_no",
 	})
 	if err != nil {
 		t.Error(err)
