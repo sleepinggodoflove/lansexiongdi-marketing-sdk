@@ -5,15 +5,17 @@ import "encoding/json"
 type OrderStatus uint8
 
 const (
-	OrderNormal OrderStatus = iota + 1
-	OrderUsed
-	OrderDiscard
+	Normal OrderStatus = iota + 1
+	DiscardIng
+	Used
+	Discard
 )
 
 var OrderStatusMap = map[OrderStatus]string{
-	OrderNormal:  "正常",
-	OrderUsed:    "已核销",
-	OrderDiscard: "已作废",
+	Normal:     "正常",
+	DiscardIng: "作废中",
+	Used:       "已核销",
+	Discard:    "已作废",
 }
 
 func (s OrderStatus) Value() uint8 {
@@ -29,15 +31,15 @@ func (s OrderStatus) GetText() string {
 }
 
 func (s OrderStatus) IsNormal() bool {
-	return s == OrderNormal
+	return s == Normal
 }
 
 func (s OrderStatus) IsUsed() bool {
-	return s == OrderUsed
+	return s == Used
 }
 
 func (s OrderStatus) IsDiscard() bool {
-	return s == OrderDiscard
+	return s == Discard
 }
 
 type Response struct {
