@@ -27,8 +27,8 @@ func TestSignVerify(t *testing.T) {
 		return
 	}
 	orderReq := &OrderRequest{
-		OutBizNo:   "out_biz_no",
-		ActivityNo: "activity_no",
+		OutBizNo:   "outBizNo",
+		ActivityNo: "activityNo",
 		Number:     1,
 	}
 	dataToStr, err := orderReq.String()
@@ -62,8 +62,8 @@ func TestGetParams(t *testing.T) {
 		return
 	}
 	orderReq := &OrderRequest{
-		OutBizNo:   "ou",
-		ActivityNo: "activity_no",
+		OutBizNo:   "outBizNo",
+		ActivityNo: "activityNo",
 		Number:     1,
 	}
 	p, err := core.GetParams(orderReq)
@@ -88,8 +88,8 @@ func TestOrder(t *testing.T) {
 	}
 	a := &Key{core}
 	r, err := a.Order(context.Background(), &OrderRequest{
-		OutBizNo:   "out_biz_no",
-		ActivityNo: "activity_no",
+		OutBizNo:   "outBizNo",
+		ActivityNo: "activityNo",
 		Number:     1,
 	})
 	if err != nil {
@@ -114,7 +114,7 @@ func TestQuery(t *testing.T) {
 	}
 	a := &Key{core}
 	r, err := a.Query(context.Background(), &QueryRequest{
-		OutBizNo: "out_biz_no",
+		OutBizNo: "outBizNo",
 		TradeNo:  "",
 	})
 	if err != nil {
@@ -139,8 +139,8 @@ func TestDiscard(t *testing.T) {
 	}
 	a := &Key{core}
 	r, err := a.Discard(context.Background(), &DiscardRequest{
-		OutBizNo: "out_biz_no",
-		TradeNo:  "trade_no",
+		OutBizNo: "outBizNo",
+		TradeNo:  "tradeNo",
 	})
 	if err != nil {
 		t.Error(err)

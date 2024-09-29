@@ -25,7 +25,7 @@ type Config struct {
 	PrivateKey string `validate:"required"`
 	PublicKey  string `validate:"required"`
 	Key        string `validate:"required"`
-	BaseURL    string `validate:"required"`
+	BaseURL    string `validate:"required,url"`
 }
 
 // Validate config

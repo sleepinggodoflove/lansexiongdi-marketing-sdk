@@ -35,8 +35,8 @@ func (c *OrderRequest) Validate() error {
 }
 
 type QueryRequest struct {
-	OutBizNo string `json:"out_biz_no,omitempty"` // out_biz_no/trade_no二选一
-	TradeNo  string `json:"trade_no,omitempty"`   // out_biz_no/trade_no二选一 若不为空，则优先使用
+	OutBizNo string `json:"out_biz_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"` // out_biz_no/trade_no二选一
+	TradeNo  string `json:"trade_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"`   // out_biz_no/trade_no二选一 若不为空，则优先使用
 }
 
 func (a *QueryRequest) String() (string, error) {
@@ -51,13 +51,18 @@ func (q *QueryRequest) Validate() error {
 	if q.OutBizNo == "" && q.TradeNo == "" {
 		return fmt.Errorf("out_biz_no/trade_no 二选一")
 	}
+	if err := validator.New().Struct(q); err != nil {
+		for _, err = range err.(validator.ValidationErrors) {
+			return fmt.Errorf(err.Error())
+		}
+	}
 	return nil
 }
 
 type DiscardRequest struct {
-	OutBizNo string `json:"out_biz_no,omitempty"` // out_biz_no/trade_no二选一
-	TradeNo  string `json:"trade_no,omitempty"`   // out_biz_no/trade_no二选一 若不为空，则优先使用
-	Reason   string `json:"reason,omitempty"`     // 可为空
+	OutBizNo string `json:"out_biz_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"` // out_biz_no/trade_no二选一
+	TradeNo  string `json:"trade_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"`   // out_biz_no/trade_no二选一 若不为空，则优先使用
+	Reason   string `json:"reason,omitempty" validate:"omitempty,min=1,max=50"`              // 可为空
 }
 
 func (a *DiscardRequest) String() (string, error) {
@@ -68,9 +73,14 @@ func (a *DiscardRequest) String() (string, error) {
 	return string(b), nil
 }
 
-func (c *DiscardRequest) Validate() error {
-	if c.OutBizNo == "" && c.TradeNo == "" {
+func (d *DiscardRequest) Validate() error {
+	if d.OutBizNo == "" && d.TradeNo == "" {
 		return fmt.Errorf("out_biz_no/trade_no 二选一")
+	}
+	if err := validator.New().Struct(d); err != nil {
+		for _, err = range err.(validator.ValidationErrors) {
+			return fmt.Errorf(err.Error())
+		}
 	}
 	return nil
 }
