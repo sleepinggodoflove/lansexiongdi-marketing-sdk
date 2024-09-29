@@ -141,6 +141,7 @@ func TestDiscard(t *testing.T) {
 	r, err := a.Discard(context.Background(), &DiscardRequest{
 		OutBizNo: "outBizNo",
 		TradeNo:  "tradeNo",
+		Reason:   "正常作废",
 	})
 	if err != nil {
 		t.Error(err)
