@@ -115,14 +115,22 @@ func (d *Notify) Validate() error {
 }
 
 func (a *Notify) String() string {
-	b, err := json.Marshal(a)
+	b, err := json.Marshal(a.Data)
 	if err != nil {
 		return ""
 	}
 	return string(b)
 }
 
-func (a *Notify) SignStr() string {
+func (a *Notify) DataString() string {
+	b, err := json.Marshal(a.Data)
+	if err != nil {
+		return ""
+	}
+	return string(b)
+}
+
+func (a *Notify) SignString() string {
 	b, err := json.Marshal(a.Data)
 	if err != nil {
 		return ""
