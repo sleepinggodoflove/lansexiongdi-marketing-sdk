@@ -12,7 +12,7 @@ func TestRSASignVerify(t *testing.T) {
 		Key:        "870abfc720f86ce2c5e4d3345741d48d",
 		BaseURL:    "http://127.0.0.1:9000",
 	}
-	core, err := NewCore(&c, WithSignType(SignRSA))
+	core, err := NewCore(&c)
 	if err != nil {
 		t.Error(err)
 		return
