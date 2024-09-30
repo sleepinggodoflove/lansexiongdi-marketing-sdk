@@ -204,7 +204,7 @@ func TestCallback(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	signStr, err := core.Signer.Sign(n.SignStr())
+	signStr, err := core.Signer.Sign(n.SignString())
 	if err != nil {
 		t.Error(err)
 		return
