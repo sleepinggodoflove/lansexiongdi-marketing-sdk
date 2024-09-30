@@ -128,11 +128,7 @@ func (c *Core) GetParams(request Request) (*Params, error) {
 // Verify verifies the params
 func (c *Core) Verify(params *Params) bool {
 	dataToSign := c.config.AppID + params.Timestamp + params.Ciphertext
-	b := c.Verifier.Verify(dataToSign, params.Sign)
-	if b {
-		return true
-	}
-	return false
+	return c.Verifier.Verify(dataToSign, params.Sign)
 }
 
 // Request sends the request and Analysis the response
@@ -145,11 +141,13 @@ func (c *Core) Request(ctx context.Context, method string, request Request) ([]b
 	if err != nil {
 		return nil, err
 	}
-	return c.Post(ctx, c.config.BaseURL+method, reqBodyBytes)
+	resp, err := c.Post(ctx, c.config.BaseURL+method, reqBodyBytes)
+	defer resp.Body.Close()
+	return ioutil.ReadAll(resp.Body)
 }
 
 // Post sends the request and Analysis the response
-func (c *Core) Post(_ context.Context, url string, reqBodyBytes []byte) ([]byte, error) {
+func (c *Core) Post(_ context.Context, url string, reqBodyBytes []byte) (*http.Response, error) {
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{}
 	}
@@ -157,11 +155,5 @@ func (c *Core) Post(_ context.Context, url string, reqBodyBytes []byte) ([]byte,
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
-
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return b, nil
+	return resp, nil
 }
