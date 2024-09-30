@@ -142,6 +142,9 @@ func (c *Core) Request(ctx context.Context, method string, request Request) ([]b
 		return nil, err
 	}
 	resp, err := c.Post(ctx, c.config.BaseURL+method, reqBodyBytes)
+	if err != nil {
+		return nil, err
+	}
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
 }
@@ -151,9 +154,5 @@ func (c *Core) Post(_ context.Context, url string, reqBodyBytes []byte) (*http.R
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{}
 	}
-	resp, err := c.httpClient.Post(url, ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+	return c.httpClient.Post(url, ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
 }
