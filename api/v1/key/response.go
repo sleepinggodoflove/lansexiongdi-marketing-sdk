@@ -84,39 +84,3 @@ func response(b []byte) (*Response, error) {
 	var resp *Response
 	return resp.Response(b)
 }
-
-type NotifyData struct {
-	NotifyId       string `json:"notify_id"`
-	OutBizNo       string `json:"out_biz_no"`
-	TradeNo        string `json:"trade_no"`
-	Key            string `json:"key"`
-	Status         Status `json:"status"`
-	Url            string `json:"url"`
-	ValidBeginTime string `json:"valid_begin_time,omitempty"`
-	ValidEndTime   string `json:"valid_end_time,omitempty"`
-	UsageTime      string `json:"usage_time,omitempty"`
-	DiscardTime    string `json:"discard_time,omitempty"`
-}
-type Notify struct {
-	AppId     string `json:"app_id"`
-	SignType  string `json:"sign_type"`
-	Timestamp string `json:"timestamp"`
-	Sign      string `json:"sign"`
-	Data      *NotifyData
-}
-
-func (a *Notify) String() string {
-	b, err := json.Marshal(a)
-	if err != nil {
-		return ""
-	}
-	return string(b)
-}
-
-func (a *Notify) SignStr() string {
-	b, err := json.Marshal(a.Data)
-	if err != nil {
-		return ""
-	}
-	return a.AppId + a.Timestamp + string(b)
-}

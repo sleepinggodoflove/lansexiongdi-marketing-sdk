@@ -136,7 +136,7 @@ func (c *Core) Verify(params *Params) bool {
 }
 
 // Request sends the request and Analysis the response
-func (c *Core) Request(_ context.Context, method string, request Request) ([]byte, error) {
+func (c *Core) Request(ctx context.Context, method string, request Request) ([]byte, error) {
 	reqBody, err := c.GetParams(request)
 	if err != nil {
 		return nil, err
@@ -145,6 +145,11 @@ func (c *Core) Request(_ context.Context, method string, request Request) ([]byt
 	if err != nil {
 		return nil, err
 	}
+	return c.Post(ctx, c.config.BaseURL+method, reqBodyBytes)
+}
+
+// Post sends the request and Analysis the response
+func (c *Core) Post(_ context.Context, method string, reqBodyBytes []byte) ([]byte, error) {
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{}
 	}
