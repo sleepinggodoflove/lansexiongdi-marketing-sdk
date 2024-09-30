@@ -149,11 +149,11 @@ func (c *Core) Request(ctx context.Context, method string, request Request) ([]b
 }
 
 // Post sends the request and Analysis the response
-func (c *Core) Post(_ context.Context, method string, reqBodyBytes []byte) ([]byte, error) {
+func (c *Core) Post(_ context.Context, url string, reqBodyBytes []byte) ([]byte, error) {
 	if c.httpClient == nil {
 		c.httpClient = &http.Client{}
 	}
-	resp, err := c.httpClient.Post(c.config.BaseURL+method, ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
+	resp, err := c.httpClient.Post(url, ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
 	if err != nil {
 		return nil, err
 	}
