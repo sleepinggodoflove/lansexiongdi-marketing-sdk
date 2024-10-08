@@ -33,6 +33,6 @@ func (f *SignerFactory) SignerVerifier(signType string, s *Config) (Signer, Veri
 		}
 		return &SmSigner{privateKey: prk}, &SmVerifier{publicKey: puk}, &SmEncodeDecode{key: s.Key}, nil
 	default:
-		return nil, nil, nil, errors.New("signType,不支持的类型")
+		return nil, nil, nil, errors.New("SignType,不支持的类型")
 	}
 }

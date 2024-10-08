@@ -19,7 +19,7 @@ type Params struct {
 	Ciphertext string `json:"ciphertext"`
 }
 
-// Config merchant app config
+// Config merchant app Config
 type Config struct {
 	AppID      string `validate:"required"`
 	PrivateKey string `validate:"required"`
@@ -28,7 +28,7 @@ type Config struct {
 	BaseURL    string `validate:"required,url"`
 }
 
-// Validate config
+// Validate Config
 func (c *Config) Validate() error {
 	if err := validator.New().Struct(c); err != nil {
 		for _, err = range err.(validator.ValidationErrors) {
@@ -40,9 +40,9 @@ func (c *Config) Validate() error {
 
 // Core structure
 type Core struct {
-	config       *Config
-	httpClient   *http.Client
-	signType     string
+	Config       *Config
+	HttpClient   *http.Client
+	SignType     string
 	Signer       Signer
 	Verifier     Verifier
 	EncodeDecode EncodeDecode
@@ -53,31 +53,32 @@ type Option func(*Core)
 // WithSignType sets the sign type
 func WithSignType(signType string) Option {
 	return func(s *Core) {
-		s.signType = signType
+		s.SignType = signType
 	}
 }
 
 // WithHttpClient sets the http client
 func WithHttpClient(client *http.Client) Option {
 	return func(s *Core) {
-		s.httpClient = client
+		s.HttpClient = client
 	}
 }
 
 // NewCore creates a new Core instance
-func NewCore(s *Config, o ...Option) (*Core, error) {
-	if err := s.Validate(); err != nil {
+func NewCore(conf *Config, o ...Option) (*Core, error) {
+	if err := conf.Validate(); err != nil {
 		return nil, err
 	}
 	core := &Core{
-		signType: SignRSA,
-		config:   s,
+		SignType:   SignRSA,
+		Config:     conf,
+		HttpClient: http.DefaultClient,
 	}
 	for _, f := range o {
 		f(core)
 	}
 	factory := &SignerFactory{}
-	signer, verifier, encodeDecode, err := factory.SignerVerifier(core.signType, s)
+	signer, verifier, encodeDecode, err := factory.SignerVerifier(core.SignType, conf)
 	if err != nil {
 		return nil, err
 	}
@@ -110,15 +111,15 @@ func (c *Core) GetParams(request Request) (*Params, error) {
 		return nil, err
 	}
 	timestamps := time.Now().Format("2006-01-02 15:04:05")
-	dataToSign := c.config.AppID + timestamps + ciphertext
+	dataToSign := c.Config.AppID + timestamps + ciphertext
 
 	signature, err := c.Signer.Sign(dataToSign)
 	if err != nil {
 		return nil, err
 	}
 	return &Params{
-		AppId:      c.config.AppID,
-		SignType:   c.signType,
+		AppId:      c.Config.AppID,
+		SignType:   c.SignType,
 		Timestamp:  timestamps,
 		Sign:       signature,
 		Ciphertext: ciphertext,
@@ -127,7 +128,7 @@ func (c *Core) GetParams(request Request) (*Params, error) {
 
 // Verify verifies the params
 func (c *Core) Verify(params *Params) bool {
-	dataToSign := c.config.AppID + params.Timestamp + params.Ciphertext
+	dataToSign := c.Config.AppID + params.Timestamp + params.Ciphertext
 	return c.Verifier.Verify(dataToSign, params.Sign)
 }
 
@@ -141,7 +142,7 @@ func (c *Core) Request(ctx context.Context, method string, request Request) ([]b
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Post(ctx, c.config.BaseURL+method, reqBodyBytes)
+	resp, err := c.Post(ctx, c.Config.BaseURL+method, reqBodyBytes)
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +152,5 @@ func (c *Core) Request(ctx context.Context, method string, request Request) ([]b
 
 // Post sends the request and Analysis the response
 func (c *Core) Post(_ context.Context, url string, reqBodyBytes []byte) (*http.Response, error) {
-	if c.httpClient == nil {
-		c.httpClient = &http.Client{}
-	}
-	return c.httpClient.Post(url, ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
+	return c.HttpClient.Post(url, ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
 }
