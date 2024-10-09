@@ -110,7 +110,7 @@ func (c *Core) GetParams(request Request) (*Params, error) {
 	if err != nil {
 		return nil, err
 	}
-	timestamps := time.Now().Format("2006-01-02 15:04:05")
+	timestamps := time.Now().Format(time.DateTime)
 	dataToSign := c.Config.AppID + timestamps + ciphertext
 
 	signature, err := c.Signer.Sign(dataToSign)
