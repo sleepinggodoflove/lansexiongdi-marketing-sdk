@@ -3,6 +3,8 @@ package key
 import (
 	"context"
 	core2 "github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+	"io/ioutil"
+	"strings"
 	"testing"
 )
 
@@ -220,4 +222,36 @@ func TestCallback(t *testing.T) {
 	}
 	t.Log(r)
 	t.Log(r.Status.IsNormal())
+}
+
+func TestCallBackNotify(t *testing.T) {
+	c := core2.Config{
+		AppID:      "123",
+		PrivateKey: rsaPrivateKey,
+		PublicKey:  publicKeyStr,
+		Key:        aesKey,
+		BaseURL:    "http://127.0.0.1:8080/utils/v1/wechat/notify",
+	}
+	core, err := core2.NewCore(&c, core2.WithSignType(core2.SignRSA))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	resp, err := core.Post(context.Background(), c.BaseURL, []byte(`{}`))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	bodyStr := string(body)
+	t.Log(bodyStr)
+	if strings.Contains(bodyStr, "ok") {
+		t.Log("ok")
+	} else {
+		t.Error("error")
+	}
 }
