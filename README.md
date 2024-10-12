@@ -34,12 +34,12 @@ package main
 import (
 	"context"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api/v1/key"
-	core2 "github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
 	"log"
 )
 
 func main() {
-	core, err := core2.NewCore(&core2.Config{
+	c, err := core.NewCore(&core2.Config{
 		AppID:      "123",
 		PrivateKey: "私钥",
 		PublicKey:  "验签公钥",
@@ -49,7 +49,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("new core err:%s", err)
 	}
-	a := &key.Key{core}
+	a := &key.Key{c}
 	r, err := a.Order(context.Background(), &key.OrderRequest{
 		OutBizNo:   "outBizNo",
 		ActivityNo: "activityNo",
