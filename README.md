@@ -43,7 +43,7 @@ func main() {
 		AppID:      "123",
 		PrivateKey: "私钥",
 		PublicKey:  "验签公钥",
-		Key:        "业务参数加密key",
+		Key:        "业务参数密钥key",
 		BaseURL:    "请求地址",
 	})
 	if err != nil {
@@ -61,3 +61,9 @@ func main() {
 	log.Printf(r)
 }
 ```
+
+#### 名词解释
++ **商户 API 公钥**，是用来证实商户身份的
++ **商户 API 私钥**。是用来证实商户身份的
++ **商户 API 密钥**。是商户用来加密请求参数的密钥，为加强数据安全，使用的对称加密密钥。
+> :warning: 不要把私钥文件暴露在公共场合，如上传到 Github，写在客户端代码等。
