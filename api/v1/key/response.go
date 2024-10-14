@@ -40,6 +40,10 @@ func (s Status) IsUsed() bool {
 	return s == Used
 }
 
+func (s Status) IsDiscardIng() bool {
+	return s == DiscardIng
+}
+
 func (s Status) IsDiscard() bool {
 	return s == Discard
 }

@@ -127,6 +127,9 @@ func TestQuery(t *testing.T) {
 	t.Log(r)
 	t.Log(r.IsSuccess())
 	t.Log(r.Data.Status.IsNormal())
+	t.Log(r.Data.Status.IsUsed())
+	t.Log(r.Data.Status.IsDiscardIng())
+	t.Log(r.Data.Status.IsDiscard())
 }
 
 func TestDiscard(t *testing.T) {
