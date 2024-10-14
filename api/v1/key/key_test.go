@@ -9,17 +9,16 @@ import (
 )
 
 var (
-	// 私钥
-	rsaPrivateKey = "MIIEpAIBAAKCAQEAsDOhgtGNgKMH01Tc31O6xfqLWn0MJPBJtVBiHBI2J2WTQ1cmvrXmkO5ZNQr3fg/nmGdvEaKZScxZkcbEv5LBgjcDIE5a18EJVt5wrYM23m94welCdKoe1bbRf14WKsX+oqj3NQlWv4EQjhQGwwxLGXhtQg7o9j3gF0ybL9CxsYFSzAUgPy9TJvlOz/AeeMGCORC7dgYZZhckMRIql9gJSVJoXnNxF/4XnZ2it1m8+qQEngfxT+3VIObev3gdUx7WXx3Uxzlu7MSGWKN0nlGE4x0s8WhPhCyInYZfMJVaXFOazAoOi8/fHoYzpgGeiQ3d8U9sbWlyoki+krqMj8iFbwIDAQABAoIBAGA2AQXWeIZ5/sblOqlzJbP+x2LEjwIIdqbbWobrZsiCTTPi/ZP67QfMLcep0lPySUpNiDc/6qWCQJI5z6qvbpw0f69/OVk/3WKimTIVSLuScISpYpEjZyzY43HBpSb777tPuZQrIkP1LF34D20nZEZnHHmKfKggRyFRwhcMxEogZDby3p+/UEodFG+oxsIaUmjwEaLZYHfX5JX706yptOKXq2yKmSB82yhnWYXvvJnwXer2lhMIs7gCOMWX6sLTNxPM+m1K+Qoa3L0bEwpfl/zvaWsRLyG8DZp7/rQ/1VXUOmKmRNk3nYGhIHoG/tiwAdxEKNkyy3HHkDYyEdE2gdkCgYEA3bQhFXAKLGBfxNqeETQY2dJ+6fB1OzqC5DQDZ2XfXAccMkcAeqZpm8+2gHQ+oqUb3nCZMcxZY1rQ+nTQOhaBb2FUXoHzlF6gWzFSdZvcV7FTKsIxo/rPX+xCucx23HyRhuFancPqXLjH5whZeM/gba7ne90/kJZs9YqMmiEfLpsCgYEAy3WKggQpovwZxHirqjll6oAP/I16WjsADEu34bBBXO0TwEuHYdCiFekOIUIwNcHQANbYnDvmaF5ZIdoJA0JaNtTlLnVdgH67jU/D+LYFh/y4FezzTuF0dOJT/5W7+Nf/1AMs5NAFHB4HXifsOzc6p6ZLfPKLsy9BctDOiUTUp70CgYAd5rh7krPcjlb8Ttv4yAT+A9TYKnU1OswCiT1YSbYZTGAyK79Vy3H88MPViVgVSZ17n8YZoE0CCHKdBPo8i2KDqiXd5Tr77NNF2V4cvJu4PBNSdgSJ8D7d2hiZxIjXbfmWrngxRQYr4UQc1dRzZd4IDQnte8ah8pfZeglClGsHNwKBgQDBELevap3MAGe/LTbQoAja/kytPd9lsej4wf0ql2Ne98UvSzybkCvOmMmEu9cdm91yfm0rzBd24Fi6K7kzs4oB0AHuFQb2AMyeapuu7aLQCPryK1gyePRWWdKVjJPDrcwgdibqtY6zwLcDHOUox97L6ZxmY443KVd0yTnDvmIBDQKBgQDS2CUsvyGXA6aTrHmanPVAQ20ZxIgXWHsoyM0DPAydtjcHoBR5g7EtsbEleo+UNZ1/YaWLUcJVocde1dfTVBiwc28Ln3WaGIVxmqLr8wPN2KiWxmG3gWNHVH/U40vUec8Pj5uKW0WNVu4pZX3EJIPmRSfnkMWrXmNhJzgrri5rHA=="
-	// 公钥
-	publicKeyStr = "MIIBCgKCAQEAsDOhgtGNgKMH01Tc31O6xfqLWn0MJPBJtVBiHBI2J2WTQ1cmvrXmkO5ZNQr3fg/nmGdvEaKZScxZkcbEv5LBgjcDIE5a18EJVt5wrYM23m94welCdKoe1bbRf14WKsX+oqj3NQlWv4EQjhQGwwxLGXhtQg7o9j3gF0ybL9CxsYFSzAUgPy9TJvlOz/AeeMGCORC7dgYZZhckMRIql9gJSVJoXnNxF/4XnZ2it1m8+qQEngfxT+3VIObev3gdUx7WXx3Uxzlu7MSGWKN0nlGE4x0s8WhPhCyInYZfMJVaXFOazAoOi8/fHoYzpgGeiQ3d8U9sbWlyoki+krqMj8iFbwIDAQAB"
-	aesKey       = "381a72d6311974f32aee169492f550eb"
-	baseURL      = "http://127.0.0.1:9000"
+	rsaPrivateKey = "MIIEowIBAAKCAQEA7a2I4l8OOdW4weVFvj4u/mBqP3aZhJ0mOTKl4MCW4Pf6gNAlZa5dZYOS/BocmG872+pd10BiI73qiAWsuVaPwCL0A37lQbCXlG0fDAfCLogXuF1qVNRZgkYKrx/5Gppo2PNed7E5YyCUkMUKVPbuwuZteMZJH8d1o6Uojbb/xJQvAGOlx5Y04VZWp/6p2GjhW0srwgbpVegMyyn2Qblx1Lo+Uq5zG8um7FTpbtb/L/itpBFEDSZGIIKDfn4FPyt+jQ0SW5TDYQClSvWHK4V3RkWOVkD1nHeBpZyp7JNehK+7kBfO6G4NJabkyoWqFEiZcTy38ZWQdqJ9N4LZuY37NwIDAQABAoIBAGs2u6e5z1YBda1pehN+Q36WCXeFTW0H4qUslq0S0zy6P/L5cdUzWYggWR6FvN56Vts2Foyxy1NqKTCgtrCIPqIiYkZtaIdAXLAkpTutCEgrNeABq6SGgbYFWG51Es6QVrl+1t9RP5zaponDiIyZM00R2tH/SB8gv41JREjhAvEuNIwPyaoVVt+U/kAdhJgiMKsDpoGaMfsJk76sORu6qQqBkBN8cglN94xC0QtROytW3EY8SnZmgGZHcY3YTXM74CWM8yBg7rNuKv0982f9hKvUDHKMFYly1PzYiSgplkT7RYCMjo2FFf1lt7k7N61+4nalS/EM6324m2poisTRFAkCgYEA+3oXvtwrTim0kXG7V7w5PS8u5dU0sAAH4ACSyzy8nEdKEk4ipoaTGm6km8ko0O+9E70SwZQgK/eAnmsYf5WtMzvItweKUUVsBCm01qSHlu5vzGO3H1ndi7hg+tH9VrOQH3+odQJP9FqC4BkncMszHM4nLglWSTixTTvGIovQLy0CgYEA8fPnu0tWqhfQV6svaA5kt4h6cL52ARKlubRuYkI4hGuikKYpd2A3WuVtD1LkuPQSjwID9730HAqLc7ZMwONjQ8NANi9ZoJR6A+Vzba9zDPQmSc80Ax7Kkjc03D1Y7yiP6P8bWnhCCbRcMy+dcobvBZc2zaWzSNjZwPOSV9xaMnMCgYAclz354hg+U7mGy7JsACdV0HZ5hOrvk6FRk18dIjOjZOuD90QzQJua5rdqSs2MK6WIh/eI8KlTtlj2KeDoKIE/kO15+a59HPJx6rf3q08LFuK5DyEzvEjW6MiF27f80n9xRVdGrlOeyWeVyOZWCZQvEzUbI86eloZ57HDTXqf1pQKBgF6T6xeJgZ0Hpgc/AU75oWEk1kfQC6yrr2CCKUv7esA4mtlUOo1RbRH48MK2snWh4sdIEGj9NbjoXk6jCim0OQ85+ZW0uKJOp8tyG8baeGyt23GqrzgxBxpUvjMBQAxsnKSFZBnfPGEywX+4syEbob9btq54gTaOncAQ9jmmBxQFAoGBAIpPbq2lYwOhgoUJ2BR34xjpmNOiOAF5AVLPGTH44a+iGMJ4tbF9AvfL4xsCWK9zMi3ExaKVN0lNn0cWx2lpXxwO6B+l4L//eczmHx4h1eLJd6ZWyTj7lq+RBOOUgHLKEssZfJ11RYTZjSD7s75JZteM2OFw7BVRRNgw387A3mj6"
+	publicKeyStr  = "MIIBCgKCAQEA43/kRptu3Y5i/LjZhGQMaExG7+VE4MvonWpXELhxFdLAsfLA+e1XcKBzD6uHWaKo+L7CWvSBtj3LXAr++uInDnxAiPbgsnmYe8tEeZzg2IYeYPThLH84XQouuTx1pspqvU2t7ZXQPJulq5LbYJUmRR+V4d8zKhSsctLlg3AhujHnZ4LUWJXjrnt++JYi3hFai+p1knUic5rXh/35HoYbnnljGhPPe2U3xn4TWvVkeAJQpxkdS4s2AuSUg+L0M5kkHgeYAr28YQTwOm8GcCaXuLUDdNdX1/Iud9tgsLzQVP3qVdxKVNp8vRZOnKn6OjwLaTBkePVuMVgmtBTR+Gsm+QIDAQAB"
+	aesKey        = "ffb403db11face06d59526ac93f25789"
+	baseURL       = "https://gateway.dev.cdlsxd.cn"
+	appID         = "lzm"
 )
 
 func TestSignVerify(t *testing.T) {
 	c := core2.Config{
-		AppID:      "123",
+		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
@@ -54,7 +53,7 @@ func TestSignVerify(t *testing.T) {
 
 func TestGetParams(t *testing.T) {
 	c := core2.Config{
-		AppID:      "123",
+		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
@@ -80,7 +79,7 @@ func TestGetParams(t *testing.T) {
 
 func TestOrder(t *testing.T) {
 	core, err := core2.NewCore(&core2.Config{
-		AppID:      "123",
+		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
@@ -106,7 +105,7 @@ func TestOrder(t *testing.T) {
 
 func TestQuery(t *testing.T) {
 	core, err := core2.NewCore(&core2.Config{
-		AppID:      "123",
+		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
@@ -118,7 +117,7 @@ func TestQuery(t *testing.T) {
 	}
 	a := &Key{core}
 	r, err := a.Query(context.Background(), &QueryRequest{
-		OutBizNo: "outBizNo",
+		OutBizNo: "lzm1",
 		TradeNo:  "",
 	})
 	if err != nil {
@@ -132,7 +131,7 @@ func TestQuery(t *testing.T) {
 
 func TestDiscard(t *testing.T) {
 	core, err := core2.NewCore(&core2.Config{
-		AppID:      "123",
+		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
@@ -160,7 +159,7 @@ func TestDiscard(t *testing.T) {
 
 func TestNotify(t *testing.T) {
 	core, err := core2.NewCore(&core2.Config{
-		AppID:      "123",
+		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
@@ -229,7 +228,7 @@ func TestCallback(t *testing.T) {
 
 func TestCallBackNotify(t *testing.T) {
 	c := core2.Config{
-		AppID:      "123",
+		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,

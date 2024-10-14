@@ -1,6 +1,8 @@
 package key
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 type Status uint8
 
@@ -62,7 +64,7 @@ type Reply struct {
 }
 
 func (a *Response) Response(b []byte) (*Response, error) {
-	if err := json.Unmarshal(b, a); err != nil {
+	if err := json.Unmarshal(b, &a); err != nil {
 		return nil, err
 	}
 	return a, nil
