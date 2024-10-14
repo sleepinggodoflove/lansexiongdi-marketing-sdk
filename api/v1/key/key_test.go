@@ -2,7 +2,7 @@ package key
 
 import (
 	"context"
-	core2 "github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
 	"io"
 	"strings"
 	"testing"
@@ -17,14 +17,14 @@ var (
 )
 
 func TestSignVerify(t *testing.T) {
-	c := core2.Config{
+	c := core.Config{
 		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
 		BaseURL:    baseURL,
 	}
-	core, err := core2.NewCore(&c, core2.WithSignType(core2.SignRSA))
+	co, err := core.NewCore(&c, core.WithSignType(core.SignRSA))
 	if err != nil {
 		t.Error(err)
 		return
@@ -39,27 +39,27 @@ func TestSignVerify(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	signature, err := core.Signer.Sign(dataToStr)
+	signature, err := co.Signer.Sign(dataToStr)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	t.Log(signature)
-	b := core.Verifier.Verify(dataToStr, signature)
+	b := co.Verifier.Verify(dataToStr, signature)
 	if !b {
 		t.Error("签名验证失败")
 	}
 }
 
 func TestGetParams(t *testing.T) {
-	c := core2.Config{
+	c := core.Config{
 		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
 		BaseURL:    baseURL,
 	}
-	core, err := core2.NewCore(&c, core2.WithSignType(core2.SignRSA))
+	co, err := core.NewCore(&c, core.WithSignType(core.SignRSA))
 	if err != nil {
 		t.Error(err)
 		return
@@ -69,7 +69,7 @@ func TestGetParams(t *testing.T) {
 		ActivityNo: "activityNo",
 		Number:     1,
 	}
-	p, err := core.GetParams(orderReq)
+	p, err := co.GetParams(orderReq)
 	if err != nil {
 		t.Error(err)
 		return
@@ -78,7 +78,7 @@ func TestGetParams(t *testing.T) {
 }
 
 func TestOrder(t *testing.T) {
-	core, err := core2.NewCore(&core2.Config{
+	co, err := core.NewCore(&core.Config{
 		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
@@ -89,7 +89,7 @@ func TestOrder(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	a := &Key{core}
+	a := &Key{co}
 	r, err := a.Order(context.Background(), &OrderRequest{
 		OutBizNo:   "outBizNo",
 		ActivityNo: "activityNo",
@@ -104,7 +104,7 @@ func TestOrder(t *testing.T) {
 }
 
 func TestQuery(t *testing.T) {
-	core, err := core2.NewCore(&core2.Config{
+	co, err := core.NewCore(&core.Config{
 		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
@@ -115,7 +115,7 @@ func TestQuery(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	a := &Key{core}
+	a := &Key{co}
 	r, err := a.Query(context.Background(), &QueryRequest{
 		OutBizNo: "lzm1",
 		TradeNo:  "",
@@ -133,7 +133,7 @@ func TestQuery(t *testing.T) {
 }
 
 func TestDiscard(t *testing.T) {
-	core, err := core2.NewCore(&core2.Config{
+	co, err := core.NewCore(&core.Config{
 		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
@@ -144,7 +144,7 @@ func TestDiscard(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	a := &Key{core}
+	a := &Key{co}
 	r, err := a.Discard(context.Background(), &DiscardRequest{
 		OutBizNo: "outBizNo",
 		TradeNo:  "tradeNo",
@@ -162,7 +162,7 @@ func TestDiscard(t *testing.T) {
 }
 
 func TestNotify(t *testing.T) {
-	core, err := core2.NewCore(&core2.Config{
+	co, err := core.NewCore(&core.Config{
 		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
@@ -173,7 +173,7 @@ func TestNotify(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	a := &Key{core}
+	a := &Key{co}
 	r, err := a.Notify(context.Background(), &Notify{})
 	if err != nil {
 		t.Error(err)
@@ -202,7 +202,7 @@ func TestCallback(t *testing.T) {
 		Sign:      "",
 		Data:      data,
 	}
-	core, err := core2.NewCore(&core2.Config{
+	co, err := core.NewCore(&core.Config{
 		AppID:      n.AppId,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
@@ -213,13 +213,13 @@ func TestCallback(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	signStr, err := core.Signer.Sign(n.SignString())
+	signStr, err := co.Signer.Sign(n.SignString())
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	n.Sign = signStr
-	a := &Key{core}
+	a := &Key{co}
 	r, err := a.Notify(context.Background(), n)
 	if err != nil {
 		t.Error(err)
@@ -230,19 +230,19 @@ func TestCallback(t *testing.T) {
 }
 
 func TestCallBackNotify(t *testing.T) {
-	c := core2.Config{
+	c := core.Config{
 		AppID:      appID,
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
 		BaseURL:    "http://127.0.0.1:8080/utils/v1/wechat/notify",
 	}
-	core, err := core2.NewCore(&c, core2.WithSignType(core2.SignRSA))
+	co, err := core.NewCore(&c, core.WithSignType(core.SignRSA))
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	resp, err := core.Post(context.Background(), c.BaseURL, []byte(`{}`))
+	resp, err := co.Post(context.Background(), c.BaseURL, []byte(`{}`))
 	if err != nil {
 		t.Error(err)
 		return
