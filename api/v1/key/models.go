@@ -12,8 +12,8 @@ var _ core.Request = (*DiscardRequest)(nil)
 var _ core.Request = (*QueryRequest)(nil)
 
 type OrderRequest struct {
-	OutBizNo   string `validate:"required,min=2,max=30" json:"out_biz_no"`
-	ActivityNo string `validate:"required,min=2,max=30" json:"activity_no"`
+	OutBizNo   string `validate:"required,min=2,max=32" json:"out_biz_no"`
+	ActivityNo string `validate:"required,min=2,max=32" json:"activity_no"`
 	Number     int32  `validate:"required,min=1" json:"number"`
 }
 

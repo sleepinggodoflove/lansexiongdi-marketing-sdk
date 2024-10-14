@@ -3,7 +3,7 @@ package key
 import (
 	"context"
 	core2 "github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
-	"io/ioutil"
+	"io"
 	"strings"
 	"testing"
 )
@@ -127,6 +127,7 @@ func TestQuery(t *testing.T) {
 	}
 	t.Log(r)
 	t.Log(r.IsSuccess())
+	t.Log(r.Data.Status.IsNormal())
 }
 
 func TestDiscard(t *testing.T) {
@@ -177,6 +178,8 @@ func TestNotify(t *testing.T) {
 	}
 	t.Log(r)
 	t.Log(r.Status.IsNormal())
+	t.Log(r.Status.IsUsed())
+	t.Log(r.Status.IsDiscard())
 }
 
 func TestCallback(t *testing.T) {
@@ -242,7 +245,7 @@ func TestCallBackNotify(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Error(err)
 		return
