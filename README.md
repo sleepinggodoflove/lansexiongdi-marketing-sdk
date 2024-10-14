@@ -33,7 +33,7 @@ go get -u github.com/sleepinggodoflove/lansexiongdi-marketing-sdk
 
 ## 示例
 
-### 以 [获取key码下单](https://tvd8jq9lqkp.feishu.cn/wiki/PVq3wtanPicDu0kyfpLc0McMnAc?from=from_copylink) 为例
+### [获取key码](https://tvd8jq9lqkp.feishu.cn/wiki/PVq3wtanPicDu0kyfpLc0McMnAc?from=from_copylink)
 
 ```go
 package main
@@ -58,12 +58,80 @@ func main() {
 	}
 	a := &key.Key{c}
 	r, err := a.Order(context.Background(), &key.OrderRequest{
-		OutBizNo:   "outBizNo",
-		ActivityNo: "activityNo",
+		OutBizNo:   "123456",
+		ActivityNo: "123456",
 		Number:     1,
 	})
 	if err != nil {
 		log.Fatalf("key get err:%s", err)
+	}
+	log.Printf(r)
+}
+```
+
+[查询key码](https://tvd8jq9lqkp.feishu.cn/wiki/GvRswEDyfiXGUUkkDCYc8xg4nVX?from=from_copylink)
+```go
+package main
+
+import (
+	"context"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api/v1/key"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+	"log"
+)
+
+func main() {
+	c, err := core.NewCore(&core.Config{
+		AppID:      "123",
+		PrivateKey: "私钥",
+		PublicKey:  "验签公钥",
+		Key:        "业务参数密钥key",
+		BaseURL:    "请求地址",
+	})
+	if err != nil {
+		log.Fatalf("new core err:%s", err)
+	}
+	a := &key.Key{c}
+	r, err := a.Query(context.Background(), &key.QueryRequest{
+		OutBizNo:   "123456",
+		trade_no:   "123456",
+	})
+	if err != nil {
+		log.Fatalf("key query err:%s", err)
+	}
+	log.Printf(r)
+}
+```
+
+[作废key码](https://tvd8jq9lqkp.feishu.cn/wiki/R9NMw96eIiXLiRkOi7icANkynbb?from=from_copylink)
+```go
+package main
+
+import (
+	"context"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api/v1/key"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+	"log"
+)
+
+func main() {
+	c, err := core.NewCore(&core.Config{
+		AppID:      "123",
+		PrivateKey: "私钥",
+		PublicKey:  "验签公钥",
+		Key:        "业务参数密钥key",
+		BaseURL:    "请求地址",
+	})
+	if err != nil {
+		log.Fatalf("new core err:%s", err)
+	}
+	a := &key.Key{c}
+	r, err := a.Discard(context.Background(), &key.DiscardRequest{
+		OutBizNo:   "123456",
+		trade_no:   "123456",
+	})
+	if err != nil {
+		log.Fatalf("key query err:%s", err)
 	}
 	log.Printf(r)
 }
