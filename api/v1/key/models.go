@@ -90,6 +90,8 @@ type NotifyData struct {
 	OutBizNo       string `json:"out_biz_no" validate:"required,alphanum,min=2,max=32"`
 	TradeNo        string `json:"trade_no" validate:"required,alphanum,min=2,max=32"`
 	Key            string `json:"key" validate:"required"`
+	UsableNum      uint32 `json:"usable_num"`
+	UsageNum       uint32 `json:"usage_num"`
 	Status         Status `json:"status" validate:"required"`
 	Url            string `json:"url" validate:"required"`
 	ValidBeginTime string `json:"valid_begin_time,omitempty"`

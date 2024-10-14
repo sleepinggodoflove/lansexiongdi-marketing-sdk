@@ -59,6 +59,8 @@ type Reply struct {
 	OutBizNo       string `json:"out_biz_no"`
 	TradeNo        string `json:"trade_no"`
 	Key            string `json:"key"`
+	UsableNum      uint32 `json:"usable_num"`
+	UsageNum       uint32 `json:"usage_num"`
 	Status         Status `json:"status"`
 	Url            string `json:"url"`
 	ValidBeginTime string `json:"valid_begin_time,omitempty"`
