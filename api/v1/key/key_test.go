@@ -158,6 +158,7 @@ func TestDiscard(t *testing.T) {
 	if r.IsSuccess() {
 		t.Log("作废收单成功")
 	}
+	t.Log(r.Data.Status.IsDiscardIng())
 }
 
 func TestNotify(t *testing.T) {
@@ -179,7 +180,6 @@ func TestNotify(t *testing.T) {
 		return
 	}
 	t.Log(r)
-	t.Log(r.Status.IsNormal())
 	t.Log(r.Status.IsUsed())
 	t.Log(r.Status.IsDiscard())
 }
