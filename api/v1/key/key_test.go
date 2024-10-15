@@ -91,8 +91,8 @@ func TestOrder(t *testing.T) {
 	}
 	a := &Key{co}
 	r, err := a.Order(context.Background(), &OrderRequest{
-		OutBizNo:   "outBizNo",
-		ActivityNo: "activityNo",
+		OutBizNo:   "321312",
+		ActivityNo: "lzm",
 		Number:     1,
 	})
 	if err != nil {
