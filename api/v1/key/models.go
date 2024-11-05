@@ -12,7 +12,7 @@ var _ core.Request = (*DiscardRequest)(nil)
 var _ core.Request = (*QueryRequest)(nil)
 
 type OrderRequest struct {
-	OutBizNo   string `validate:"required,min=2,max=32" json:"out_biz_no"`
+	OutBizNo   string `validate:"required,min=2,max=32" json:"out_biz_no"` // 同一商户应用下不可重复
 	ActivityNo string `validate:"required,min=2,max=32" json:"activity_no"`
 	Number     int32  `validate:"required,min=1" json:"number"`
 }
@@ -35,7 +35,7 @@ func (c *OrderRequest) Validate() error {
 }
 
 type QueryRequest struct {
-	OutBizNo string `json:"out_biz_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"` // out_biz_no/trade_no二选一
+	OutBizNo string `json:"out_biz_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"` // out_biz_no/trade_no二选一 同一商户应用下不可重复
 	TradeNo  string `json:"trade_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"`   // out_biz_no/trade_no二选一 若不为空，则优先使用
 }
 
@@ -60,7 +60,7 @@ func (q *QueryRequest) Validate() error {
 }
 
 type DiscardRequest struct {
-	OutBizNo string `json:"out_biz_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"` // out_biz_no/trade_no二选一
+	OutBizNo string `json:"out_biz_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"` // out_biz_no/trade_no二选一 同一商户应用下不可重复
 	TradeNo  string `json:"trade_no,omitempty" validate:"omitempty,alphanum,min=2,max=32"`   // out_biz_no/trade_no二选一 若不为空，则优先使用
 	Reason   string `json:"reason,omitempty" validate:"omitempty,min=1,max=50"`              // 可为空
 }
