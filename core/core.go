@@ -3,6 +3,7 @@ package core
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"io/ioutil"
 	"net/http"
@@ -145,6 +146,9 @@ func (c *Core) Request(ctx context.Context, method string, request Request) ([]b
 	resp, err := c.Post(ctx, c.Config.BaseURL+method, reqBodyBytes)
 	if err != nil {
 		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf(resp.Status)
 	}
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
