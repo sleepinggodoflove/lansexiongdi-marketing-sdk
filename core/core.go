@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-playground/validator/v10"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -41,12 +41,14 @@ func (c *Config) Validate() error {
 
 // Core structure
 type Core struct {
-	Config       *Config
-	HttpClient   *http.Client
-	SignType     string
-	Signer       Signer
-	Verifier     Verifier
+	HttpClient *http.Client
+	Config     *Config
+
 	EncodeDecode EncodeDecode
+
+	SignType string
+	Signer   Signer
+	Verifier Verifier
 }
 
 type Option func(*Core)
@@ -71,9 +73,9 @@ func NewCore(conf *Config, o ...Option) (*Core, error) {
 		return nil, err
 	}
 	core := &Core{
-		SignType:   SignRSA,
-		Config:     conf,
 		HttpClient: http.DefaultClient,
+		Config:     conf,
+		SignType:   SignRSA,
 	}
 	for _, f := range o {
 		f(core)
@@ -151,7 +153,7 @@ func (c *Core) Request(ctx context.Context, method string, request Request) ([]b
 		return nil, fmt.Errorf(resp.Status)
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }
 
 // Post sends the request and Analysis the response

@@ -38,8 +38,8 @@ func (g *Generate) SavePem(path string) error {
 		return err
 	}
 	defer privateKeyFile.Close()
-	err = pem.Encode(privateKeyFile, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: g.privateKeyBytes})
-	if err != nil {
+
+	if err = pem.Encode(privateKeyFile, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: g.privateKeyBytes}); err != nil {
 		return err
 	}
 
@@ -48,6 +48,7 @@ func (g *Generate) SavePem(path string) error {
 		return err
 	}
 	defer publicKeyFile.Close()
+
 	return pem.Encode(publicKeyFile, &pem.Block{Type: "RSA PUBLIC KEY", Bytes: g.publicKeyBytes})
 }
 
