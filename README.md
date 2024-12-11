@@ -24,7 +24,7 @@
 go mod init
 ```
 
-#### 2、无需 clone 仓库中的代码，直接在项目目录中执行：
+#### 2、在项目目录中执行：
 ```shell
 go get -u github.com/sleepinggodoflove/lansexiongdi-marketing-sdk
 ```
