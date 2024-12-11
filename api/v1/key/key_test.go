@@ -68,12 +68,12 @@ func TestOrder(t *testing.T) {
 		t.Errorf("获取key失败:%s", r.Message)
 		return
 	}
-	result, err := r.GetReply()
+	data, err := r.GetData()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	t.Logf("result=%+v", result)
+	t.Logf("data=%+v", data)
 }
 
 func TestQuery(t *testing.T) {
@@ -96,12 +96,12 @@ func TestQuery(t *testing.T) {
 		t.Errorf("查询失败:%s", r.Message)
 		return
 	}
-	result, err := r.GetReply()
+	data, err := r.GetData()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	t.Logf("result=%+v", result)
+	t.Logf("data=%+v", data)
 	//t.Log(result.Status.IsNormal())
 	//t.Log(result.Status.IsUsed())
 	//t.Log(result.Status.IsDiscardIng())
@@ -129,12 +129,12 @@ func TestDiscard(t *testing.T) {
 		t.Errorf("作废收单失败:%s", r.Message)
 		return
 	}
-	result, err := r.GetReply()
+	data, err := r.GetData()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	t.Logf("result=%+v", result)
+	t.Logf("data=%+v", data)
 	//assert.Equal(t, r.Data.Status, DiscardIng)
 }
 
@@ -204,7 +204,7 @@ func TestResponse(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	result, err := resp.GetReply()
+	result, err := resp.GetData()
 	if err != nil {
 		t.Error(err)
 		return
@@ -219,7 +219,7 @@ func TestResponse(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	result2, err := resp2.GetReply()
+	result2, err := resp2.GetData()
 	if err != nil {
 		t.Error(err)
 		return

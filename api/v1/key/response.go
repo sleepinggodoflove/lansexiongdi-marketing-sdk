@@ -50,7 +50,7 @@ func (s Status) IsDiscard() bool {
 	return s == Discard
 }
 
-type Reply struct {
+type Data struct {
 	OutBizNo       string `json:"out_biz_no"`
 	TradeNo        string `json:"trade_no"`
 	Key            string `json:"key"`
@@ -79,14 +79,14 @@ func response(b []byte) (*Response, error) {
 	return &resp, nil
 }
 
-func (a *Response) GetReply() (*Reply, error) {
+func (a *Response) GetData() (*Data, error) {
 	if a.Data == nil {
 		return nil, nil
 	}
 	if string(a.Data) == "{}" {
 		return nil, nil
 	}
-	var reply Reply
+	var reply Data
 	if err := json.Unmarshal(a.Data, &reply); err != nil {
 		return nil, err
 	}
