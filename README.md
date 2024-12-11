@@ -51,6 +51,7 @@ func main() {
 		PrivateKey: "私钥",
 		PublicKey:  "验签公钥",
 		Key:        "业务参数密钥key",
+		SignType:   "签名类型",
 		BaseURL:    "请求地址",
 	})
 	if err != nil {
@@ -86,6 +87,7 @@ func main() {
 		PrivateKey: "私钥",
 		PublicKey:  "验签公钥",
 		Key:        "业务参数密钥key",
+		SignType:   "签名类型",
 		BaseURL:    "请求地址",
 	})
 	if err != nil {
@@ -120,6 +122,7 @@ func main() {
 		PrivateKey: "私钥",
 		PublicKey:  "验签公钥",
 		Key:        "业务参数密钥key",
+		SignType:   "签名类型",
 		BaseURL:    "请求地址",
 	})
 	if err != nil {
@@ -132,6 +135,57 @@ func main() {
 	})
 	if err != nil {
 		log.Fatalf("key query err:%s", err)
+	}
+	log.Printf(r)
+}
+```
+
+#### [回调通知](https://alidocs.dingtalk.com/i/nodes/N7dx2rn0Jb6A1wvLixErNlLkJMGjLRb3?utm_scene=team_space)
+```go
+package main
+
+import (
+	"context"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api/v1/key"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+	"log"
+)
+
+func main() {
+	c, err := core.NewCore(&core.Config{
+		AppID:      "123",
+		PrivateKey: "私钥",
+		PublicKey:  "验签公钥",
+		Key:        "业务参数密钥key",
+		SignType:   "签名类型",
+		BaseURL:    "请求地址",
+	})
+	if err != nil {
+		log.Fatalf("new core err:%s", err)
+	}
+	a := &key.Key{c}
+	r, err := a.Notify(context.Background(), &key.Notify{
+		AppId:     "",
+		SignType:  "",
+		Timestamp: "",
+		Sign:      "",
+		Data: NotifyData{
+			NotifyId:       "",
+			OutBizNo:       "",
+			TradeNo:        "",
+			Key:            "",
+			UsableNum:      0,
+			UsageNum:       0,
+			Status:         0,
+			Url:            "",
+			ValidBeginTime: "",
+			ValidEndTime:   "",
+			UsageTime:      "",
+			DiscardTime:    "",
+		},
+    })
+	if err != nil {
+		log.Fatalf("key notify err:%s", err)
 	}
 	log.Printf(r)
 }

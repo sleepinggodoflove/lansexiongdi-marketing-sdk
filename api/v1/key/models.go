@@ -100,11 +100,11 @@ type NotifyData struct {
 	DiscardTime    string `json:"discard_time,omitempty"`
 }
 type Notify struct {
-	AppId     string      `json:"app_id" validate:"required"`
-	SignType  string      `json:"sign_type" validate:"required"`
-	Timestamp string      `json:"timestamp" validate:"required"`
-	Sign      string      `json:"sign" validate:"required"`
-	Data      *NotifyData `json:"data" validate:"required"`
+	AppId     string     `json:"app_id" validate:"required"`
+	SignType  string     `json:"sign_type" validate:"required"`
+	Timestamp string     `json:"timestamp" validate:"required"`
+	Sign      string     `json:"sign" validate:"required"`
+	Data      NotifyData `json:"data" validate:"required"`
 }
 
 func (d *Notify) Validate() error {

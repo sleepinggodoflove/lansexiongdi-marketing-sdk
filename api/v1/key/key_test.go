@@ -145,7 +145,26 @@ func TestNotify(t *testing.T) {
 		return
 	}
 	a := &Key{newCore}
-	r, err := a.Notify(context.Background(), &Notify{})
+	r, err := a.Notify(context.Background(), &Notify{
+		AppId:     "",
+		SignType:  "",
+		Timestamp: "",
+		Sign:      "",
+		Data: NotifyData{
+			NotifyId:       "",
+			OutBizNo:       "",
+			TradeNo:        "",
+			Key:            "",
+			UsableNum:      0,
+			UsageNum:       0,
+			Status:         0,
+			Url:            "",
+			ValidBeginTime: "",
+			ValidEndTime:   "",
+			UsageTime:      "",
+			DiscardTime:    "",
+		},
+	})
 	if err != nil {
 		t.Error(err)
 		return
@@ -159,7 +178,7 @@ func TestNotify(t *testing.T) {
 }
 
 func TestCallback(t *testing.T) {
-	data := &NotifyData{
+	data := NotifyData{
 		NotifyId:       "123456",
 		OutBizNo:       "123456",
 		TradeNo:        "1234567",

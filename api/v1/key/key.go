@@ -42,5 +42,5 @@ func (k *Key) Notify(_ context.Context, n *Notify) (*NotifyData, error) {
 	if !k.CryptographySuite.Verifier.Verify(n.SignString(), n.Sign) {
 		return nil, fmt.Errorf("verify sign fail")
 	}
-	return n.Data, nil
+	return &n.Data, nil
 }
