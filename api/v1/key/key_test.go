@@ -3,73 +3,43 @@ package key
 import (
 	"context"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
-	"io"
-	"strings"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 var (
-	rsaPrivateKey = ""
-	publicKeyStr  = ""
-	aesKey        = ""
-	baseURL       = "http://127.0.0.1:9000"
-	appID         = "lzm"
+	appId      = ""
+	privateKey = ""
+	publicKey  = ""
+	key        = ""
+	baseURL    = ""
+	signType   = core.SignRSA
 )
 
-func TestSignVerify(t *testing.T) {
+func getCore() (*core.Core, error) {
 	c := core.Config{
-		AppID:      appID,
-		PrivateKey: rsaPrivateKey,
-		PublicKey:  publicKeyStr,
-		Key:        aesKey,
+		AppID:      appId,
+		PrivateKey: privateKey,
+		PublicKey:  publicKey,
+		Key:        key,
+		SignType:   signType,
 		BaseURL:    baseURL,
 	}
-	co, err := core.NewCore(&c, core.WithSignType(core.SignRSA))
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	orderReq := &OrderRequest{
-		OutBizNo:   "321312",
-		ActivityNo: "lzm",
-		Number:     1,
-	}
-	dataToStr, err := orderReq.String()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	signature, err := co.Signer.Sign(dataToStr)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	t.Log(signature)
-	b := co.Verifier.Verify(dataToStr, signature)
-	if !b {
-		t.Error("签名验证失败")
-	}
+	return core.NewCore(&c)
 }
 
 func TestGetParams(t *testing.T) {
-	c := core.Config{
-		AppID:      appID,
-		PrivateKey: rsaPrivateKey,
-		PublicKey:  publicKeyStr,
-		Key:        aesKey,
-		BaseURL:    baseURL,
-	}
-	co, err := core.NewCore(&c, core.WithSignType(core.SignRSA))
+	newCore, err := getCore()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	orderReq := &OrderRequest{
+	req := &OrderRequest{
 		OutBizNo:   "321312",
 		ActivityNo: "lzm",
 		Number:     1,
 	}
-	p, err := co.GetParams(orderReq)
+	p, err := newCore.GetParams(req)
 	if err != nil {
 		t.Error(err)
 		return
@@ -78,20 +48,14 @@ func TestGetParams(t *testing.T) {
 }
 
 func TestOrder(t *testing.T) {
-	co, err := core.NewCore(&core.Config{
-		AppID:      appID,
-		PrivateKey: rsaPrivateKey,
-		PublicKey:  publicKeyStr,
-		Key:        aesKey,
-		BaseURL:    baseURL,
-	})
+	newCore, err := getCore()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	a := &Key{co}
+	a := &Key{newCore}
 	r, err := a.Order(context.Background(), &OrderRequest{
-		OutBizNo:   "321312",
+		OutBizNo:   "20241211002",
 		ActivityNo: "lzm",
 		Number:     1,
 	})
@@ -99,90 +63,99 @@ func TestOrder(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Log(r)
-	t.Log(r.IsSuccess())
-}
-
-func TestQuery(t *testing.T) {
-	co, err := core.NewCore(&core.Config{
-		AppID:      appID,
-		PrivateKey: rsaPrivateKey,
-		PublicKey:  publicKeyStr,
-		Key:        aesKey,
-		BaseURL:    baseURL,
-	})
+	t.Logf("response=%+v", r)
+	if !r.IsSuccess() {
+		t.Errorf("获取key失败:%s", r.Message)
+		return
+	}
+	result, err := r.GetReply()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	a := &Key{co}
+	t.Logf("result=%+v", result)
+}
+
+func TestQuery(t *testing.T) {
+	newCore, err := getCore()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	a := &Key{newCore}
 	r, err := a.Query(context.Background(), &QueryRequest{
-		OutBizNo: "testOrder123456",
+		OutBizNo: "20241211002",
 		TradeNo:  "",
 	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	t.Log(r)
-	if r.IsSuccess() {
-		t.Log(r.Data.Status.IsNormal())
-		t.Log(r.Data.Status.IsUsed())
-		t.Log(r.Data.Status.IsDiscardIng())
-		t.Log(r.Data.Status.IsDiscard())
+	t.Logf("response=%+v", r)
+	if !r.IsSuccess() {
+		t.Errorf("查询失败:%s", r.Message)
+		return
 	}
-}
-
-func TestDiscard(t *testing.T) {
-	co, err := core.NewCore(&core.Config{
-		AppID:      appID,
-		PrivateKey: rsaPrivateKey,
-		PublicKey:  publicKeyStr,
-		Key:        aesKey,
-		BaseURL:    baseURL,
-	})
+	result, err := r.GetReply()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	a := &Key{co}
+	t.Logf("result=%+v", result)
+	//t.Log(result.Status.IsNormal())
+	//t.Log(result.Status.IsUsed())
+	//t.Log(result.Status.IsDiscardIng())
+	//t.Log(result.Status.IsDiscard())
+}
+
+func TestDiscard(t *testing.T) {
+	newCore, err := getCore()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	a := &Key{newCore}
 	r, err := a.Discard(context.Background(), &DiscardRequest{
-		OutBizNo: "outBizNo",
-		TradeNo:  "tradeNo",
+		OutBizNo: "20241211002",
+		TradeNo:  "",
 		Reason:   "正常作废",
 	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	t.Log(r)
-	if r.IsSuccess() {
-		t.Log("作废收单成功")
+	t.Logf("response=%+v", r)
+	if !r.IsSuccess() {
+		t.Errorf("作废收单失败:%s", r.Message)
+		return
 	}
-	t.Log(r.Data.Status.IsDiscardIng())
-}
-
-func TestNotify(t *testing.T) {
-	co, err := core.NewCore(&core.Config{
-		AppID:      appID,
-		PrivateKey: rsaPrivateKey,
-		PublicKey:  publicKeyStr,
-		Key:        aesKey,
-		BaseURL:    baseURL,
-	})
+	result, err := r.GetReply()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	a := &Key{co}
+	t.Logf("result=%+v", result)
+	//assert.Equal(t, r.Data.Status, DiscardIng)
+}
+
+func TestNotify(t *testing.T) {
+	newCore, err := getCore()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	a := &Key{newCore}
 	r, err := a.Notify(context.Background(), &Notify{})
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	t.Log(r)
-	t.Log(r.Status.IsUsed())
-	t.Log(r.Status.IsDiscard())
+	assert.Equal(t, r.Status, Discard)
+	//t.Log(r.Data.Status.IsNormal())
+	//t.Log(r.Data.Status.IsUsed())
+	//t.Log(r.Data.Status.IsDiscardIng())
+	//t.Log(r.Data.Status.IsDiscard())
 }
 
 func TestCallback(t *testing.T) {
@@ -203,24 +176,18 @@ func TestCallback(t *testing.T) {
 		Sign:      "",
 		Data:      data,
 	}
-	co, err := core.NewCore(&core.Config{
-		AppID:      n.AppId,
-		PrivateKey: rsaPrivateKey,
-		PublicKey:  publicKeyStr,
-		Key:        aesKey,
-		BaseURL:    baseURL,
-	})
+	newCore, err := getCore()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	signStr, err := co.Signer.Sign(n.SignString())
+	signStr, err := newCore.CryptographySuite.Signer.Sign(n.SignString())
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	n.Sign = signStr
-	a := &Key{co}
+	a := &Key{newCore}
 	r, err := a.Notify(context.Background(), n)
 	if err != nil {
 		t.Error(err)
@@ -230,34 +197,34 @@ func TestCallback(t *testing.T) {
 	t.Log(r.Status.IsNormal())
 }
 
-func TestCallBackNotify(t *testing.T) {
-	c := core.Config{
-		AppID:      appID,
-		PrivateKey: rsaPrivateKey,
-		PublicKey:  publicKeyStr,
-		Key:        aesKey,
-		BaseURL:    "http://127.0.0.1/notify",
-	}
-	co, err := core.NewCore(&c, core.WithSignType(core.SignRSA))
+func TestResponse(t *testing.T) {
+	jsonBytes := []byte(`{"code":200,"data":{},"message":"成功"}`)
+	resp, err := response(jsonBytes)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	resp, err := co.Post(context.Background(), c.BaseURL, []byte(`{}`))
+	result, err := resp.GetReply()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	body, err := io.ReadAll(resp.Body)
+	t.Logf("%+v", resp)
+	t.Logf("%s", string(resp.Data))
+	t.Logf("%+v", result)
+
+	jsonBytes2 := []byte(`{"code":200,"message":"成功","data":{"out_biz_no":"123","trade_no":"456"}}`)
+	resp2, err := response(jsonBytes2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	bodyStr := string(body)
-	t.Log(bodyStr)
-	if strings.Contains(bodyStr, "ok") {
-		t.Log("ok")
-	} else {
-		t.Error("error")
+	result2, err := resp2.GetReply()
+	if err != nil {
+		t.Error(err)
+		return
 	}
+	t.Logf("%+v", resp2)
+	t.Logf("%s", string(resp2.Data))
+	t.Logf("%+v", result2)
 }

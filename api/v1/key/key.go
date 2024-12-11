@@ -6,35 +6,41 @@ import (
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api"
 )
 
+const (
+	orderMethod   = "/openapi/v1/key/order"
+	queryMethod   = "/openapi/v1/key/query"
+	discardMethod = "/openapi/v1/key/discard"
+)
+
 type Key api.Service
 
-func (a *Key) Order(ctx context.Context, request *OrderRequest) (*Response, error) {
-	b, err := a.Request(ctx, orderMethod, request)
+func (k *Key) Order(ctx context.Context, request *OrderRequest) (*Response, error) {
+	_, b, err := k.Post(ctx, orderMethod, request)
 	if err != nil {
 		return nil, err
 	}
 	return response(b)
 }
 
-func (a *Key) Query(ctx context.Context, request *QueryRequest) (*Response, error) {
-	b, err := a.Request(ctx, queryMethod, request)
+func (k *Key) Query(ctx context.Context, request *QueryRequest) (*Response, error) {
+	_, b, err := k.Post(ctx, queryMethod, request)
 	if err != nil {
 		return nil, err
 	}
 	return response(b)
 }
 
-func (a *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, error) {
-	b, err := a.Request(ctx, discardMethod, request)
+func (k *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, error) {
+	_, b, err := k.Post(ctx, discardMethod, request)
 	if err != nil {
 		return nil, err
 	}
 	return response(b)
 }
 
-func (a *Key) Notify(_ context.Context, notify *Notify) (*NotifyData, error) {
-	if !a.Verifier.Verify(notify.SignString(), notify.Sign) {
+func (k *Key) Notify(_ context.Context, n *Notify) (*NotifyData, error) {
+	if !k.CryptographySuite.Verifier.Verify(n.SignString(), n.Sign) {
 		return nil, fmt.Errorf("verify sign fail")
 	}
-	return notify.Data, nil
+	return n.Data, nil
 }

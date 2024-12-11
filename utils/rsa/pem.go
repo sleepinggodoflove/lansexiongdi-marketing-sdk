@@ -9,7 +9,7 @@ import (
 	"log"
 )
 
-func PrivateKeyRsa(privateKeyStr string) (*rsa.PrivateKey, error) {
+func PrivateKeyRSA(privateKeyStr string) (*rsa.PrivateKey, error) {
 	privateKeyBytes, err := base64.StdEncoding.DecodeString(privateKeyStr)
 	if err != nil {
 		return nil, fmt.Errorf("解码 Base64 编码的 RSA 私钥字符串: %v", err)
@@ -41,7 +41,7 @@ func PrivateKeyPem(privateKeyStr string) (string, error) {
 	return string(pem.EncodeToMemory(privateKeyPEM)), nil
 }
 
-func PublicKeyRsa(publicKeyStr string) (*rsa.PublicKey, error) {
+func PublicKeyRSA(publicKeyStr string) (*rsa.PublicKey, error) {
 	publicKeyBytes, err := base64.StdEncoding.DecodeString(publicKeyStr)
 	if err != nil {
 		return nil, fmt.Errorf("解码 Base64 编码的 RSA 公钥字符串: %v", err)

@@ -1,62 +1,52 @@
 package core
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"io"
 	"net/http"
-	"strings"
 	"time"
 )
 
+// defaultHeader
+var defaultHeader = http.Header{
+	"Content-Type": []string{"application/json"},
+}
+
 // Params request params
 type Params struct {
-	AppId      string `json:"app_id"`
-	SignType   string `json:"sign_type"`
-	Timestamp  string `json:"timestamp"` // 发送请求的时间，格式"yyyy-MM-dd HH:mm:ss"
-	Sign       string `json:"sign"`
+	// AppId      app id
+	AppId string `json:"app_id"`
+	// SignType   sign type
+	SignType SignType `json:"sign_type"`
+	// Timestamp 发送请求的时间，格式"yyyy-MM-dd HH:mm:ss"
+	Timestamp string `json:"timestamp"`
+	// Sign
+	Sign string `json:"sign"`
+	// Ciphertext
 	Ciphertext string `json:"ciphertext"`
-}
-
-// Config merchant app Config
-type Config struct {
-	AppID      string `validate:"required"`
-	PrivateKey string `validate:"required"`
-	PublicKey  string `validate:"required"`
-	Key        string `validate:"required"`
-	BaseURL    string `validate:"required,url"`
-}
-
-// Validate Config
-func (c *Config) Validate() error {
-	if err := validator.New().Struct(c); err != nil {
-		for _, err = range err.(validator.ValidationErrors) {
-			return err
-		}
-	}
-	return nil
 }
 
 // Core structure
 type Core struct {
+	// Headers
+	Headers http.Header
+	// HttpClient http client
 	HttpClient *http.Client
-	Config     *Config
-
-	EncodeDecode EncodeDecode
-
-	SignType string
-	Signer   Signer
-	Verifier Verifier
+	// Config      config
+	Config *Config
+	// CryptographySuite
+	CryptographySuite *CryptographySuite
 }
 
 type Option func(*Core)
 
-// WithSignType sets the sign type
-func WithSignType(signType string) Option {
+// WithHeaders sets the http request headers
+func WithHeaders(headers http.Header) Option {
 	return func(s *Core) {
-		s.SignType = signType
+		s.Headers = headers
 	}
 }
 
@@ -68,26 +58,26 @@ func WithHttpClient(client *http.Client) Option {
 }
 
 // NewCore creates a new Core instance
-func NewCore(conf *Config, o ...Option) (*Core, error) {
-	if err := conf.Validate(); err != nil {
+func NewCore(c *Config, o ...Option) (*Core, error) {
+	if err := c.Validate(); err != nil {
 		return nil, err
 	}
+
 	core := &Core{
+		Headers:    defaultHeader,
 		HttpClient: http.DefaultClient,
-		Config:     conf,
-		SignType:   SignRSA,
+		Config:     c,
 	}
 	for _, f := range o {
 		f(core)
 	}
-	factory := &SignerFactory{}
-	signer, verifier, encodeDecode, err := factory.SignerVerifier(core.SignType, conf)
+
+	crs, err := c.CryptographySuite()
 	if err != nil {
 		return nil, err
 	}
-	core.Signer = signer
-	core.Verifier = verifier
-	core.EncodeDecode = encodeDecode
+	core.CryptographySuite = crs
+
 	return core, nil
 }
 
@@ -97,10 +87,12 @@ func (c *Core) GetCiphertext(request Request) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	ciphertext, err := c.EncodeDecode.Encode(plaintext)
+
+	ciphertext, err := c.CryptographySuite.Cipher.Encode(plaintext)
 	if err != nil {
 		return "", err
 	}
+
 	return ciphertext, nil
 }
 
@@ -109,20 +101,23 @@ func (c *Core) GetParams(request Request) (*Params, error) {
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
+
 	ciphertext, err := c.GetCiphertext(request)
 	if err != nil {
 		return nil, err
 	}
+
 	timestamps := time.Now().Format(time.DateTime)
 	dataToSign := c.Config.AppID + timestamps + ciphertext
 
-	signature, err := c.Signer.Sign(dataToSign)
+	signature, err := c.CryptographySuite.Signer.Sign(dataToSign)
 	if err != nil {
 		return nil, err
 	}
+
 	return &Params{
 		AppId:      c.Config.AppID,
-		SignType:   c.SignType,
+		SignType:   c.Config.SignType,
 		Timestamp:  timestamps,
 		Sign:       signature,
 		Ciphertext: ciphertext,
@@ -132,31 +127,55 @@ func (c *Core) GetParams(request Request) (*Params, error) {
 // Verify verifies the params
 func (c *Core) Verify(params *Params) bool {
 	dataToSign := c.Config.AppID + params.Timestamp + params.Ciphertext
-	return c.Verifier.Verify(dataToSign, params.Sign)
+	return c.CryptographySuite.Verifier.Verify(dataToSign, params.Sign)
 }
 
-// Request sends the request and Analysis the response
-func (c *Core) Request(ctx context.Context, method string, request Request) ([]byte, error) {
+// GetRequestBody gets the request body
+func (c *Core) GetRequestBody(_ context.Context, request Request) ([]byte, error) {
 	reqBody, err := c.GetParams(request)
 	if err != nil {
 		return nil, err
 	}
+
 	reqBodyBytes, err := json.Marshal(reqBody)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Post(ctx, c.Config.BaseURL+method, reqBodyBytes)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf(resp.Status)
-	}
-	defer resp.Body.Close()
-	return io.ReadAll(resp.Body)
+
+	return reqBodyBytes, nil
 }
 
 // Post sends the request and Analysis the response
-func (c *Core) Post(_ context.Context, url string, reqBodyBytes []byte) (*http.Response, error) {
-	return c.HttpClient.Post(url, ApplicationJSON, strings.NewReader(string(reqBodyBytes)))
+func (c *Core) Post(ctx context.Context, method string, request Request) (*http.Response, []byte, error) {
+	reqBodyBytes, err := c.GetRequestBody(ctx, request)
+	if err != nil {
+		return nil, nil, err
+	}
+	return c.Request(ctx, http.MethodPost, c.Config.BaseURL+method, reqBodyBytes)
+}
+
+// Request sends the request and Analysis the response
+func (c *Core) Request(_ context.Context, method, url string, body []byte) (*http.Response, []byte, error) {
+	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+	req.Header = c.Headers
+
+	resp, err := c.HttpClient.Do(req)
+	if err != nil {
+		return nil, nil, fmt.Errorf("sending HTTP request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, nil, fmt.Errorf("HTTP status code: %d", resp.StatusCode)
+	}
+
+	return resp, bodyBytes, nil
 }

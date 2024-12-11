@@ -13,6 +13,8 @@ const (
 	Discard
 )
 
+const SuccessCode = 200
+
 var statusMap = map[Status]string{
 	Normal:     "正常",
 	DiscardIng: "作废中",
@@ -48,13 +50,6 @@ func (s Status) IsDiscard() bool {
 	return s == Discard
 }
 
-type Response struct {
-	Code    int32  `json:"code"`
-	Message string `json:"message"`
-	Reason  string `json:"reason,omitempty"`
-	Data    *Reply `json:"data,omitempty"`
-}
-
 type Reply struct {
 	OutBizNo       string `json:"out_biz_no"`
 	TradeNo        string `json:"trade_no"`
@@ -69,26 +64,35 @@ type Reply struct {
 	DiscardTime    string `json:"discard_time,omitempty"`
 }
 
-func (a *Response) Response(b []byte) (*Response, error) {
-	if err := json.Unmarshal(b, &a); err != nil {
-		return nil, err
-	}
-	return a, nil
-}
-
-func (a *Response) String() string {
-	b, err := json.Marshal(a)
-	if err != nil {
-		return ""
-	}
-	return string(b)
-}
-
-func (a *Response) IsSuccess() bool {
-	return a.Code == 200
+type Response struct {
+	Code    int32           `json:"code"`
+	Message string          `json:"message"`
+	Reason  string          `json:"reason,omitempty"`
+	Data    json.RawMessage `json:"data,omitempty"`
 }
 
 func response(b []byte) (*Response, error) {
-	var resp *Response
-	return resp.Response(b)
+	var resp Response
+	if err := json.Unmarshal(b, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+func (a *Response) GetReply() (*Reply, error) {
+	if a.Data == nil {
+		return nil, nil
+	}
+	if string(a.Data) == "{}" {
+		return nil, nil
+	}
+	var reply Reply
+	if err := json.Unmarshal(a.Data, &reply); err != nil {
+		return nil, err
+	}
+	return &reply, nil
+}
+
+func (a *Response) IsSuccess() bool {
+	return a.Code == SuccessCode
 }
