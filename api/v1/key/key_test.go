@@ -236,7 +236,7 @@ func TestCallBackNotify(t *testing.T) {
 		PrivateKey: rsaPrivateKey,
 		PublicKey:  publicKeyStr,
 		Key:        aesKey,
-		BaseURL:    "http://127.0.0.1:8080/utils/v1/wechat/notify",
+		BaseURL:    "http://127.0.0.1/notify",
 	}
 	co, err := core.NewCore(&c, core.WithSignType(core.SignRSA))
 	if err != nil {
