@@ -28,7 +28,7 @@ func getCore() (*core.Core, error) {
 	return core.NewCore(&c)
 }
 
-func TestGetParams(t *testing.T) {
+func TestBuildParams(t *testing.T) {
 	newCore, err := getCore()
 	if err != nil {
 		t.Error(err)
