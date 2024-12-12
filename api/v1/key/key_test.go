@@ -16,20 +16,19 @@ var (
 	signType   = core.SignRSA
 )
 
-func getCore() (*core.Core, error) {
-	c := core.Config{
+func newCore() (*core.Core, error) {
+	return core.NewCore(&core.Config{
 		AppID:      appId,
 		PrivateKey: privateKey,
 		PublicKey:  publicKey,
 		Key:        key,
 		SignType:   signType,
 		BaseURL:    baseURL,
-	}
-	return core.NewCore(&c)
+	})
 }
 
 func TestBuildParams(t *testing.T) {
-	newCore, err := getCore()
+	c, err := newCore()
 	if err != nil {
 		t.Error(err)
 		return
@@ -39,7 +38,7 @@ func TestBuildParams(t *testing.T) {
 		ActivityNo: "lzm",
 		Number:     1,
 	}
-	p, err := newCore.BuildParams(req)
+	p, err := c.BuildParams(req)
 	if err != nil {
 		t.Error(err)
 		return
@@ -48,12 +47,12 @@ func TestBuildParams(t *testing.T) {
 }
 
 func TestOrder(t *testing.T) {
-	newCore, err := getCore()
+	c, err := newCore()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	a := &Key{newCore}
+	a := &Key{c}
 	r, err := a.Order(context.Background(), &OrderRequest{
 		OutBizNo:   "20241211002",
 		ActivityNo: "lzm",
@@ -77,12 +76,12 @@ func TestOrder(t *testing.T) {
 }
 
 func TestQuery(t *testing.T) {
-	newCore, err := getCore()
+	c, err := newCore()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	a := &Key{newCore}
+	a := &Key{c}
 	r, err := a.Query(context.Background(), &QueryRequest{
 		OutBizNo: "20241211002",
 		TradeNo:  "",
@@ -109,12 +108,12 @@ func TestQuery(t *testing.T) {
 }
 
 func TestDiscard(t *testing.T) {
-	newCore, err := getCore()
+	c, err := newCore()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	a := &Key{newCore}
+	a := &Key{c}
 	r, err := a.Discard(context.Background(), &DiscardRequest{
 		OutBizNo: "20241211002",
 		TradeNo:  "",
@@ -139,12 +138,12 @@ func TestDiscard(t *testing.T) {
 }
 
 func TestNotify(t *testing.T) {
-	newCore, err := getCore()
+	c, err := newCore()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	a := &Key{newCore}
+	a := &Key{c}
 	r, err := a.Notify(context.Background(), &Notify{
 		AppId:     "",
 		SignType:  "",
@@ -195,18 +194,18 @@ func TestCallback(t *testing.T) {
 		Sign:      "",
 		Data:      data,
 	}
-	newCore, err := getCore()
+	c, err := newCore()
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	signStr, err := newCore.CryptographySuite.Signer.Sign(n.SignString())
+	signStr, err := c.CryptographySuite.Signer.Sign(n.SignString())
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	n.Sign = signStr
-	a := &Key{newCore}
+	a := &Key{c}
 	r, err := a.Notify(context.Background(), n)
 	if err != nil {
 		t.Error(err)
