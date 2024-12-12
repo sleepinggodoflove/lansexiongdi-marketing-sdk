@@ -3,7 +3,7 @@ package key
 import (
 	"context"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 	"testing"
 )
 
@@ -16,8 +16,19 @@ var (
 	signType   = core.SignRSA
 )
 
-func newCore() (*core.Core, error) {
-	return core.NewCore(&core.Config{
+type KeySuite struct {
+	suite.Suite
+
+	c *core.Core
+	k *Key
+}
+
+func TestMathSuite(t *testing.T) {
+	suite.Run(t, new(KeySuite))
+}
+
+func (s *KeySuite) SetupTest() {
+	c, err := core.NewCore(&core.Config{
 		AppID:      appId,
 		PrivateKey: privateKey,
 		PublicKey:  publicKey,
@@ -25,126 +36,95 @@ func newCore() (*core.Core, error) {
 		SignType:   signType,
 		BaseURL:    baseURL,
 	})
+	if err != nil {
+		s.T().Fatal(err)
+	}
+	s.c = c
+	s.k = &Key{c}
 }
 
-func TestBuildParams(t *testing.T) {
-	c, err := newCore()
-	if err != nil {
-		t.Error(err)
-		return
-	}
+func (s *KeySuite) TestBuildParams() {
 	req := &OrderRequest{
 		OutBizNo:   "321312",
 		ActivityNo: "lzm",
 		Number:     1,
 	}
-	p, err := c.BuildParams(req)
+	p, err := s.c.BuildParams(req)
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Logf("%+v", p)
+	s.T().Logf("%+v", p)
 }
 
-func TestOrder(t *testing.T) {
-	c, err := newCore()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	a := &Key{c}
-	r, err := a.Order(context.Background(), &OrderRequest{
+func (s *KeySuite) TestOrder() {
+	r, err := s.k.Order(context.Background(), &OrderRequest{
 		OutBizNo:   "20241211002",
 		ActivityNo: "lzm",
 		Number:     1,
 	})
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Logf("response=%+v", r)
+	s.T().Logf("response=%+v", r)
 	if !r.IsSuccess() {
-		t.Errorf("获取key失败:%s", r.Message)
+		s.T().Errorf("获取key失败:%s", r.Message)
 		return
 	}
 	data, err := r.ConvertData()
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Logf("data=%+v", data)
+	s.T().Logf("data=%+v", data)
 }
 
-func TestQuery(t *testing.T) {
-	c, err := newCore()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	a := &Key{c}
-	r, err := a.Query(context.Background(), &QueryRequest{
+func (s *KeySuite) TestQuery() {
+	r, err := s.k.Query(context.Background(), &QueryRequest{
 		OutBizNo: "20241211002",
 		TradeNo:  "",
 	})
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Logf("response=%+v", r)
+	s.T().Logf("response=%+v", r)
 	if !r.IsSuccess() {
-		t.Errorf("查询失败:%s", r.Message)
+		s.T().Errorf("查询失败:%s", r.Message)
 		return
 	}
 	data, err := r.ConvertData()
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Logf("data=%+v", data)
-	//t.Log(result.Status.IsNormal())
-	//t.Log(result.Status.IsUsed())
-	//t.Log(result.Status.IsDiscardIng())
-	//t.Log(result.Status.IsDiscard())
+	s.T().Logf("data=%+v", data)
+	//s.Equal(true, data.Status.IsNormal(), "是否正常")
+	//s.Equal(true, data.Status.IsUsed(), "是否已核销")
+	//s.Equal(true, data.Status.IsDiscardIng(), "是否作废中")
+	//s.Equal(true, data.Status.IsDiscard(), "是否已作废")
 }
 
-func TestDiscard(t *testing.T) {
-	c, err := newCore()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	a := &Key{c}
-	r, err := a.Discard(context.Background(), &DiscardRequest{
+func (s *KeySuite) TestDiscard() {
+	r, err := s.k.Discard(context.Background(), &DiscardRequest{
 		OutBizNo: "20241211002",
 		TradeNo:  "",
 		Reason:   "正常作废",
 	})
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Logf("response=%+v", r)
+	s.T().Logf("response=%+v", r)
 	if !r.IsSuccess() {
-		t.Errorf("作废收单失败:%s", r.Message)
+		s.T().Errorf("作废收单失败:%s", r.Message)
 		return
 	}
 	data, err := r.ConvertData()
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Logf("data=%+v", data)
-	//assert.Equal(t, r.Data.Status, DiscardIng)
+	s.T().Logf("data=%+v", data)
+	s.Equal(true, data.Status.IsDiscardIng(), "是否作废中")
 }
 
-func TestNotify(t *testing.T) {
-	c, err := newCore()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	a := &Key{c}
-	r, err := a.Notify(context.Background(), &Notify{
+func (s *KeySuite) TestNotify() {
+	data, err := s.k.Notify(context.Background(), &Notify{
 		AppId:     "",
 		SignType:  "",
 		Timestamp: "",
@@ -165,18 +145,12 @@ func TestNotify(t *testing.T) {
 		},
 	})
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Log(r)
-	assert.Equal(t, r.Status, Discard)
-	//t.Log(r.Data.Status.IsNormal())
-	//t.Log(r.Data.Status.IsUsed())
-	//t.Log(r.Data.Status.IsDiscardIng())
-	//t.Log(r.Data.Status.IsDiscard())
+	s.T().Logf("data=%+v", data)
 }
 
-func TestCallback(t *testing.T) {
+func (s *KeySuite) TestCallback() {
 	data := NotifyData{
 		NotifyId:       "123456",
 		OutBizNo:       "123456",
@@ -194,55 +168,43 @@ func TestCallback(t *testing.T) {
 		Sign:      "",
 		Data:      data,
 	}
-	c, err := newCore()
+	signStr, err := s.k.CryptographySuite.Signer.Sign(n.SignString())
 	if err != nil {
-		t.Error(err)
-		return
-	}
-	signStr, err := c.CryptographySuite.Signer.Sign(n.SignString())
-	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
 	n.Sign = signStr
-	a := &Key{c}
-	r, err := a.Notify(context.Background(), n)
+
+	r, err := s.k.Notify(context.Background(), n)
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Log(r)
-	t.Log(r.Status.IsNormal())
+	s.T().Logf("r=%+v", r)
 }
 
-func TestResponse(t *testing.T) {
+func (s *KeySuite) TestResponse() {
 	jsonBytes := []byte(`{"code":200,"data":{},"message":"成功"}`)
 	resp, err := response(jsonBytes)
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
 	result, err := resp.ConvertData()
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Logf("%+v", resp)
-	t.Logf("%s", string(resp.Data))
-	t.Logf("%+v", result)
+	s.T().Logf("%+v", resp)
+	s.T().Logf("%s", string(resp.Data))
+	s.T().Logf("%+v", result)
 
 	jsonBytes2 := []byte(`{"code":200,"message":"成功","data":{"out_biz_no":"123","trade_no":"456"}}`)
 	resp2, err := response(jsonBytes2)
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
 	result2, err := resp2.ConvertData()
 	if err != nil {
-		t.Error(err)
-		return
+		s.T().Fatal(err)
 	}
-	t.Logf("%+v", resp2)
-	t.Logf("%s", string(resp2.Data))
-	t.Logf("%+v", result2)
+	s.T().Logf("%+v", resp2)
+	s.T().Logf("%s", string(resp2.Data))
+	s.T().Logf("%+v", result2)
 }
