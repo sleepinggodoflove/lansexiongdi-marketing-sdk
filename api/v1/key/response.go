@@ -80,16 +80,19 @@ func response(b []byte) (*Response, error) {
 }
 
 func (a *Response) GetData() (*Data, error) {
-	if a.Data == nil {
+	if a.Data == nil || len(a.Data) == 0 {
 		return nil, nil
 	}
-	if string(a.Data) == "{}" {
-		return nil, nil
-	}
+
 	var reply Data
 	if err := json.Unmarshal(a.Data, &reply); err != nil {
 		return nil, err
 	}
+
+	if reply == (Data{}) {
+		return nil, nil
+	}
+
 	return &reply, nil
 }
 
