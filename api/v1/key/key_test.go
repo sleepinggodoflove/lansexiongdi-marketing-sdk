@@ -57,11 +57,12 @@ func (s *KeySuite) TestBuildParams() {
 }
 
 func (s *KeySuite) TestOrder() {
-	r, err := s.k.Order(context.Background(), &OrderRequest{
+	req := &OrderRequest{
 		OutBizNo:   "20241211002",
 		ActivityNo: "lzm",
 		Number:     1,
-	})
+	}
+	r, err := s.k.Order(context.Background(), req)
 	if err != nil {
 		s.T().Fatal(err)
 	}
@@ -78,10 +79,11 @@ func (s *KeySuite) TestOrder() {
 }
 
 func (s *KeySuite) TestQuery() {
-	r, err := s.k.Query(context.Background(), &QueryRequest{
+	req := &QueryRequest{
 		OutBizNo: "20241211002",
 		TradeNo:  "",
-	})
+	}
+	r, err := s.k.Query(context.Background(), req)
 	if err != nil {
 		s.T().Fatal(err)
 	}
@@ -102,11 +104,12 @@ func (s *KeySuite) TestQuery() {
 }
 
 func (s *KeySuite) TestDiscard() {
-	r, err := s.k.Discard(context.Background(), &DiscardRequest{
+	req := &DiscardRequest{
 		OutBizNo: "20241211002",
 		TradeNo:  "",
 		Reason:   "正常作废",
-	})
+	}
+	r, err := s.k.Discard(context.Background(), req)
 	if err != nil {
 		s.T().Fatal(err)
 	}
@@ -124,7 +127,7 @@ func (s *KeySuite) TestDiscard() {
 }
 
 func (s *KeySuite) TestNotify() {
-	data, err := s.k.Notify(context.Background(), &Notify{
+	req := &Notify{
 		AppId:     "",
 		SignType:  "",
 		Timestamp: "",
@@ -143,7 +146,8 @@ func (s *KeySuite) TestNotify() {
 			UsageTime:      "",
 			DiscardTime:    "",
 		},
-	})
+	}
+	data, err := s.k.Notify(context.Background(), req)
 	if err != nil {
 		s.T().Fatal(err)
 	}
