@@ -155,8 +155,8 @@ func (c *Core) Post(ctx context.Context, method string, request Request) (*http.
 }
 
 // Request sends the request and Analysis the response
-func (c *Core) Request(_ context.Context, method, url string, body []byte) (*http.Response, []byte, error) {
-	req, err := http.NewRequest(method, url, bytes.NewBuffer(body))
+func (c *Core) Request(ctx context.Context, method, url string, body []byte) (*http.Response, []byte, error) {
+	req, err := http.NewRequestWithContext(ctx, method, url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create HTTP request: %w", err)
 	}
