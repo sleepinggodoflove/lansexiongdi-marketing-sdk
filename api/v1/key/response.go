@@ -27,11 +27,11 @@ func (s Status) Value() uint8 {
 }
 
 func (s Status) GetText() string {
-	tex, ok := statusMap[s]
+	t, ok := statusMap[s]
 	if !ok {
 		return ""
 	}
-	return tex
+	return t
 }
 
 func (s Status) IsNormal() bool {
