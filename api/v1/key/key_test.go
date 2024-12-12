@@ -39,7 +39,7 @@ func TestGetParams(t *testing.T) {
 		ActivityNo: "lzm",
 		Number:     1,
 	}
-	p, err := newCore.GetParams(req)
+	p, err := newCore.BuildParams(req)
 	if err != nil {
 		t.Error(err)
 		return
@@ -68,7 +68,7 @@ func TestOrder(t *testing.T) {
 		t.Errorf("获取key失败:%s", r.Message)
 		return
 	}
-	data, err := r.GetData()
+	data, err := r.ConvertData()
 	if err != nil {
 		t.Error(err)
 		return
@@ -96,7 +96,7 @@ func TestQuery(t *testing.T) {
 		t.Errorf("查询失败:%s", r.Message)
 		return
 	}
-	data, err := r.GetData()
+	data, err := r.ConvertData()
 	if err != nil {
 		t.Error(err)
 		return
@@ -129,7 +129,7 @@ func TestDiscard(t *testing.T) {
 		t.Errorf("作废收单失败:%s", r.Message)
 		return
 	}
-	data, err := r.GetData()
+	data, err := r.ConvertData()
 	if err != nil {
 		t.Error(err)
 		return
@@ -223,7 +223,7 @@ func TestResponse(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	result, err := resp.GetData()
+	result, err := resp.ConvertData()
 	if err != nil {
 		t.Error(err)
 		return
@@ -238,7 +238,7 @@ func TestResponse(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	result2, err := resp2.GetData()
+	result2, err := resp2.ConvertData()
 	if err != nil {
 		t.Error(err)
 		return

@@ -79,7 +79,7 @@ func response(b []byte) (*Response, error) {
 	return &resp, nil
 }
 
-func (a *Response) GetData() (*Data, error) {
+func (a *Response) ConvertData() (*Data, error) {
 	if a.Data == nil || len(a.Data) == 0 {
 		return nil, nil
 	}

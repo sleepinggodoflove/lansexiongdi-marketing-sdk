@@ -96,8 +96,8 @@ func (c *Core) GetCiphertext(request Request) (string, error) {
 	return ciphertext, nil
 }
 
-// GetParams gets the params
-func (c *Core) GetParams(request Request) (*Params, error) {
+// BuildParams gets the params
+func (c *Core) BuildParams(request Request) (*Params, error) {
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
@@ -132,7 +132,7 @@ func (c *Core) Verify(params *Params) bool {
 
 // GetRequestBody gets the request body
 func (c *Core) GetRequestBody(_ context.Context, request Request) ([]byte, error) {
-	reqBody, err := c.GetParams(request)
+	reqBody, err := c.BuildParams(request)
 	if err != nil {
 		return nil, err
 	}
