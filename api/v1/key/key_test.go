@@ -26,7 +26,7 @@ func TestMathSuite(t *testing.T) {
 	suite.Run(t, new(KeySuite))
 }
 
-func (s *KeySuite) SetupTest() {
+func (k *KeySuite) SetupTest() {
 	c, err := core.NewCore(&core.Config{
 		AppID:      appId,
 		PrivateKey: privateKey,
@@ -36,96 +36,96 @@ func (s *KeySuite) SetupTest() {
 		BaseURL:    baseURL,
 	})
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
 
-	s.k = &Key{c}
+	k.k = &Key{c}
 }
 
-func (s *KeySuite) TestBuildParams() {
+func (k *KeySuite) TestBuildParams() {
 	req := &OrderRequest{
 		OutBizNo:   "321312",
 		ActivityNo: "lzm",
 		Number:     1,
 	}
-	p, err := s.k.BuildParams(req)
+	p, err := k.k.BuildParams(req)
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("%+v", p)
+	k.T().Logf("%+v", p)
 }
 
-func (s *KeySuite) TestOrder() {
+func (k *KeySuite) TestOrder() {
 	req := &OrderRequest{
 		OutBizNo:   "20241211002",
 		ActivityNo: "lzm",
 		Number:     1,
 	}
-	r, err := s.k.Order(context.Background(), req)
+	r, err := k.k.Order(context.Background(), req)
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("response=%+v", r)
+	k.T().Logf("response=%+v", r)
 	if !r.IsSuccess() {
-		s.T().Errorf("获取key失败:%s", r.Message)
+		k.T().Errorf("获取key失败:%k", r.Message)
 		return
 	}
 	data, err := r.ConvertData()
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("data=%+v", data)
+	k.T().Logf("data=%+v", data)
 }
 
-func (s *KeySuite) TestQuery() {
+func (k *KeySuite) TestQuery() {
 	req := &QueryRequest{
 		OutBizNo: "20241211002",
 		TradeNo:  "",
 	}
-	r, err := s.k.Query(context.Background(), req)
+	r, err := k.k.Query(context.Background(), req)
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("response=%+v", r)
+	k.T().Logf("response=%+v", r)
 	if !r.IsSuccess() {
-		s.T().Errorf("查询失败:%s", r.Message)
+		k.T().Errorf("查询失败:%k", r.Message)
 		return
 	}
 	data, err := r.ConvertData()
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("data=%+v", data)
-	//s.Equal(true, data.Status.IsNormal(), "是否正常")
-	//s.Equal(true, data.Status.IsUsed(), "是否已核销")
-	//s.Equal(true, data.Status.IsDiscardIng(), "是否作废中")
-	//s.Equal(true, data.Status.IsDiscard(), "是否已作废")
+	k.T().Logf("data=%+v", data)
+	//k.Equal(true, data.Status.IsNormal(), "是否正常")
+	//k.Equal(true, data.Status.IsUsed(), "是否已核销")
+	//k.Equal(true, data.Status.IsDiscardIng(), "是否作废中")
+	//k.Equal(true, data.Status.IsDiscard(), "是否已作废")
 }
 
-func (s *KeySuite) TestDiscard() {
+func (k *KeySuite) TestDiscard() {
 	req := &DiscardRequest{
 		OutBizNo: "20241211002",
 		TradeNo:  "",
 		Reason:   "正常作废",
 	}
-	r, err := s.k.Discard(context.Background(), req)
+	r, err := k.k.Discard(context.Background(), req)
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("response=%+v", r)
+	k.T().Logf("response=%+v", r)
 	if !r.IsSuccess() {
-		s.T().Errorf("作废收单失败:%s", r.Message)
+		k.T().Errorf("作废收单失败:%k", r.Message)
 		return
 	}
 	data, err := r.ConvertData()
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("data=%+v", data)
-	s.Equal(true, data.Status.IsDiscardIng(), "是否作废中")
+	k.T().Logf("data=%+v", data)
+	k.Equal(true, data.Status.IsDiscardIng(), "是否作废中")
 }
 
-func (s *KeySuite) TestNotify() {
+func (k *KeySuite) TestNotify() {
 	req := &Notify{
 		AppId:     "",
 		SignType:  "",
@@ -146,14 +146,14 @@ func (s *KeySuite) TestNotify() {
 			DiscardTime:    "",
 		},
 	}
-	data, err := s.k.Notify(context.Background(), req)
+	data, err := k.k.Notify(context.Background(), req)
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("data=%+v", data)
+	k.T().Logf("data=%+v", data)
 }
 
-func (s *KeySuite) TestCallback() {
+func (k *KeySuite) TestCallback() {
 	data := NotifyData{
 		NotifyId:       "123456",
 		OutBizNo:       "123456",
@@ -171,43 +171,43 @@ func (s *KeySuite) TestCallback() {
 		Sign:      "",
 		Data:      data,
 	}
-	signStr, err := s.k.CryptographySuite.Signer.Sign(n.SignString())
+	signStr, err := k.k.CryptographySuite.Signer.Sign(n.SignString())
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
 	n.Sign = signStr
 
-	r, err := s.k.Notify(context.Background(), n)
+	r, err := k.k.Notify(context.Background(), n)
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("r=%+v", r)
+	k.T().Logf("r=%+v", r)
 }
 
-func (s *KeySuite) TestResponse() {
+func (k *KeySuite) TestResponse() {
 	jsonBytes := []byte(`{"code":200,"data":{},"message":"成功"}`)
 	resp, err := response(jsonBytes)
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
 	result, err := resp.ConvertData()
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("%+v", resp)
-	s.T().Logf("%s", string(resp.Data))
-	s.T().Logf("%+v", result)
+	k.T().Logf("%+v", resp)
+	k.T().Logf("%k", string(resp.Data))
+	k.T().Logf("%+v", result)
 
 	jsonBytes2 := []byte(`{"code":200,"message":"成功","data":{"out_biz_no":"123","trade_no":"456"}}`)
 	resp2, err := response(jsonBytes2)
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
 	result2, err := resp2.ConvertData()
 	if err != nil {
-		s.T().Fatal(err)
+		k.T().Fatal(err)
 	}
-	s.T().Logf("%+v", resp2)
-	s.T().Logf("%s", string(resp2.Data))
-	s.T().Logf("%+v", result2)
+	k.T().Logf("%+v", resp2)
+	k.T().Logf("%k", string(resp2.Data))
+	k.T().Logf("%+v", result2)
 }
