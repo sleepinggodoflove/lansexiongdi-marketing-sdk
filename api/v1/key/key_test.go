@@ -19,7 +19,6 @@ var (
 type KeySuite struct {
 	suite.Suite
 
-	c *core.Core
 	k *Key
 }
 
@@ -39,7 +38,7 @@ func (s *KeySuite) SetupTest() {
 	if err != nil {
 		s.T().Fatal(err)
 	}
-	s.c = c
+
 	s.k = &Key{c}
 }
 
@@ -49,7 +48,7 @@ func (s *KeySuite) TestBuildParams() {
 		ActivityNo: "lzm",
 		Number:     1,
 	}
-	p, err := s.c.BuildParams(req)
+	p, err := s.k.BuildParams(req)
 	if err != nil {
 		s.T().Fatal(err)
 	}
