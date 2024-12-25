@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api"
+	"net/http"
 )
 
 const (
@@ -14,28 +15,46 @@ const (
 
 type Key api.Service
 
-func (k *Key) Order(ctx context.Context, request *OrderRequest) (*Response, error) {
-	_, b, err := k.Post(ctx, orderMethod, request)
+func (k *Key) Order(ctx context.Context, request *OrderRequest) (*http.Response, *Response, error) {
+	httpResponse, bodyBytes, err := k.Post(ctx, orderMethod, request)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return response(b)
+
+	res, err := response(bodyBytes)
+	if err != nil {
+		return httpResponse, nil, err
+	}
+
+	return httpResponse, res, nil
 }
 
-func (k *Key) Query(ctx context.Context, request *QueryRequest) (*Response, error) {
-	_, b, err := k.Post(ctx, queryMethod, request)
+func (k *Key) Query(ctx context.Context, request *QueryRequest) (*http.Response, *Response, error) {
+	httpResponse, bodyBytes, err := k.Post(ctx, queryMethod, request)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return response(b)
+
+	res, err := response(bodyBytes)
+	if err != nil {
+		return httpResponse, nil, err
+	}
+
+	return httpResponse, res, nil
 }
 
-func (k *Key) Discard(ctx context.Context, request *DiscardRequest) (*Response, error) {
-	_, b, err := k.Post(ctx, discardMethod, request)
+func (k *Key) Discard(ctx context.Context, request *DiscardRequest) (*http.Response, *Response, error) {
+	httpResponse, bodyBytes, err := k.Post(ctx, discardMethod, request)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return response(b)
+
+	res, err := response(bodyBytes)
+	if err != nil {
+		return httpResponse, nil, err
+	}
+
+	return httpResponse, res, nil
 }
 
 func (k *Key) Notify(_ context.Context, n *Notify) (*NotifyData, error) {
