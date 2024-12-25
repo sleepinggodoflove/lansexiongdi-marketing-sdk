@@ -19,7 +19,7 @@ var (
 type KeySuite struct {
 	suite.Suite
 
-	k *Key
+	kService *Key
 }
 
 func TestMathSuite(t *testing.T) {
@@ -39,7 +39,7 @@ func (k *KeySuite) SetupTest() {
 		k.T().Fatal(err)
 	}
 
-	k.k = &Key{c}
+	k.kService = &Key{c}
 }
 
 func (k *KeySuite) TestBuildParams() {
@@ -48,7 +48,7 @@ func (k *KeySuite) TestBuildParams() {
 		ActivityNo: "lzm",
 		Number:     1,
 	}
-	p, err := k.k.BuildParams(req)
+	p, err := k.kService.BuildParams(req)
 	if err != nil {
 		k.T().Fatal(err)
 	}
@@ -61,13 +61,13 @@ func (k *KeySuite) TestOrder() {
 		ActivityNo: "lzm",
 		Number:     1,
 	}
-	r, err := k.k.Order(context.Background(), req)
+	r, err := k.kService.Order(context.Background(), req)
 	if err != nil {
 		k.T().Fatal(err)
 	}
 	k.T().Logf("response=%+v", r)
 	if !r.IsSuccess() {
-		k.T().Errorf("获取key失败:%k", r.Message)
+		k.T().Errorf("获取key失败:%s", r.Message)
 		return
 	}
 	data, err := r.ConvertData()
@@ -82,13 +82,13 @@ func (k *KeySuite) TestQuery() {
 		OutBizNo: "20241211002",
 		TradeNo:  "",
 	}
-	r, err := k.k.Query(context.Background(), req)
+	r, err := k.kService.Query(context.Background(), req)
 	if err != nil {
 		k.T().Fatal(err)
 	}
 	k.T().Logf("response=%+v", r)
 	if !r.IsSuccess() {
-		k.T().Errorf("查询失败:%k", r.Message)
+		k.T().Errorf("查询失败:%s", r.Message)
 		return
 	}
 	data, err := r.ConvertData()
@@ -96,10 +96,10 @@ func (k *KeySuite) TestQuery() {
 		k.T().Fatal(err)
 	}
 	k.T().Logf("data=%+v", data)
-	//k.Equal(true, data.Status.IsNormal(), "是否正常")
-	//k.Equal(true, data.Status.IsUsed(), "是否已核销")
-	//k.Equal(true, data.Status.IsDiscardIng(), "是否作废中")
-	//k.Equal(true, data.Status.IsDiscard(), "是否已作废")
+	//kService.Equal(true, data.Status.IsNormal(), "是否正常")
+	//kService.Equal(true, data.Status.IsUsed(), "是否已核销")
+	//kService.Equal(true, data.Status.IsDiscardIng(), "是否作废中")
+	//kService.Equal(true, data.Status.IsDiscard(), "是否已作废")
 }
 
 func (k *KeySuite) TestDiscard() {
@@ -108,13 +108,13 @@ func (k *KeySuite) TestDiscard() {
 		TradeNo:  "",
 		Reason:   "正常作废",
 	}
-	r, err := k.k.Discard(context.Background(), req)
+	r, err := k.kService.Discard(context.Background(), req)
 	if err != nil {
 		k.T().Fatal(err)
 	}
 	k.T().Logf("response=%+v", r)
 	if !r.IsSuccess() {
-		k.T().Errorf("作废收单失败:%k", r.Message)
+		k.T().Errorf("作废收单失败:%s", r.Message)
 		return
 	}
 	data, err := r.ConvertData()
@@ -146,7 +146,7 @@ func (k *KeySuite) TestNotify() {
 			DiscardTime:    "",
 		},
 	}
-	data, err := k.k.Notify(context.Background(), req)
+	data, err := k.kService.Notify(context.Background(), req)
 	if err != nil {
 		k.T().Fatal(err)
 	}
@@ -171,13 +171,13 @@ func (k *KeySuite) TestCallback() {
 		Sign:      "",
 		Data:      data,
 	}
-	signStr, err := k.k.CryptographySuite.Signer.Sign(n.SignString())
+	signStr, err := k.kService.CryptographySuite.Signer.Sign(n.SignString())
 	if err != nil {
 		k.T().Fatal(err)
 	}
 	n.Sign = signStr
 
-	r, err := k.k.Notify(context.Background(), n)
+	r, err := k.kService.Notify(context.Background(), n)
 	if err != nil {
 		k.T().Fatal(err)
 	}
@@ -195,7 +195,7 @@ func (k *KeySuite) TestResponse() {
 		k.T().Fatal(err)
 	}
 	k.T().Logf("%+v", resp)
-	k.T().Logf("%k", string(resp.Data))
+	k.T().Logf("%s", string(resp.Data))
 	k.T().Logf("%+v", result)
 
 	jsonBytes2 := []byte(`{"code":200,"message":"成功","data":{"out_biz_no":"123","trade_no":"456"}}`)
@@ -208,6 +208,6 @@ func (k *KeySuite) TestResponse() {
 		k.T().Fatal(err)
 	}
 	k.T().Logf("%+v", resp2)
-	k.T().Logf("%k", string(resp2.Data))
+	k.T().Logf("%s", string(resp2.Data))
 	k.T().Logf("%+v", result2)
 }
