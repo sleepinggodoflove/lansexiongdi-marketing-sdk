@@ -15,6 +15,7 @@ type OrderRequest struct {
 	OutBizNo   string `validate:"required,min=2,max=32" json:"out_biz_no"` // 同一商户应用下不可重复
 	ActivityNo string `validate:"required,min=2,max=32" json:"activity_no"`
 	Number     int32  `validate:"required,min=1" json:"number"`
+	Extra      string `json:"extra,omitempty"` // 拓展参数，备用
 }
 
 func (a *OrderRequest) String() (string, error) {
@@ -49,7 +50,7 @@ func (a *QueryRequest) String() (string, error) {
 
 func (q *QueryRequest) Validate() error {
 	if q.OutBizNo == "" && q.TradeNo == "" {
-		return fmt.Errorf("out_biz_no/trade_no 二选一")
+		return fmt.Errorf("参数错误,out_biz_no/trade_no 二选一")
 	}
 	if err := validator.New().Struct(q); err != nil {
 		for _, err = range err.(validator.ValidationErrors) {
@@ -89,11 +90,11 @@ type NotifyData struct {
 	NotifyId       string `json:"notify_id" validate:"required,alphanum,min=2,max=32"`
 	OutBizNo       string `json:"out_biz_no" validate:"required,alphanum,min=2,max=32"`
 	TradeNo        string `json:"trade_no" validate:"required,alphanum,min=2,max=32"`
-	Key            string `json:"key" validate:"required"`
+	Key            string `json:"key"`
 	UsableNum      uint32 `json:"usable_num"`
 	UsageNum       uint32 `json:"usage_num"`
 	Status         Status `json:"status" validate:"required"`
-	Url            string `json:"url" validate:"required"`
+	Url            string `json:"url"`
 	ValidBeginTime string `json:"valid_begin_time,omitempty"`
 	ValidEndTime   string `json:"valid_end_time,omitempty"`
 	UsageTime      string `json:"usage_time,omitempty"`

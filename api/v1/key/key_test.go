@@ -5,6 +5,7 @@ import (
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 var (
@@ -34,8 +35,8 @@ func TestBuildParams(t *testing.T) {
 		return
 	}
 	req := &OrderRequest{
-		OutBizNo:   "321312",
-		ActivityNo: "lzm",
+		OutBizNo:   "001",
+		ActivityNo: "Ntest001",
 		Number:     1,
 	}
 	p, err := c.BuildParams(req)
@@ -54,8 +55,8 @@ func TestOrder(t *testing.T) {
 	}
 	a := &Key{c}
 	_, r, err := a.Order(context.Background(), &OrderRequest{
-		OutBizNo:   "20241211002",
-		ActivityNo: "lzm",
+		OutBizNo:   "b202412270z8q7r1f704",
+		ActivityNo: "2024070901134",
 		Number:     1,
 	})
 	if err != nil {
@@ -83,7 +84,7 @@ func TestQuery(t *testing.T) {
 	}
 	a := &Key{c}
 	_, r, err := a.Query(context.Background(), &QueryRequest{
-		OutBizNo: "20241211002",
+		OutBizNo: "006",
 		TradeNo:  "",
 	})
 	if err != nil {
@@ -178,19 +179,23 @@ func TestNotify(t *testing.T) {
 
 func TestCallback(t *testing.T) {
 	data := NotifyData{
-		NotifyId:       "123456",
-		OutBizNo:       "123456",
-		TradeNo:        "1234567",
-		Key:            "xdwqdsd",
-		Status:         1,
-		Url:            "http://lsxd/xdwqdsd",
-		ValidBeginTime: "2006-01-02 15:04:05",
-		ValidEndTime:   "2006-01-02 15:04:07",
+		NotifyId:       "7278418772598218752",
+		OutBizNo:       "006",
+		TradeNo:        "727291384764309505",
+		Key:            "dpK5yorx2M2g2e0W",
+		UsableNum:      1,
+		UsageNum:       1,
+		Status:         3,
+		Url:            "https://market.86698.cn/dpK5yorx2M2g2e0W",
+		ValidBeginTime: "2024-12-27 22:37:41",
+		ValidEndTime:   "2024-12-27 18:08:25",
+		UsageTime:      "2024-12-27 22:37:41",
+		DiscardTime:    "",
 	}
 	n := &Notify{
-		AppId:     "123",
+		AppId:     "KY7gREqQ96Phxhcvj8es7B6e",
 		SignType:  "RSA",
-		Timestamp: "2006-01-02 15:04:05",
+		Timestamp: time.Now().Format(time.DateTime),
 		Sign:      "",
 		Data:      data,
 	}
