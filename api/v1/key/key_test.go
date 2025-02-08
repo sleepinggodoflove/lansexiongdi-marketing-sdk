@@ -38,6 +38,8 @@ func TestBuildParams(t *testing.T) {
 		OutBizNo:   "001",
 		ActivityNo: "Ntest001",
 		Number:     1,
+		NotifyUrl:  "",
+		Extra:      "",
 	}
 	p, err := c.BuildParams(req)
 	if err != nil {
