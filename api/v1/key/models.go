@@ -14,9 +14,9 @@ var _ core.Request = (*QueryRequest)(nil)
 type OrderRequest struct {
 	OutBizNo   string `validate:"required,min=2,max=32" json:"out_biz_no"` // 同一商户应用下不可重复
 	ActivityNo string `validate:"required,min=2,max=32" json:"activity_no"`
-	Number     int32  `validate:"required,min=1" json:"number"`
-	NotifyUrl  string `json:"notify_url,omitempty"` // 回调地址,可为空
-	Extra      string `json:"extra,omitempty"`      // 拓展参数，备用
+	Number     int32  `validate:"required,eq=1" json:"number"` // v1只支持1，若要多个，请异步v2接口批量生产
+	NotifyUrl  string `json:"notify_url,omitempty"`            // 回调地址,可为空
+	Extra      string `json:"extra,omitempty"`                 // 拓展参数，备用
 }
 
 func (a *OrderRequest) String() (string, error) {
