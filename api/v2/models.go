@@ -49,15 +49,15 @@ type QueryResponse struct {
 }
 
 type KeyInfo struct {
-	Key          string    `json:"key,omitempty"`          // key码
-	Url          string    `json:"url,omitempty"`          // 短链接
-	KeyUsableNum uint32    `json:"usable_num"`             // 可兑换次数
-	UsageNum     uint32    `json:"usage_num"`              // 已核销次数
-	Status       KeyStatus `json:"status"`                 // 状态
-	BeginTime    string    `json:"begin_time"`             // 开始时间
-	EndTime      string    `json:"end_time"`               // 结束时间
-	UsageTime    string    `json:"usage_time,omitempty"`   // 最后一次核销时间
-	DiscardTime  string    `json:"discard_time,omitempty"` // 作废时间
+	Key         string    `json:"key,omitempty"`          // key码
+	Url         string    `json:"url,omitempty"`          // 短链接
+	UsableNum   uint32    `json:"usable_num"`             // 可兑换次数
+	UsageNum    uint32    `json:"usage_num"`              // 已核销次数
+	Status      KeyStatus `json:"status"`                 // 状态
+	BeginTime   string    `json:"begin_time"`             // 开始时间
+	EndTime     string    `json:"end_time"`               // 结束时间
+	UsageTime   string    `json:"usage_time,omitempty"`   // 最后一次核销时间
+	DiscardTime string    `json:"discard_time,omitempty"` // 作废时间
 }
 
 func (a *QueryRequest) String() (string, error) {
