@@ -42,10 +42,11 @@ type QueryRequest struct {
 }
 
 type QueryResponse struct {
-	OutBizNo   string `json:"out_biz_no"`
-	TradeNo    string `json:"trade_no"`
-	Status     Status `json:"status"`
-	Ciphertext string `json:"ciphertext"`
+	OutBizNo         string `json:"out_biz_no"`
+	TradeNo          string `json:"trade_no"`
+	Status           Status `json:"status"`
+	Number           int32  `json:"number"`
+	KeyMapCiphertext string `json:"ciphertext" validate:"required"`
 }
 
 type KeyInfo struct {
@@ -72,24 +73,33 @@ func (q *QueryRequest) Validate() error {
 	if q.OutBizNo == "" && q.TradeNo == "" {
 		return fmt.Errorf("参数错误,out_biz_no/trade_no 二选一")
 	}
+
 	if err := validator.New().Struct(q); err != nil {
 		for _, err = range err.(validator.ValidationErrors) {
 			return fmt.Errorf(err.Error())
 		}
 	}
+
 	return nil
 }
 
 type Notify struct {
-	AppId      string      `json:"app_id" validate:"required"`
-	SignType   string      `json:"sign_type" validate:"required"`
-	Timestamp  string      `json:"timestamp" validate:"required"`
-	Sign       string      `json:"sign" validate:"required"`
-	NotifyId   string      `json:"notify_id" validate:"required"`
-	Event      NotifyEvent `json:"event" validate:"required"`
-	OutBizNo   string      `json:"out_biz_no" validate:"required,alphanum,min=2,max=32"`
-	TradeNo    string      `json:"trade_no" validate:"required,alphanum,min=2,max=32"`
-	Ciphertext string      `json:"ciphertext" validate:"required"`
+	AppId     string     `json:"app_id" validate:"required"`
+	SignType  string     `json:"sign_type" validate:"required"`
+	Timestamp string     `json:"timestamp" validate:"required"`
+	Sign      string     `json:"sign" validate:"required"`
+	Data      NotifyData `json:"data" validate:"required"`
+}
+
+type NotifyData struct {
+	Event            NotifyEvent `json:"event" validate:"required"`
+	NotifyId         string      `json:"notify_id" validate:"required"`
+	OutBizNo         string      `json:"out_biz_no" validate:"required"`
+	TradeNo          string      `json:"trade_no" validate:"required"`
+	ActivityNo       string      `json:"activity_no" validate:"required"`
+	Number           int32       `json:"number" validate:"required"`
+	Status           Status      `json:"status" validate:"required"`
+	KeyMapCiphertext string      `json:"ciphertext" validate:"required"`
 }
 
 func (d *Notify) Validate() error {
@@ -101,14 +111,35 @@ func (d *Notify) Validate() error {
 	return nil
 }
 
-func (a *Notify) String() string {
+func (a *Notify) String() (string, error) {
 	b, err := json.Marshal(a)
 	if err != nil {
-		return ""
+		return "", err
 	}
-	return string(b)
+	return string(b), nil
 }
 
-func (n *Notify) SignString() string {
-	return n.AppId + n.Timestamp + n.Ciphertext
+func (d *NotifyData) Validate() error {
+	if err := validator.New().Struct(d); err != nil {
+		for _, err = range err.(validator.ValidationErrors) {
+			return fmt.Errorf(err.Error())
+		}
+	}
+	return nil
+}
+
+func (a *NotifyData) String() (string, error) {
+	b, err := json.Marshal(a)
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
+}
+
+func (a *Notify) SignString() (string, error) {
+	b, err := a.Data.String()
+	if err != nil {
+		return "", nil
+	}
+	return a.AppId + a.Timestamp + b, nil
 }
