@@ -49,11 +49,15 @@ type QueryResponse struct {
 }
 
 type KeyInfo struct {
-	Key          string `json:"key,omitempty"`  // key码
-	Url          string `json:"url,omitempty"`  // 短链接
-	KeyUsableNum uint32 `json:"key_usable_num"` // 可兑换次数
-	BeginTime    string `json:"begin_time"`     // 开始时间
-	EndTime      string `json:"end_time"`       // 结束时间
+	Key          string    `json:"key,omitempty"`          // key码
+	Url          string    `json:"url,omitempty"`          // 短链接
+	KeyUsableNum uint32    `json:"usable_num"`             // 可兑换次数
+	UsageNum     uint32    `json:"usage_num"`              // 已核销次数
+	Status       KeyStatus `json:"status"`                 // 状态
+	BeginTime    string    `json:"begin_time"`             // 开始时间
+	EndTime      string    `json:"end_time"`               // 结束时间
+	UsageTime    string    `json:"usage_time,omitempty"`   // 最后一次核销时间
+	DiscardTime  string    `json:"discard_time,omitempty"` // 作废时间
 }
 
 func (a *QueryRequest) String() (string, error) {
@@ -77,11 +81,15 @@ func (q *QueryRequest) Validate() error {
 }
 
 type Notify struct {
-	AppId      string `json:"app_id" validate:"required"`
-	SignType   string `json:"sign_type" validate:"required"`
-	Timestamp  string `json:"timestamp" validate:"required"`
-	Sign       string `json:"sign" validate:"required"`
-	Ciphertext string `json:"ciphertext" validate:"required"`
+	AppId      string      `json:"app_id" validate:"required"`
+	SignType   string      `json:"sign_type" validate:"required"`
+	Timestamp  string      `json:"timestamp" validate:"required"`
+	Sign       string      `json:"sign" validate:"required"`
+	NotifyId   string      `json:"notify_id" validate:"required"`
+	Event      NotifyEvent `json:"event" validate:"required"`
+	OutBizNo   string      `json:"out_biz_no" validate:"required,alphanum,min=2,max=32"`
+	TradeNo    string      `json:"trade_no" validate:"required,alphanum,min=2,max=32"`
+	Ciphertext string      `json:"ciphertext" validate:"required"`
 }
 
 func (d *Notify) Validate() error {

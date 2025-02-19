@@ -4,14 +4,6 @@ import (
 	"encoding/json"
 )
 
-type Status uint8
-
-const SuccessCode = 200
-
-func (s Status) Value() uint8 {
-	return uint8(s)
-}
-
 type Response struct {
 	Code    int32           `json:"code"`
 	Message string          `json:"message"`

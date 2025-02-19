@@ -4,52 +4,6 @@ import (
 	"encoding/json"
 )
 
-type Status uint8
-
-const (
-	Normal Status = iota + 1
-	DiscardIng
-	Used
-	Discard
-)
-
-const SuccessCode = 200
-
-var statusMap = map[Status]string{
-	Normal:     "正常",
-	DiscardIng: "作废中",
-	Used:       "已核销",
-	Discard:    "已作废",
-}
-
-func (s Status) Value() uint8 {
-	return uint8(s)
-}
-
-func (s Status) GetText() string {
-	t, ok := statusMap[s]
-	if !ok {
-		return ""
-	}
-	return t
-}
-
-func (s Status) IsNormal() bool {
-	return s == Normal
-}
-
-func (s Status) IsUsed() bool {
-	return s == Used
-}
-
-func (s Status) IsDiscardIng() bool {
-	return s == DiscardIng
-}
-
-func (s Status) IsDiscard() bool {
-	return s == Discard
-}
-
 type Data struct {
 	OutBizNo       string `json:"out_biz_no"`
 	TradeNo        string `json:"trade_no"`
