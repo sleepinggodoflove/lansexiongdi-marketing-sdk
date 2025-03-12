@@ -5,17 +5,20 @@ import (
 )
 
 type Data struct {
-	OutBizNo       string `json:"out_biz_no"`
-	TradeNo        string `json:"trade_no"`
-	Key            string `json:"key"`
-	UsableNum      uint32 `json:"usable_num"`
-	UsageNum       uint32 `json:"usage_num"`
-	Status         Status `json:"status"`
-	Url            string `json:"url"`
-	ValidBeginTime string `json:"valid_begin_time,omitempty"`
-	ValidEndTime   string `json:"valid_end_time,omitempty"`
-	UsageTime      string `json:"usage_time,omitempty"`
-	DiscardTime    string `json:"discard_time,omitempty"`
+	OutBizNo       string  `json:"out_biz_no"`
+	TradeNo        string  `json:"trade_no"`
+	Key            string  `json:"key"`
+	UsableNum      uint32  `json:"usable_num"`
+	UsageNum       uint32  `json:"usage_num"`
+	Status         Status  `json:"status"`
+	Url            string  `json:"url"`
+	Amount         float32 `json:"amount,omitempty"`
+	PayAmount      float32 `json:"pay_amount,omitempty"`
+	PayTime        string  `json:"pay_time,omitempty"`
+	ValidBeginTime string  `json:"valid_begin_time,omitempty"`
+	ValidEndTime   string  `json:"valid_end_time,omitempty"`
+	UsageTime      string  `json:"usage_time,omitempty"`
+	DiscardTime    string  `json:"discard_time,omitempty"`
 }
 
 type Response struct {
