@@ -88,21 +88,22 @@ func (d *DiscardRequest) Validate() error {
 }
 
 type NotifyData struct {
-	NotifyId       string  `json:"notify_id" validate:"required,alphanum,min=2,max=32"`
-	OutBizNo       string  `json:"out_biz_no" validate:"required,alphanum,min=2,max=32"`
-	TradeNo        string  `json:"trade_no" validate:"required,alphanum,min=2,max=32"`
-	Key            string  `json:"key,omitempty"`
-	UsableNum      uint32  `json:"usable_num"`
-	UsageNum       uint32  `json:"usage_num"`
-	Status         Status  `json:"status" validate:"required"`
-	Url            string  `json:"url,omitempty"`
-	Amount         float32 `json:"amount,omitempty"`
-	PayAmount      float32 `json:"pay_amount,omitempty"`
-	PayTime        string  `json:"pay_time,omitempty"`
-	ValidBeginTime string  `json:"valid_begin_time,omitempty"`
-	ValidEndTime   string  `json:"valid_end_time,omitempty"`
-	UsageTime      string  `json:"usage_time,omitempty"`
-	DiscardTime    string  `json:"discard_time,omitempty"`
+	NotifyId        string  `json:"notify_id" validate:"required,alphanum,min=2,max=32"`
+	OutBizNo        string  `json:"out_biz_no" validate:"required,alphanum,min=2,max=32"`
+	TradeNo         string  `json:"trade_no" validate:"required,alphanum,min=2,max=32"`
+	Key             string  `json:"key,omitempty"`
+	UsableNum       uint32  `json:"usable_num"`
+	UsageNum        uint32  `json:"usage_num"`
+	Status          Status  `json:"status" validate:"required"`
+	Url             string  `json:"url,omitempty"`
+	Amount          float32 `json:"amount,omitempty"`
+	PayAmount       float32 `json:"pay_amount,omitempty"`
+	PayTime         string  `json:"pay_time,omitempty"`
+	SettlementPrice float32 `json:"settlement_price,omitempty"`
+	ValidBeginTime  string  `json:"valid_begin_time,omitempty"`
+	ValidEndTime    string  `json:"valid_end_time,omitempty"`
+	UsageTime       string  `json:"usage_time,omitempty"`
+	DiscardTime     string  `json:"discard_time,omitempty"`
 }
 type Notify struct {
 	AppId     string     `json:"app_id" validate:"required"`

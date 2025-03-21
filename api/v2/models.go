@@ -50,18 +50,19 @@ type QueryResponse struct {
 }
 
 type KeyInfo struct {
-	Key         string    `json:"key,omitempty"` // key码
-	Url         string    `json:"url,omitempty"` // 短链接
-	UsableNum   uint32    `json:"usable_num"`    // 可兑换次数
-	UsageNum    uint32    `json:"usage_num"`     // 已核销次数
-	Status      KeyStatus `json:"status"`        // 状态
-	BeginTime   string    `json:"begin_time"`    // 开始时间
-	EndTime     string    `json:"end_time"`      // 结束时间
-	Amount      float32   `json:"amount,omitempty"`
-	PayAmount   float32   `json:"pay_amount,omitempty"`
-	PayTime     string    `json:"pay_time,omitempty"`
-	UsageTime   string    `json:"usage_time,omitempty"`   // 最后一次核销时间
-	DiscardTime string    `json:"discard_time,omitempty"` // 作废时间
+	Key             string    `json:"key,omitempty"`              // key码
+	Url             string    `json:"url,omitempty"`              // 短链接
+	UsableNum       uint32    `json:"usable_num"`                 // 可兑换次数
+	UsageNum        uint32    `json:"usage_num"`                  // 已核销次数
+	Status          KeyStatus `json:"status"`                     // 状态
+	BeginTime       string    `json:"begin_time"`                 // 开始时间
+	EndTime         string    `json:"end_time"`                   // 结束时间
+	Amount          float32   `json:"amount,omitempty"`           // 金额
+	PayAmount       float32   `json:"pay_amount,omitempty"`       // 支付金额
+	PayTime         string    `json:"pay_time,omitempty"`         // 支付时间
+	SettlementPrice float32   `json:"settlement_price,omitempty"` // 结算价
+	UsageTime       string    `json:"usage_time,omitempty"`       // 最后一次核销时间
+	DiscardTime     string    `json:"discard_time,omitempty"`     // 作废时间
 }
 
 func (a *QueryRequest) String() (string, error) {
