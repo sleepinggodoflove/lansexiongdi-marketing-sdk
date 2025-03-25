@@ -52,10 +52,10 @@ func main() {
 		PublicKey:  "验签公钥",
 		Key:        "业务参数密钥key",
 		SignType:   "签名类型",
-		BaseURL:    "请求地址",
+		BaseURL:    "请求地址:https://api.lansexiongdi.com",
 	})
 	if err != nil {
-		log.Fatalf("new core err:%s", err)
+		log.Fatalf("new core err:%v", err)
 	}
 	a := &key.Key{c}
 	r, err := a.Order(context.Background(), &key.OrderRequest{
@@ -64,7 +64,7 @@ func main() {
 		Number:     1,
 	})
 	if err != nil {
-		log.Fatalf("key get err:%s", err)
+		log.Fatalf("key get err:%v", err)
 	}
 	log.Printf(r)
 }
@@ -91,7 +91,7 @@ func main() {
 		BaseURL:    "请求地址",
 	})
 	if err != nil {
-		log.Fatalf("new core err:%s", err)
+		log.Fatalf("new core err:%v", err)
 	}
 	a := &key.Key{c}
 	r, err := a.Query(context.Background(), &key.QueryRequest{
@@ -99,7 +99,7 @@ func main() {
 		trade_no:   "123456",
 	})
 	if err != nil {
-		log.Fatalf("key query err:%s", err)
+		log.Fatalf("key query err:%v", err)
 	}
 	log.Printf(r)
 }
@@ -126,7 +126,7 @@ func main() {
 		BaseURL:    "请求地址",
 	})
 	if err != nil {
-		log.Fatalf("new core err:%s", err)
+		log.Fatalf("new core err:%v", err)
 	}
 	a := &key.Key{c}
 	r, err := a.Discard(context.Background(), &key.DiscardRequest{
@@ -134,7 +134,7 @@ func main() {
 		trade_no:   "123456",
 	})
 	if err != nil {
-		log.Fatalf("key query err:%s", err)
+		log.Fatalf("key query err:%v", err)
 	}
 	log.Printf(r)
 }
@@ -161,7 +161,7 @@ func main() {
 		BaseURL:    "请求地址",
 	})
 	if err != nil {
-		log.Fatalf("new core err:%s", err)
+		log.Fatalf("new core err:%v", err)
 	}
 	a := &key.Key{c}
 	r, err := a.Notify(context.Background(), &key.Notify{
@@ -185,7 +185,7 @@ func main() {
 		},
     })
 	if err != nil {
-		log.Fatalf("key notify err:%s", err)
+		log.Fatalf("key notify err:%v", err)
 	}
 	log.Printf(r)
 }
