@@ -124,6 +124,36 @@ func (c *Core) BuildParams(request Request) (*Params, error) {
 	}, nil
 }
 
+// BuildAnyApiParams gets the params
+func (c *Core) BuildAnyApiParams(bizContent any) (*Params, error) {
+
+	bizBytes, err := json.Marshal(bizContent)
+	if err != nil {
+		return nil, err
+	}
+
+	ciphertext, err := c.CryptographySuite.Cipher.Encode(string(bizBytes))
+	if err != nil {
+		return nil, err
+	}
+
+	timestamps := time.Now().Format(time.DateTime)
+	dataToSign := c.Config.AppID + timestamps + ciphertext
+
+	signature, err := c.CryptographySuite.Signer.Sign(dataToSign)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Params{
+		AppId:      c.Config.AppID,
+		SignType:   c.Config.SignType,
+		Timestamp:  timestamps,
+		Sign:       signature,
+		Ciphertext: ciphertext,
+	}, nil
+}
+
 // Verify verifies the params
 func (c *Core) Verify(params *Params) bool {
 	dataToSign := c.Config.AppID + params.Timestamp + params.Ciphertext

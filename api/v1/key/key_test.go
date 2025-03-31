@@ -79,12 +79,8 @@ func TestOrder(t *testing.T) {
 		t.Errorf("获取key失败:%s", r.Message)
 		return
 	}
-	data, err := r.ConvertData()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	t.Logf("data=%+v", data)
+
+	t.Logf("data=%+v", r.Data)
 }
 
 func TestQuery(t *testing.T) {
@@ -107,12 +103,7 @@ func TestQuery(t *testing.T) {
 		t.Errorf("查询失败:%s", r.Message)
 		return
 	}
-	data, err := r.ConvertData()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	t.Logf("data=%+v", data)
+	t.Logf("data=%+v", r.Data)
 	//t.Log(result.Status.IsNormal())
 	//t.Log(result.Status.IsUsed())
 	//t.Log(result.Status.IsDiscardIng())
@@ -140,12 +131,7 @@ func TestDiscard(t *testing.T) {
 		t.Errorf("作废收单失败:%s", r.Message)
 		return
 	}
-	data, err := r.ConvertData()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	t.Logf("data=%+v", data)
+	t.Logf("data=%+v", r.Data)
 	//assert.Equal(t, r.Data.Status, DiscardIng)
 }
 
@@ -232,13 +218,14 @@ func TestCallback(t *testing.T) {
 }
 
 func TestResponse(t *testing.T) {
+
 	jsonBytes := []byte(`{"code":200,"data":{},"message":"成功"}`)
-	resp, err := response(jsonBytes)
+	resp, err := core.BuildResponse(jsonBytes)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	result, err := resp.ConvertData()
+	result, err := ConvertData(resp.Data)
 	if err != nil {
 		t.Error(err)
 		return
@@ -248,12 +235,12 @@ func TestResponse(t *testing.T) {
 	t.Logf("%+v", result)
 
 	jsonBytes2 := []byte(`{"code":200,"message":"成功","data":{"out_biz_no":"123","trade_no":"456"}}`)
-	resp2, err := response(jsonBytes2)
+	resp2, err := core.BuildResponse(jsonBytes2)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	result2, err := resp2.ConvertData()
+	result2, err := ConvertData(resp2.Data)
 	if err != nil {
 		t.Error(err)
 		return

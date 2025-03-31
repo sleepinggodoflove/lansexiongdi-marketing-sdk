@@ -137,3 +137,29 @@ func (a *Notify) SignString() string {
 	}
 	return a.AppId + a.Timestamp + string(b)
 }
+
+type Data struct {
+	OutBizNo        string  `json:"out_biz_no"`
+	TradeNo         string  `json:"trade_no"`
+	Key             string  `json:"key"`
+	UsableNum       uint32  `json:"usable_num"`
+	UsageNum        uint32  `json:"usage_num"`
+	Status          Status  `json:"status"`
+	Url             string  `json:"url"`
+	Amount          float32 `json:"amount,omitempty"`
+	PayAmount       float32 `json:"pay_amount,omitempty"`
+	PayTime         string  `json:"pay_time,omitempty"`
+	SettlementPrice float32 `json:"settlement_price,omitempty"`
+	ValidBeginTime  string  `json:"valid_begin_time,omitempty"`
+	ValidEndTime    string  `json:"valid_end_time,omitempty"`
+	UsageTime       string  `json:"usage_time,omitempty"`
+	DiscardTime     string  `json:"discard_time,omitempty"`
+}
+
+func ConvertData(b []byte) (*Data, error) {
+	var data *Data
+	if err := json.Unmarshal(b, &data); err != nil {
+		return nil, err
+	}
+	return data, nil
+}

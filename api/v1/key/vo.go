@@ -1,7 +1,5 @@
 package key
 
-const SuccessCode = 200
-
 type Status uint8
 
 const (

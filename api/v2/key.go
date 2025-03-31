@@ -3,6 +3,7 @@ package v2
 import (
 	"context"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
 	"net/http"
 )
 
@@ -13,13 +14,14 @@ const (
 
 type Key api.Service
 
-func (k *Key) Order(ctx context.Context, request *OrderRequest) (*http.Response, *Response, error) {
+func (k *Key) Order(ctx context.Context, request *OrderRequest) (*http.Response, *core.Response, error) {
+
 	httpResponse, bodyBytes, err := k.Post(ctx, orderMethod, request)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := response(bodyBytes)
+	res, err := core.BuildResponse(bodyBytes)
 	if err != nil {
 		return httpResponse, nil, err
 	}
@@ -27,13 +29,14 @@ func (k *Key) Order(ctx context.Context, request *OrderRequest) (*http.Response,
 	return httpResponse, res, nil
 }
 
-func (k *Key) Query(ctx context.Context, request *QueryRequest) (*http.Response, *Response, error) {
+func (k *Key) Query(ctx context.Context, request *QueryRequest) (*http.Response, *core.Response, error) {
+
 	httpResponse, bodyBytes, err := k.Post(ctx, queryMethod, request)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := response(bodyBytes)
+	res, err := core.BuildResponse(bodyBytes)
 	if err != nil {
 		return httpResponse, nil, err
 	}
