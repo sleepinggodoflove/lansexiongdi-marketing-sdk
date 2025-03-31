@@ -58,7 +58,7 @@ func main() {
 		log.Fatalf("new core err:%v", err)
 	}
 	a := &key.Key{c}
-	r, err := a.Order(context.Background(), &key.OrderRequest{
+	_,r, err := a.Order(context.Background(), &key.OrderRequest{
 		OutBizNo:   "123456",
 		ActivityNo: "123456",
 		Number:     1,
@@ -94,7 +94,7 @@ func main() {
 		log.Fatalf("new core err:%v", err)
 	}
 	a := &key.Key{c}
-	r, err := a.Query(context.Background(), &key.QueryRequest{
+	_,r, err := a.Query(context.Background(), &key.QueryRequest{
 		OutBizNo:   "123456",
 		trade_no:   "123456",
 	})
@@ -129,7 +129,7 @@ func main() {
 		log.Fatalf("new core err:%v", err)
 	}
 	a := &key.Key{c}
-	r, err := a.Discard(context.Background(), &key.DiscardRequest{
+	_,r, err := a.Discard(context.Background(), &key.DiscardRequest{
 		OutBizNo:   "123456",
 		trade_no:   "123456",
 	})
@@ -189,4 +189,68 @@ func main() {
 	}
 	log.Printf(r)
 }
+```
+
+#### [其它调用](https://alidocs.dingtalk.com/i/nodes/N7dx2rn0Jb6A1wvLixErNlLkJMGjLRb3?utm_scene=team_space)
+
+```go
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api/v1/anyapi"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+	"log"
+)
+
+func main() {
+	c, err := core.NewCore(&core.Config{
+		AppID:      "appid",
+		PrivateKey: "私钥",
+		PublicKey:  "验签公钥",
+		Key:        "业务参数密钥key",
+		SignType:   "签名类型",
+		BaseURL:    "请求地址",
+	})
+	if err != nil {
+		log.Fatalf("new core err:%v", err)
+	}
+
+	bizContent := struct {
+		Source       string `json:"source"`         // 来源
+		AppId        string `json:"app_id"`         // 应用Id
+		MchPublicKey string `json:"mch_public_key"` // 客户公钥
+		NotifyUrl    string `json:"notify_url"`     // 事件通知地址,可为空
+	}{
+		Source:       "来源",
+		AppId:        "123",
+		MchPublicKey: "123",
+		NotifyUrl:    "https://xx.com/xx",
+	}
+
+	a := &anyapi.AnyApi{c}
+
+	method := "/openapi/v1/xxx"
+
+	_, r, err := a.AnyApi(context.Background(), method, bizContent)
+	if err != nil {
+		log.Fatalf("call err:%v", err)
+	}
+
+	if !r.IsSuccess() {
+		log.Fatalf("err:%s", r.Message)
+	}
+
+	var bizDataContent = struct {
+		Ciphertext string `json:"ciphertext,omitempty"`
+	}{}
+
+	_ = json.Unmarshal(r.Data, &bizDataContent)
+
+	bizJsonContent, _ := c.CryptographySuite.Cipher.Decode(bizDataContent.Ciphertext)
+
+	log.Printf("bizJsonContent=%s", bizJsonContent)
+}
+
 ```

@@ -67,13 +67,13 @@ func Test_AnyApi(t *testing.T) {
 
 	t.Logf("data=%s", string(r.Data))
 
-	var data = struct {
+	var bizDataContent = struct {
 		Ciphertext string `json:"ciphertext,omitempty"`
 	}{}
 
-	_ = json.Unmarshal(r.Data, &data)
+	_ = json.Unmarshal(r.Data, &bizDataContent)
 
-	dataJsonStr, _ := c.CryptographySuite.Cipher.Decode(data.Ciphertext)
+	bizJsonContent, _ := c.CryptographySuite.Cipher.Decode(bizDataContent.Ciphertext)
 
-	t.Logf("dataJsonStr=%s", dataJsonStr)
+	t.Logf("bizJsonContent=%s", bizJsonContent)
 }
