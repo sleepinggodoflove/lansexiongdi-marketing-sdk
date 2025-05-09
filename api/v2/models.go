@@ -7,7 +7,7 @@ import (
 )
 
 type OrderRequest struct {
-	OutBizNo   string `validate:"required,min=2,max=32" json:"out_biz_no"` // 同一商户应用下不可重复
+	OutBizNo   string `validate:"required,alphanum,min=2,max=32" json:"out_biz_no"` // 同一商户应用下不可重复
 	ActivityNo string `validate:"required,min=2,max=32" json:"activity_no"`
 	Number     int32  `validate:"required,min=1,max=10000" json:"number"`
 	NotifyUrl  string `json:"notify_url,omitempty"` // 回调地址,为空则使用客户应用设置地址
