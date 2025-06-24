@@ -76,7 +76,7 @@ func NewCore(c *Config, o ...Option) (*Core, error) {
 
 	core.Headers.Set("Version", "1.0")
 	core.Headers.Set("Appid", core.Config.AppID)
-	core.Headers.Set("SignType", string(core.Config.SignType))
+	core.Headers.Set("Sign-Type", string(core.Config.SignType))
 
 	crs, err := c.CryptographySuite()
 	if err != nil {
