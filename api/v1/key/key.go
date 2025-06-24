@@ -2,9 +2,11 @@ package key
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
+	"io"
 	"net/http"
 )
 
@@ -47,6 +49,7 @@ func (k *Key) Query(ctx context.Context, request *QueryRequest) (*http.Response,
 }
 
 func (k *Key) Discard(ctx context.Context, request *DiscardRequest) (*http.Response, *core.Response, error) {
+
 	httpResponse, bodyBytes, err := k.Post(ctx, discardMethod, request)
 	if err != nil {
 		return nil, nil, err
@@ -64,6 +67,42 @@ func (k *Key) Notify(_ context.Context, n *Notify) (*NotifyData, error) {
 
 	if !k.CryptographySuite.Verifier.Verify(n.SignString(), n.Sign) {
 		return nil, fmt.Errorf("verify sign fail")
+	}
+
+	return &n.Data, nil
+}
+
+func (k *Key) CallBack(ctx context.Context, req *http.Request) (*NotifyData, error) {
+
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var n *Notify
+	if err = json.Unmarshal(body, &n); err != nil {
+		return nil, err
+	}
+
+	sign := req.Header.Get("Sign")
+	timestamp := req.Header.Get("Timestamp")
+
+	if sign == "" {
+		return k.Notify(ctx, n)
+	}
+
+	if timestamp == "" {
+		return nil, fmt.Errorf("timestamp is empty")
+	}
+
+	ciphertext, err := k.GetCiphertext(&n.Data)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf(ciphertext)
+
+	if !k.Verify(timestamp, ciphertext, sign) {
+		return nil, fmt.Errorf("call back verify sign fail")
 	}
 
 	return &n.Data, nil

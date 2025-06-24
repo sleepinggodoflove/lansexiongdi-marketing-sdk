@@ -14,10 +14,12 @@ type Response struct {
 }
 
 func BuildResponse(b []byte) (*Response, error) {
+
 	var resp Response
 	if err := json.Unmarshal(b, &resp); err != nil {
 		return nil, err
 	}
+
 	return &resp, nil
 }
 

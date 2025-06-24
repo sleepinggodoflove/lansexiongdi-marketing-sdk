@@ -20,19 +20,23 @@ type OrderResponse struct {
 }
 
 func (a *OrderRequest) String() (string, error) {
+
 	b, err := json.Marshal(a)
 	if err != nil {
 		return "", err
 	}
+
 	return string(b), nil
 }
 
 func (c *OrderRequest) Validate() error {
+
 	if err := validator.New().Struct(c); err != nil {
 		for _, err = range err.(validator.ValidationErrors) {
 			return fmt.Errorf(err.Error())
 		}
 	}
+
 	return nil
 }
 
@@ -66,14 +70,17 @@ type KeyInfo struct {
 }
 
 func (a *QueryRequest) String() (string, error) {
+
 	b, err := json.Marshal(a)
 	if err != nil {
 		return "", err
 	}
+
 	return string(b), nil
 }
 
 func (q *QueryRequest) Validate() error {
+
 	if q.OutBizNo == "" && q.TradeNo == "" {
 		return fmt.Errorf("参数错误,out_biz_no/trade_no 二选一")
 	}
@@ -107,43 +114,53 @@ type NotifyData struct {
 }
 
 func (d *Notify) Validate() error {
+
 	if err := validator.New().Struct(d); err != nil {
 		for _, err = range err.(validator.ValidationErrors) {
 			return fmt.Errorf(err.Error())
 		}
 	}
+
 	return nil
 }
 
 func (a *Notify) String() (string, error) {
+
 	b, err := json.Marshal(a)
 	if err != nil {
 		return "", err
 	}
+
 	return string(b), nil
 }
 
 func (d *NotifyData) Validate() error {
+
 	if err := validator.New().Struct(d); err != nil {
 		for _, err = range err.(validator.ValidationErrors) {
 			return fmt.Errorf(err.Error())
 		}
 	}
+
 	return nil
 }
 
 func (a *NotifyData) String() (string, error) {
+
 	b, err := json.Marshal(a)
 	if err != nil {
 		return "", err
 	}
+
 	return string(b), nil
 }
 
 func (a *Notify) SignString() (string, error) {
+
 	b, err := a.Data.String()
 	if err != nil {
 		return "", nil
 	}
+
 	return a.AppId + a.Timestamp + b, nil
 }

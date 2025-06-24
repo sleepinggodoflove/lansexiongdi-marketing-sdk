@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/utils"
 	"io"
 	"net/http"
 	"time"
@@ -59,6 +60,7 @@ func WithHttpClient(client *http.Client) Option {
 
 // NewCore creates a new Core instance
 func NewCore(c *Config, o ...Option) (*Core, error) {
+
 	if err := c.Validate(); err != nil {
 		return nil, err
 	}
@@ -72,18 +74,42 @@ func NewCore(c *Config, o ...Option) (*Core, error) {
 		f(core)
 	}
 
+	core.Headers.Set("Version", "1.0")
+	core.Headers.Set("Appid", core.Config.AppID)
+	core.Headers.Set("SignType", string(core.Config.SignType))
+
 	crs, err := c.CryptographySuite()
 	if err != nil {
 		return nil, err
 	}
+
 	core.CryptographySuite = crs
 
 	return core, nil
 }
 
+// GetBizSignStr gets the biz sign str
+func (c *Core) GetBizSignStr(request any) (plaintext string, err error) {
+
+	kvs := utils.SortStruct(request)
+
+	kvm := make(map[string]any, len(kvs))
+	for _, kv := range kvs {
+		kvm[kv.Key] = kv.Value
+	}
+
+	kvmBytes, err := json.Marshal(kvm)
+	if err != nil {
+		return "", err
+	}
+
+	return string(kvmBytes), err
+}
+
 // GetCiphertext gets the ciphertext
-func (c *Core) GetCiphertext(request Request) (string, error) {
-	plaintext, err := request.String()
+func (c *Core) GetCiphertext(request any) (string, error) {
+
+	plaintext, err := c.GetBizSignStr(request)
 	if err != nil {
 		return "", err
 	}
@@ -98,6 +124,7 @@ func (c *Core) GetCiphertext(request Request) (string, error) {
 
 // BuildParams gets the params
 func (c *Core) BuildParams(request Request) (*Params, error) {
+
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
@@ -115,6 +142,9 @@ func (c *Core) BuildParams(request Request) (*Params, error) {
 		return nil, err
 	}
 
+	c.Headers.Set("Timestamp", timestamps)
+	c.Headers.Set("Sign", signature)
+
 	return &Params{
 		AppId:      c.Config.AppID,
 		SignType:   c.Config.SignType,
@@ -127,12 +157,7 @@ func (c *Core) BuildParams(request Request) (*Params, error) {
 // BuildAnyApiParams gets the params
 func (c *Core) BuildAnyApiParams(bizContent any) (*Params, error) {
 
-	bizBytes, err := json.Marshal(bizContent)
-	if err != nil {
-		return nil, err
-	}
-
-	ciphertext, err := c.CryptographySuite.Cipher.Encode(string(bizBytes))
+	ciphertext, err := c.GetCiphertext(bizContent)
 	if err != nil {
 		return nil, err
 	}
@@ -145,6 +170,9 @@ func (c *Core) BuildAnyApiParams(bizContent any) (*Params, error) {
 		return nil, err
 	}
 
+	c.Headers.Set("Timestamp", timestamps)
+	c.Headers.Set("Sign", signature)
+
 	return &Params{
 		AppId:      c.Config.AppID,
 		SignType:   c.Config.SignType,
@@ -155,13 +183,15 @@ func (c *Core) BuildAnyApiParams(bizContent any) (*Params, error) {
 }
 
 // Verify verifies the params
-func (c *Core) Verify(params *Params) bool {
-	dataToSign := c.Config.AppID + params.Timestamp + params.Ciphertext
-	return c.CryptographySuite.Verifier.Verify(dataToSign, params.Sign)
+func (c *Core) Verify(timestamp, ciphertext, sign string) bool {
+	//	dataToSign := k.Config.AppID + n.Timestamp + ciphertext
+	dataToSign := c.Config.AppID + timestamp + ciphertext
+	return c.CryptographySuite.Verifier.Verify(dataToSign, sign)
 }
 
 // GetRequestBody gets the request body
 func (c *Core) GetRequestBody(_ context.Context, request Request) ([]byte, error) {
+
 	reqBody, err := c.BuildParams(request)
 	if err != nil {
 		return nil, err
@@ -177,19 +207,23 @@ func (c *Core) GetRequestBody(_ context.Context, request Request) ([]byte, error
 
 // Post sends the request and Analysis the response
 func (c *Core) Post(ctx context.Context, method string, request Request) (*http.Response, []byte, error) {
+
 	reqBodyBytes, err := c.GetRequestBody(ctx, request)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	return c.Request(ctx, http.MethodPost, c.Config.BaseURL+method, reqBodyBytes)
 }
 
 // Request sends the request and Analysis the response
 func (c *Core) Request(ctx context.Context, method, url string, body []byte) (*http.Response, []byte, error) {
+
 	req, err := http.NewRequestWithContext(ctx, method, url, bytes.NewBuffer(body))
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create HTTP request: %w", err)
 	}
+
 	req.Header = c.Headers
 
 	resp, err := c.HttpClient.Do(req)
