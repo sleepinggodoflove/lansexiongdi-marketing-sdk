@@ -43,3 +43,10 @@ func (s Status) IsDiscard() bool {
 func (s Status) IsExpire() bool {
 	return s == Expire
 }
+
+type AccountType uint8
+
+const (
+	AccountTypeMobile AccountType = iota + 1
+	AccountTypeQQ
+)
