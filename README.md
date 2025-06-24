@@ -146,6 +146,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/api/v1/key"
 	"github.com/sleepinggodoflove/lansexiongdi-marketing-sdk/core"
 	"log"
@@ -164,26 +165,15 @@ func main() {
 		log.Fatalf("new core err:%v", err)
 	}
 	a := &key.Key{c}
-	r, err := a.Notify(context.Background(), &key.Notify{
-		AppId:     "",
-		SignType:  "",
-		Timestamp: "",
-		Sign:      "",
-		Data: NotifyData{
-			NotifyId:       "",
-			OutBizNo:       "",
-			TradeNo:        "",
-			Key:            "",
-			UsableNum:      0,
-			UsageNum:       0,
-			Status:         0,
-			Url:            "",
-			ValidBeginTime: "",
-			ValidEndTime:   "",
-			UsageTime:      "",
-			DiscardTime:    "",
-		},
-    })
+	
+	req := &http.Request{
+		Header: nil, // 请求头
+		Body:   nil, // 请求体
+	}
+	r, err := a.CallBack(context.Background(), req)
+	if err != nil {
+		log.Fatalf("key callBack err:%v", err)
+	}
 	if err != nil {
 		log.Fatalf("key notify err:%v", err)
 	}
