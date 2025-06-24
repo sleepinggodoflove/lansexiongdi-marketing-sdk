@@ -184,7 +184,6 @@ func (c *Core) BuildAnyApiParams(bizContent any) (*Params, error) {
 
 // Verify verifies the params
 func (c *Core) Verify(timestamp, ciphertext, sign string) bool {
-	//	dataToSign := k.Config.AppID + n.Timestamp + ciphertext
 	dataToSign := c.Config.AppID + timestamp + ciphertext
 	return c.CryptographySuite.Verifier.Verify(dataToSign, sign)
 }
