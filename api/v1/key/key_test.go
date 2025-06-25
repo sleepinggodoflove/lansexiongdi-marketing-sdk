@@ -10,21 +10,12 @@ import (
 	"testing"
 )
 
-//var (
-//	appId      = ""
-//	privateKey = ""
-//	publicKey  = ""
-//	key        = ""
-//	baseURL    = ""
-//	signType   = core.SignRSA
-//)
-
 var (
-	appId      = "lzm"
-	privateKey = "MIIEowIBAAKCAQEA7a2I4l8OOdW4weVFvj4u/mBqP3aZhJ0mOTKl4MCW4Pf6gNAlZa5dZYOS/BocmG872+pd10BiI73qiAWsuVaPwCL0A37lQbCXlG0fDAfCLogXuF1qVNRZgkYKrx/5Gppo2PNed7E5YyCUkMUKVPbuwuZteMZJH8d1o6Uojbb/xJQvAGOlx5Y04VZWp/6p2GjhW0srwgbpVegMyyn2Qblx1Lo+Uq5zG8um7FTpbtb/L/itpBFEDSZGIIKDfn4FPyt+jQ0SW5TDYQClSvWHK4V3RkWOVkD1nHeBpZyp7JNehK+7kBfO6G4NJabkyoWqFEiZcTy38ZWQdqJ9N4LZuY37NwIDAQABAoIBAGs2u6e5z1YBda1pehN+Q36WCXeFTW0H4qUslq0S0zy6P/L5cdUzWYggWR6FvN56Vts2Foyxy1NqKTCgtrCIPqIiYkZtaIdAXLAkpTutCEgrNeABq6SGgbYFWG51Es6QVrl+1t9RP5zaponDiIyZM00R2tH/SB8gv41JREjhAvEuNIwPyaoVVt+U/kAdhJgiMKsDpoGaMfsJk76sORu6qQqBkBN8cglN94xC0QtROytW3EY8SnZmgGZHcY3YTXM74CWM8yBg7rNuKv0982f9hKvUDHKMFYly1PzYiSgplkT7RYCMjo2FFf1lt7k7N61+4nalS/EM6324m2poisTRFAkCgYEA+3oXvtwrTim0kXG7V7w5PS8u5dU0sAAH4ACSyzy8nEdKEk4ipoaTGm6km8ko0O+9E70SwZQgK/eAnmsYf5WtMzvItweKUUVsBCm01qSHlu5vzGO3H1ndi7hg+tH9VrOQH3+odQJP9FqC4BkncMszHM4nLglWSTixTTvGIovQLy0CgYEA8fPnu0tWqhfQV6svaA5kt4h6cL52ARKlubRuYkI4hGuikKYpd2A3WuVtD1LkuPQSjwID9730HAqLc7ZMwONjQ8NANi9ZoJR6A+Vzba9zDPQmSc80Ax7Kkjc03D1Y7yiP6P8bWnhCCbRcMy+dcobvBZc2zaWzSNjZwPOSV9xaMnMCgYAclz354hg+U7mGy7JsACdV0HZ5hOrvk6FRk18dIjOjZOuD90QzQJua5rdqSs2MK6WIh/eI8KlTtlj2KeDoKIE/kO15+a59HPJx6rf3q08LFuK5DyEzvEjW6MiF27f80n9xRVdGrlOeyWeVyOZWCZQvEzUbI86eloZ57HDTXqf1pQKBgF6T6xeJgZ0Hpgc/AU75oWEk1kfQC6yrr2CCKUv7esA4mtlUOo1RbRH48MK2snWh4sdIEGj9NbjoXk6jCim0OQ85+ZW0uKJOp8tyG8baeGyt23GqrzgxBxpUvjMBQAxsnKSFZBnfPGEywX+4syEbob9btq54gTaOncAQ9jmmBxQFAoGBAIpPbq2lYwOhgoUJ2BR34xjpmNOiOAF5AVLPGTH44a+iGMJ4tbF9AvfL4xsCWK9zMi3ExaKVN0lNn0cWx2lpXxwO6B+l4L//eczmHx4h1eLJd6ZWyTj7lq+RBOOUgHLKEssZfJ11RYTZjSD7s75JZteM2OFw7BVRRNgw387A3mj6"
-	publicKey  = "MIIBCgKCAQEA0w4XGS1eEO9gAtWoB0E1vi1QH3xZAiHnkzZMhZRJOKeZhNUb9nmPzrGtCFD1c+to9/hxKnWZnRi1dklRGI4uXaB7PKuDhifHarBTTPBzW/8m+YqKEwjT2XWYvnG1Zeek4a45xze5cHhLA7Ow1Lwgy0u1rhalvz8GbCa9A7ZHKvZtIJJzfPSIV6gZIz5b7+v7rXZzMNNxvC7m+cwtvvERPjhJoj3O7ithcgdiT3JkZd1fZxkA6HCJx1I+TElt4qA9WnV+rqQwjka1gxBO497c0MUq+4Tx+lLGKpb61RPja4+9wiLFvEiS80WyZYkptWlA0Z5mhsxURs/OqaMyVXzbhwIDAQAB"
-	key        = "5f42e758a38cc003c5da7cee814ddfd5"
-	baseURL    = "https://gateway.dev.cdlsxd.cn"
+	appId      = ""
+	privateKey = ""
+	publicKey  = ""
+	key        = ""
+	baseURL    = ""
 	signType   = core.SignRSA
 )
 
@@ -75,24 +66,12 @@ func TestOrder(t *testing.T) {
 
 	c := newCore()
 
-	a := []AccountReq{
-		{
-			Account: "18666666661",
-			Type:    AccountTypeMobile,
-			Verify:  true,
-		},
-		{
-			Account: "18666666662",
-			Type:    AccountTypeMobile,
-			Verify:  true,
-		},
-	}
 	var _, r, err = c.Order(context.Background(), &OrderRequest{
-		OutBizNo:   "N123456002",
+		OutBizNo:   "N123456003",
 		ActivityNo: "N123456",
 		Number:     1,
 		NotifyUrl:  "",
-		Accounts:   a,
+		Account:    "18666666666",
 		Extra:      "",
 	})
 	if err != nil {
@@ -113,7 +92,7 @@ func TestQuery(t *testing.T) {
 	c := newCore()
 
 	_, r, err := c.Query(context.Background(), &QueryRequest{
-		OutBizNo: "N123456001",
+		OutBizNo: "N123456003",
 		TradeNo:  "",
 	})
 	if err != nil {
@@ -135,7 +114,7 @@ func TestDiscard(t *testing.T) {
 	c := newCore()
 
 	_, r, err := c.Discard(context.Background(), &DiscardRequest{
-		OutBizNo: "N123456001",
+		OutBizNo: "N123456003",
 		TradeNo:  "",
 		Reason:   "正常作废",
 	})
@@ -149,7 +128,7 @@ func TestDiscard(t *testing.T) {
 		return
 	}
 
-	t.Logf("data=%s", string(r.Data))
+	t.Logf("respons=%+v", r)
 }
 
 func TestResponse(t *testing.T) {
