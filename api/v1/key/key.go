@@ -85,21 +85,37 @@ func (k *Key) CallBack(ctx context.Context, req *http.Request) (*NotifyData, err
 	}
 
 	sign := req.Header.Get("Sign")
-	timestamp := req.Header.Get("Timestamp")
 
 	if sign == "" {
 		return k.Notify(ctx, n)
 	}
 
+	timestamp := req.Header.Get("Timestamp")
 	if timestamp == "" {
 		return nil, fmt.Errorf("timestamp is empty")
+	}
+
+	appid := req.Header.Get("Appid")
+	if appid == "" {
+		return nil, fmt.Errorf("appid is empty")
+	}
+
+	signType := req.Header.Get("Sign-Type")
+	if signType == "" {
+		return nil, fmt.Errorf("sign-type is empty")
+	}
+
+	if appid != k.Config.AppID {
+		return nil, fmt.Errorf("appid is invalid")
+	}
+	if signType != string(k.Config.SignType) {
+		return nil, fmt.Errorf("sign-type is invalid")
 	}
 
 	ciphertext, err := k.GetCiphertext(&n.Data)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf(ciphertext)
 
 	if !k.Verify(timestamp, ciphertext, sign) {
 		return nil, fmt.Errorf("call back verify sign fail")

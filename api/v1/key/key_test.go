@@ -66,12 +66,12 @@ func TestOrder(t *testing.T) {
 
 	c := newCore()
 
-	var _, r, err = c.Order(context.Background(), &OrderRequest{
-		OutBizNo:   "N123456003",
-		ActivityNo: "N123456",
+	_, r, err := c.Order(context.Background(), &OrderRequest{
+		OutBizNo:   "N123456005",
+		ActivityNo: "N1234565555",
 		Number:     1,
 		NotifyUrl:  "",
-		Account:    "18666666666",
+		Account:    "18479266021",
 		Extra:      "",
 	})
 	if err != nil {
@@ -85,6 +85,7 @@ func TestOrder(t *testing.T) {
 	}
 
 	t.Logf("data=%s", string(r.Data))
+	t.Logf("headers=%+v", c.Headers)
 }
 
 func TestQuery(t *testing.T) {
@@ -233,6 +234,9 @@ func TestCallback(t *testing.T) {
 	body, _ := json.Marshal(n)
 
 	_, err := c.BuildParams(&data)
+
+	x, _ := json.Marshal(c.Headers)
+	t.Logf("x=%s", x)
 
 	req := &http.Request{
 		Header: c.Headers,
