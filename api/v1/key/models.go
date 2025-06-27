@@ -120,6 +120,7 @@ type NotifyData struct {
 	ValidEndTime    string  `json:"valid_end_time,omitempty"`
 	UsageTime       string  `json:"usage_time,omitempty"`
 	DiscardTime     string  `json:"discard_time,omitempty"`
+	Account         string  `json:"account,omitempty"` // 可兑换账号
 }
 type Notify struct {
 	AppId     string     `json:"app_id" validate:"required"`
@@ -197,6 +198,7 @@ type Data struct {
 	ValidEndTime    string  `json:"valid_end_time,omitempty"`
 	UsageTime       string  `json:"usage_time,omitempty"`
 	DiscardTime     string  `json:"discard_time,omitempty"`
+	Account         string  `json:"account,omitempty"` // 可兑换账号
 }
 
 func ConvertData(b []byte) (*Data, error) {
