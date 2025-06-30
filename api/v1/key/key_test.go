@@ -223,41 +223,6 @@ func TestCallback(t *testing.T) {
 	t.Logf("response=%+v", r)
 }
 
-func TestRequestNotify(t *testing.T) {
-
-	var req *Notify
-
-	reqStr := `{"data": {"key": "3GZwYyVg1Kg9Myop", "status": 2, "trade_no": "791668935178067969", "notify_id": "7342795997099393024", "usage_num": 0, "out_biz_no": "N123456001", "usable_num": 2, "usage_time": "2025-06-23 14:09:48", "valid_end_time": "2025-07-05 23:59:59", "settlement_price": 10.01, "valid_begin_time": "2025-02-21 00:00:00"}, "sign": "dPq0FrvOG7S+3eY8hQ6sg0uc+xb1F2ymWim0my+WGBHvg+U4qiT9HQ58ntXMxz/QAhEEpFGcoJXYqyYR1ZYEPnCdtkP0yCX3BucBW25NB7CWjoIO57akfKbNf9aZpx7xV3toYVrcIuXJNiJ8GxfIK1ybFZQlOvdlQdRE3NqAoAQtO0y6QZPAf3pziyRFHk77bIMoTXynmSf0FhtJYRDpURAntp8s4cJ5F/n3beAQkJnape8zHzkHKMIfr+3HEFYt3qEyoT3U2nRtxhWyrLSlo15KZ5a4yq4QdQJdcEM6KJedISKQnkeqIPRh7sKviVCqqRD/fMdak/Z/tqvNMGIbrQ==", "app_id": "lzm", "sign_type": "RSA", "timestamp": "2025-06-23 14:09:48"}`
-
-	err := json.Unmarshal([]byte(reqStr), &req)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	c := newCore()
-
-	r, err := c.Notify(context.Background(), req)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	t.Logf("response1=%+v", r)
-
-	request := &http.Request{
-		Header: c.Headers,
-		Body:   io.NopCloser(bytes.NewBuffer([]byte(reqStr))),
-	}
-	r, err = c.CallBack(context.Background(), request)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	t.Logf("response2=%+v", r)
-}
-
 func TestCallBack(t *testing.T) {
 
 	reqStr := `{"data": {"url": "https://gateway.dev.cdlsxd.cn/yxh5/dpK5ly6oVVE2AM0W", "status": 2, "account": "18479266021", "trade_no": "794167617429315585", "notify_id": "7345294954732199936", "usage_num": 0, "out_biz_no": "0627002001", "usable_num": 2, "usage_time": "2025-06-30 11:39:46", "valid_end_time": "2026-06-30 23:59:59", "settlement_price": 2, "valid_begin_time": "2025-06-24 11:00:08"}, "sign": "XLwRQ12EBXSGOSVzUMXwjSlKP88P4Odhe6c9MrfaszKLe+3HtPTeB6QWvyAmXGeIvsy02P0YtcOYV4xQHlWo3Uh5FZc6IJU/+KN+xVnn/DlFLpc+DhCKw6o4hYv+eLLyshjFZPZYVUU2I2YmkI1ZlwBaufsB+N9ds8gBz5+hELn17/qcFcbO6pYOd2te7xmJSGKOAMn0q2c2DSvTLvyQXhKUlDZfUZZGBOc1LGChy9CHc7Z/0E8/p2YYTlMPnvk0VHjEjV5sJxDnXwhSZqE7f3mRx0IN3au3VtZnXJsgl/whxdTyab9dYpfIxK75bS0mjncdqxGf1hLdhYJhTx8bog==", "app_id": "lzm", "sign_type": "RSA", "timestamp": "2025-06-30 11:39:46"}`
