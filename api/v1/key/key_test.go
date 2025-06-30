@@ -33,42 +33,13 @@ func newCore() *Key {
 	return &k
 }
 
-func TestBuildParams(t *testing.T) {
-
-	strBytes := []byte(`{"out_biz_no":"","activity_no":"","number":1}`)
-
-	var r *OrderRequest
-	if err := json.Unmarshal(strBytes, &r); err != nil {
-		t.Error(err)
-		return
-	}
-	t.Logf("%+v", r)
-
-	c := newCore()
-
-	req := &OrderRequest{
-		OutBizNo:   "001",
-		ActivityNo: "Ntest001",
-		Number:     1,
-		NotifyUrl:  "",
-		Extra:      "",
-	}
-	p, err := c.BuildParams(req)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	t.Logf("%+v", p)
-}
-
 func TestOrder(t *testing.T) {
 
 	c := newCore()
 
 	_, r, err := c.Order(context.Background(), &OrderRequest{
-		OutBizNo:   "N123456005",
-		ActivityNo: "N1234565555",
+		OutBizNo:   "0627002001",
+		ActivityNo: "0627002",
 		Number:     1,
 		NotifyUrl:  "",
 		Account:    "18479266021",
@@ -93,8 +64,8 @@ func TestQuery(t *testing.T) {
 	c := newCore()
 
 	_, r, err := c.Query(context.Background(), &QueryRequest{
-		OutBizNo: "N123456003",
-		TradeNo:  "",
+		OutBizNo: "",
+		TradeNo:  "794149313755095041",
 	})
 	if err != nil {
 		t.Error(err)
@@ -285,4 +256,30 @@ func TestRequestNotify(t *testing.T) {
 	}
 
 	t.Logf("response2=%+v", r)
+}
+
+func TestCallBack(t *testing.T) {
+
+	reqStr := `{"data": {"url": "https://gateway.dev.cdlsxd.cn/yxh5/dpK5ly6oVVE2AM0W", "status": 2, "account": "18479266021", "trade_no": "794167617429315585", "notify_id": "7345294954732199936", "usage_num": 0, "out_biz_no": "0627002001", "usable_num": 2, "usage_time": "2025-06-30 11:39:46", "valid_end_time": "2026-06-30 23:59:59", "settlement_price": 2, "valid_begin_time": "2025-06-24 11:00:08"}, "sign": "XLwRQ12EBXSGOSVzUMXwjSlKP88P4Odhe6c9MrfaszKLe+3HtPTeB6QWvyAmXGeIvsy02P0YtcOYV4xQHlWo3Uh5FZc6IJU/+KN+xVnn/DlFLpc+DhCKw6o4hYv+eLLyshjFZPZYVUU2I2YmkI1ZlwBaufsB+N9ds8gBz5+hELn17/qcFcbO6pYOd2te7xmJSGKOAMn0q2c2DSvTLvyQXhKUlDZfUZZGBOc1LGChy9CHc7Z/0E8/p2YYTlMPnvk0VHjEjV5sJxDnXwhSZqE7f3mRx0IN3au3VtZnXJsgl/whxdTyab9dYpfIxK75bS0mjncdqxGf1hLdhYJhTx8bog==", "app_id": "lzm", "sign_type": "RSA", "timestamp": "2025-06-30 11:39:46"}`
+	headerStr := `{"Sign": ["Boj6IrOOrRATJt0IBE+z5Ie/g4mo3MZk+JpJ4bLYoBbDfMqvgTBhxqiC8CheRm/nEF9iFFJCvq9S0dL25fLexQ1k5AxE3cX1+qR5fCRdaiZvqWG4jaXOjUUW8K7fQ9g5ii6T4b3cWp71FBHiG3ZH5XohM9JuLo3W17MxrizsLLD0euGROAY3bXcakVustto07V3i0g59+ajsCTTdxF/gNcrsO5a3eTJ8CTSDnMgpwqMbU+E9YMX1zGFH/+m/RtL9s8tLRf8j4T/t8g6b94JfvBv+Fu1wV4eMUO7H4Iv0LJ1TL8qMBkWul5BbwGxSdEGQoWU0CIAehYTfR5meKxTOTQ=="], "Appid": ["lzm"], "Version": ["1.0"], "Sign-Type": ["RSA"], "Timestamp": ["2025-06-30 11:39:46"], "Content-Type": ["application/json"]}`
+
+	var headers http.Header
+	if err := json.Unmarshal([]byte(headerStr), &headers); err != nil {
+		t.Error(err)
+		return
+	}
+
+	c := newCore()
+	request := &http.Request{
+		Header: headers,
+		Body:   io.NopCloser(bytes.NewBuffer([]byte(reqStr))),
+	}
+
+	r, err := c.CallBack(context.Background(), request)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	t.Logf("response=%+v", r)
 }

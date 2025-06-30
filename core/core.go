@@ -88,22 +88,31 @@ func NewCore(c *Config, o ...Option) (*Core, error) {
 	return core, nil
 }
 
-// GetBizSignStr gets the biz sign str
+// GetBizSignStr gets the biz sign str Go 版本是 1.15 或更高版本
 func (c *Core) GetBizSignStr(request any) (plaintext string, err error) {
 
 	kvs := utils.SortStruct(request)
 
 	kvm := make(map[string]any, len(kvs))
+	var order []string
+
 	for _, kv := range kvs {
 		kvm[kv.Key] = kv.Value
+		order = append(order, kv.Key)
 	}
 
-	kvmBytes, err := json.Marshal(kvm)
+	orderedMap := make(map[string]any)
+	for _, key := range order {
+		orderedMap[key] = kvm[key]
+	}
+
+	// 将 orderedMap 转换成 JSON 字符串，保持顺序
+	kvmBytes, err := json.Marshal(orderedMap)
 	if err != nil {
 		return "", err
 	}
 
-	return string(kvmBytes), err
+	return string(kvmBytes), nil
 }
 
 // GetCiphertext gets the ciphertext
